@@ -51,7 +51,7 @@
     "test": "vitest run tests/rules tests/configs",
     "test:integration": "vitest run tests/integration",
     "test:watch": "vitest",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:integration && pnpm docs:check && pnpm configs:check",
+    "check": "pnpm lint && pnpm typecheck && pnpm knip && pnpm test && pnpm build && pnpm test:integration && pnpm docs:check && pnpm configs:check",
     "version-packages": "changeset version"
   },
   "peerDependencies": {
