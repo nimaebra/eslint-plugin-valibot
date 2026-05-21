@@ -1,0 +1,5 @@
+{
+  "pathRuleDoc": "docs/rules/{name}.md",
+  "pathRuleList": ["README.md"],
+  "urlRuleDoc": "docs/rules/{name}.md"
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "scripts/*.ts"
+  ],
+  "project": [
+    "src/**/*.ts",
+    "scripts/**/*.ts"
+  ],
+  "ignore": [
+    "src/utils/type-aware.ts"
+  ]
+}

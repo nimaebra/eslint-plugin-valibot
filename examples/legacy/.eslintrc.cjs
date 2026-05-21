@@ -1,0 +1,12 @@
+module.exports = {
+  root: true,
+  env: {
+    es2022: true,
+    node: true,
+  },
+  parserOptions: {
+    ecmaVersion: 2022,
+    sourceType: 'module',
+  },
+  extends: ['plugin:valibot/strict'],
+};

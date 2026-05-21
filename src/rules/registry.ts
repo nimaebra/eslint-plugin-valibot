@@ -1,0 +1,127 @@
+import type {
+  ConfigName,
+  RuleMap,
+  RuleRegistryEntry,
+  RulesConfig,
+} from '../types';
+
+import { preferNamedSchema } from './prefer-named-schema';
+import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
+import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
+import { noRecreatedSchemas } from './no-recreated-schemas';
+import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
+import { noSchemaAsType } from './no-schema-as-type';
+import { schemaNameSuffix } from './schema-name-suffix';
+import { preferNullish } from './prefer-nullish';
+import { noUnguardedParse } from './no-unguarded-parse';
+import { noRedundantSchemaWrappers } from './no-redundant-schema-wrappers';
+import { noAnySchema } from './no-any-schema';
+
+export const ruleRegistry: RuleRegistryEntry[] = [
+  {
+    name: 'no-any-schema',
+    rule: noAnySchema,
+    configs: {
+      strict: 'warn',
+    },
+  },
+  {
+    name: 'no-unguarded-parse',
+    rule: noUnguardedParse,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-redundant-schema-wrappers',
+    rule: noRedundantSchemaWrappers,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'prefer-nullish',
+    rule: preferNullish,
+    configs: {
+      recommended: 'warn',
+      strict: 'warn',
+    },
+  },
+  {
+    name: 'no-duplicate-pipe-actions',
+    rule: noDuplicatePipeActions,
+    configs: {
+      recommended: 'warn',
+      strict: 'warn',
+    },
+  },
+  {
+    name: 'prefer-named-schema',
+    rule: preferNamedSchema,
+    configs: {
+      recommended: 'warn',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'require-default-in-optional-pipe',
+    rule: requireDefaultInOptionalPipe,
+    configs: {
+      recommended: 'warn',
+      strict: 'warn',
+    },
+  },
+  {
+    name: 'require-safe-parse-success-check',
+    rule: requireSafeParseSuccessCheck,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-recreated-schemas',
+    rule: noRecreatedSchemas,
+    configs: {
+      strict: 'warn',
+    },
+  },
+  {
+    name: 'no-schema-as-type',
+    rule: noSchemaAsType,
+    configs: {
+      strict: 'error',
+    },
+    typeScriptOnly: true,
+  },
+  {
+    name: 'schema-name-suffix',
+    rule: schemaNameSuffix,
+    configs: {
+      stylistic: 'warn',
+    },
+  },
+];
+
+export const rules = Object.fromEntries(
+  ruleRegistry.map(({ name, rule }) => [name, rule]),
+) as RuleMap;
+
+export function getRulesForConfig(configName: ConfigName): RulesConfig {
+  return Object.fromEntries(
+    ruleRegistry.flatMap(({ name, configs }) => {
+      const entry = configs[configName];
+
+      return entry ? [[`valibot/${name}`, entry]] : [];
+    }),
+  );
+}
+
+export function getRuleNamesForConfig(configName: ConfigName): string[] {
+  return ruleRegistry
+    .filter(({ configs }) => configName in configs)
+    .map(({ name }) => name)
+    .sort();
+}
