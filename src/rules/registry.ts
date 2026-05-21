@@ -5,7 +5,6 @@ import type {
   RulesConfig,
 } from '../types';
 
-import { preferNamedSchema } from './prefer-named-schema';
 import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
 import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
 import { noRecreatedSchemas } from './no-recreated-schemas';
@@ -55,14 +54,6 @@ export const ruleRegistry: RuleRegistryEntry[] = [
     configs: {
       recommended: 'warn',
       strict: 'warn',
-    },
-  },
-  {
-    name: 'prefer-named-schema',
-    rule: preferNamedSchema,
-    configs: {
-      recommended: 'warn',
-      strict: 'error',
     },
   },
   {

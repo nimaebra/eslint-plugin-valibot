@@ -1,4 +1,3 @@
-import { preferNamedSchema } from './prefer-named-schema';
 import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
 import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
@@ -26,7 +25,6 @@ export {
   noUnguardedParse,
   noRedundantSchemaWrappers,
   schemaNameSuffix,
-  preferNamedSchema,
   preferNullish,
   requireDefaultInOptionalPipe,
   requireSafeParseSuccessCheck,

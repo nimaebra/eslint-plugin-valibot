@@ -10,7 +10,6 @@ export {
   noUnguardedParse,
   noRedundantSchemaWrappers,
   schemaNameSuffix,
-  preferNamedSchema,
   preferNullish,
   requireDefaultInOptionalPipe,
   requireSafeParseSuccessCheck,
