@@ -94,6 +94,8 @@ Working example setups live in this repository:
 - [examples/legacy](examples/legacy)
 - [examples/typescript](examples/typescript)
 
+The default flat and legacy examples use the `recommended` preset. The flat example directory also includes dedicated `strict` and `stylistic` config files for stricter or naming-focused setups.
+
 ## Implemented Rules
 
 <!-- begin auto-generated rules list -->

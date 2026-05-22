@@ -16,13 +16,52 @@ const eslintBin = path.join(
   '.bin',
   process.platform === 'win32' ? 'eslint.cmd' : 'eslint',
 );
+const expectedJavaScriptRecommendedRuleIds = getRuleIdsForConfig(
+  'recommended',
+  false,
+);
 const expectedJavaScriptStrictRuleIds = getRuleIdsForConfig('strict', false);
+const expectedJavaScriptStylisticRuleIds = getRuleIdsForConfig(
+  'stylistic',
+  false,
+);
 const expectedTypeScriptStrictRuleIds = getRuleIdsForConfig('strict', true);
 
 describe('package integration examples', () => {
-  it('lints the flat-config example with the built package', () => {
+  it('lints the flat recommended example with the built package', () => {
     const result = runEslint(path.join(rootDir, 'examples/flat'), [
       'src/invalid.js',
+      '--format',
+      'json',
+    ]);
+
+    expect(result.status).toBe(1);
+
+    const report = parseSingleResult(result.stdout);
+    const ruleIds = getSortedRuleIds(report.messages);
+
+    expect(ruleIds).toEqual(expectedJavaScriptRecommendedRuleIds);
+  });
+
+  it('lints the flat recommended valid example with the built package', () => {
+    const result = runEslint(path.join(rootDir, 'examples/flat'), [
+      'src/valid.js',
+      '--format',
+      'json',
+    ]);
+
+    expect(result.status).toBe(0);
+
+    const report = parseSingleResult(result.stdout);
+
+    expect(getSortedRuleIds(report.messages)).toEqual([]);
+  });
+
+  it('lints the flat strict example with the built package', () => {
+    const result = runEslint(path.join(rootDir, 'examples/flat'), [
+      'src/strict-invalid.js',
+      '--config',
+      'eslint.strict.config.mjs',
       '--format',
       'json',
     ]);
@@ -35,10 +74,39 @@ describe('package integration examples', () => {
     expect(ruleIds).toEqual(expectedJavaScriptStrictRuleIds);
   });
 
-  it('lints the legacy-config example with the built package', () => {
-    return expect(lintLegacyExport()).resolves.toEqual(
-      expectedJavaScriptStrictRuleIds,
-    );
+  it('lints the flat stylistic example with the built package', () => {
+    const result = runEslint(path.join(rootDir, 'examples/flat'), [
+      'src/stylistic-invalid.js',
+      '--config',
+      'eslint.stylistic.config.mjs',
+      '--format',
+      'json',
+    ]);
+
+    expect(result.status).toBe(0);
+
+    const report = parseSingleResult(result.stdout);
+    const ruleIds = getSortedRuleIds(report.messages);
+
+    expect(ruleIds).toEqual(expectedJavaScriptStylisticRuleIds);
+  });
+
+  it('lints the legacy recommended example with the built package', () => {
+    return expect(
+      lintLegacyExport('recommended', 'src/invalid.js'),
+    ).resolves.toEqual(expectedJavaScriptRecommendedRuleIds);
+  });
+
+  it('lints the legacy recommended valid example with the built package', () => {
+    return expect(
+      lintLegacyExport('recommended', 'src/valid.js'),
+    ).resolves.toEqual([]);
+  });
+
+  it('lints the legacy strict example with the built package', () => {
+    return expect(
+      lintLegacyExport('strict', 'src/strict-invalid.js'),
+    ).resolves.toEqual(expectedJavaScriptStrictRuleIds);
   });
 
   it('lints the TypeScript flat-config example with the built package', () => {
@@ -54,6 +122,20 @@ describe('package integration examples', () => {
     const ruleIds = getSortedRuleIds(report.messages);
 
     expect(ruleIds).toEqual(expectedTypeScriptStrictRuleIds);
+  });
+
+  it('lints the TypeScript flat valid example with the built package', () => {
+    const result = runEslint(path.join(rootDir, 'examples/typescript'), [
+      'src/valid.ts',
+      '--format',
+      'json',
+    ]);
+
+    expect(result.status).toBe(0);
+
+    const report = parseSingleResult(result.stdout);
+
+    expect(getSortedRuleIds(report.messages)).toEqual([]);
   });
 });
 
@@ -96,13 +178,22 @@ function parseSingleResult(stdout: string) {
   return parsed[0];
 }
 
-async function lintLegacyExport(): Promise<string[]> {
+async function lintLegacyExport(
+  configName: 'recommended' | 'strict' | 'stylistic',
+  filePath: string,
+): Promise<string[]> {
   const builtPluginModule = (await import(
     pathToFileURL(path.join(rootDir, 'dist/index.mjs')).href
   )) as {
     default?: { rules: Record<string, unknown> };
     configs: {
+      recommended: {
+        rules?: Record<string, 'off' | 'warn' | 'error' | 0 | 1 | 2>;
+      };
       strict: { rules?: Record<string, 'off' | 'warn' | 'error' | 0 | 1 | 2> };
+      stylistic: {
+        rules?: Record<string, 'off' | 'warn' | 'error' | 0 | 1 | 2>;
+      };
     };
   };
 
@@ -120,12 +211,12 @@ async function lintLegacyExport(): Promise<string[]> {
         plugins: {
           valibot: plugin as never,
         },
-        rules: builtPluginModule.configs.strict.rules ?? {},
+        rules: builtPluginModule.configs[configName].rules ?? {},
       },
     ],
   });
 
-  const [report] = await eslint.lintFiles(['src/invalid.js']);
+  const [report] = await eslint.lintFiles([filePath]);
 
   return getSortedRuleIds(report.messages);
 }

@@ -8,5 +8,5 @@ export default [
       sourceType: 'module',
     },
   },
-  ...valibot.flatConfigs.recommended,
+  ...valibot.flatConfigs.strict,
 ];

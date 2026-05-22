@@ -9,4 +9,5 @@ export default [
     },
   },
   ...valibot.flatConfigs.recommended,
+  ...valibot.flatConfigs.stylistic,
 ];

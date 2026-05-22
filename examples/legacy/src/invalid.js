@@ -1,7 +1,6 @@
 import * as v from 'valibot';
 
 const input = 'value';
-const PayloadSchema = v.any();
 const WrappedSchema = v.optional(v.optional(v.string()));
 const MaybeSchema = v.optional(v.nullable(v.string()));
 const ParseSchema = v.string();
@@ -15,19 +14,10 @@ const UnsafeOutput = ParseResult.output.length;
 
 const LazyNonFunctionSchema = v.lazy(v.string());
 const InstanceofBuiltinSchema = v.instance(Date);
-const RedundantPipeSchema = v.pipe(v.string());
+const EmptyPipeSchema = v.pipe(v.string());
 const SchemaAsPipeActionSchema = v.pipe(v.string(), v.number());
 
-function validateUser(value) {
-  const UserSchema = v.object({
-    name: v.string(),
-  });
-
-  return v.safeParse(UserSchema, value);
-}
-
 export {
-  PayloadSchema,
   WrappedSchema,
   MaybeSchema,
   ParseSchema,
@@ -38,7 +28,6 @@ export {
   UnsafeOutput,
   LazyNonFunctionSchema,
   InstanceofBuiltinSchema,
-  RedundantPipeSchema,
+  EmptyPipeSchema,
   SchemaAsPipeActionSchema,
-  validateUser,
 };

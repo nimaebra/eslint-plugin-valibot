@@ -8,5 +8,5 @@ module.exports = {
     ecmaVersion: 2022,
     sourceType: 'module',
   },
-  extends: ['plugin:valibot/strict'],
+  extends: ['plugin:valibot/recommended'],
 };

@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "ESLint rules for safer, more maintainable Valibot usage.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nimaebra/eslint-plugin-valibot.git"
+  },
+  "homepage": "https://github.com/nimaebra/eslint-plugin-valibot#readme",
+  "bugs": {
+    "url": "https://github.com/nimaebra/eslint-plugin-valibot/issues"
+  },
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -21,6 +29,7 @@
   ],
   "keywords": [
     "eslint",
+    "eslint-plugin",
     "eslintplugin",
     "valibot",
     "schema",
@@ -31,6 +40,10 @@
     "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
   },
   "packageManager": "pnpm@10.33.4",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsup --config tsup.config.ts",
     "changeset": "changeset",
@@ -44,6 +57,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "knip": "knip",
+    "pack:dry-run": "pnpm pack --dry-run",
     "prepublishOnly": "pnpm check",
     "release:publish": "changeset publish",
     "smoke:pack": "tsx scripts/smoke-pack.ts",

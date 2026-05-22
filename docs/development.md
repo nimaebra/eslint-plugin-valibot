@@ -11,6 +11,17 @@ pnpm build
 pnpm smoke:pack -- --valibot-version latest
 ```
 
+## Release Dry Run
+
+Before cutting a release, run the same checks the published package relies on:
+
+```sh
+pnpm check
+pnpm smoke:pack -- --valibot-version 1.0.0
+pnpm smoke:pack -- --valibot-version latest
+pnpm pack:dry-run
+```
+
 ## Current Structure
 
 - `src/rules`: rule implementations and exports
@@ -31,3 +42,4 @@ pnpm smoke:pack -- --valibot-version latest
 - Run one rule test file with `pnpm exec vitest run tests/rules/my-rule.test.ts --reporter=verbose`.
 - Rebuild generated docs with `pnpm docs:build`.
 - Validate the packaged install path with `pnpm smoke:pack -- --valibot-version latest`.
+- Inspect the publish tarball without uploading it with `pnpm pack:dry-run`.

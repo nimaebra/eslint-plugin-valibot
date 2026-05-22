@@ -38,11 +38,17 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Knip
+        run: pnpm knip
+
       - name: Unit tests
         run: pnpm test
 
       - name: Build
         run: pnpm build
+
+      - name: Pack dry run
+        run: pnpm pack:dry-run
 
       - name: Integration tests
         run: pnpm test:integration

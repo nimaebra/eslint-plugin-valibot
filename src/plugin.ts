@@ -1,3 +1,5 @@
+import packageJson from '../package.json';
+
 import { createFlatConfigs } from './configs/flat';
 import { legacyConfigs } from './configs/legacy';
 import { rules } from './rules';
@@ -8,6 +10,7 @@ const basePlugin: FlatPluginShape & {
 } = {
   meta: {
     name: 'eslint-plugin-valibot',
+    version: packageJson.version,
   },
   rules,
   configs: legacyConfigs,

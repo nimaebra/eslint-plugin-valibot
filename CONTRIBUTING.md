@@ -115,4 +115,25 @@ If your change only touches one area, include the narrow command you used to val
 
 ## Releases
 
-Release-related scripts such as `changeset`, `version-packages`, and `release:publish` are primarily for maintainers. Use them only when the change explicitly requires release work.
+Release-related scripts such as `changeset`, `version-packages`, and `release:publish` are primarily for maintainers.
+
+Before merging a release PR or publishing manually:
+
+1. Confirm npm publishing is configured for this repository. The GitHub workflow in [`.github/workflows/release.yml`](.github/workflows/release.yml) expects npm provenance-enabled publishing.
+2. Run the full verification pipeline:
+
+   ```sh
+   pnpm check
+   pnpm smoke:pack -- --valibot-version 1.0.0
+   pnpm smoke:pack -- --valibot-version latest
+   pnpm pack:dry-run
+   ```
+
+3. Add a changeset for any user-facing change:
+
+   ```sh
+   pnpm changeset
+   ```
+
+4. Let the release workflow open or update the version PR on `main`.
+5. After publish, verify the npm package metadata points users to the correct README, repository, and issue tracker.

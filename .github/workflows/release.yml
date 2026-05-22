@@ -37,7 +37,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build and verify
-        run: pnpm check && pnpm smoke:pack
+        run: |
+          pnpm check
+          pnpm smoke:pack -- --valibot-version 1.0.0
+          pnpm smoke:pack -- --valibot-version latest
+          pnpm pack:dry-run
 
       - name: Create version PR or publish
         uses: changesets/action@v1
