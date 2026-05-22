@@ -19,6 +19,53 @@ Valibot recommends two naming styles when you export schemas together with infer
 
 Mixing those conventions casually makes exported APIs harder to scan and makes it less obvious whether a symbol is a runtime schema or an inferred type.
 
+## Options
+
+```json
+{
+  "convention": "suffix",
+  "scope": "exported",
+  "schemaSuffix": "Schema",
+  "inputSuffix": "Input",
+  "outputSuffix": "Output",
+  "dataSuffix": "Data",
+  "allowDataSuffix": true
+}
+```
+
+| Option            | Type                      | Default      | Description                                                                                                     |
+| :---------------- | :------------------------ | :----------- | :-------------------------------------------------------------------------------------------------------------- |
+| `convention`      | `'suffix' \| 'same-name'` | `'suffix'`   | Selects which Valibot naming convention to enforce.                                                             |
+| `scope`           | `'exported' \| 'all'`     | `'exported'` | Controls whether the rule checks only exported schema and type names or all matching bindings.                  |
+| `schemaSuffix`    | `string`                  | `'Schema'`   | Defines the schema suffix used when `convention` is `'suffix'`.                                                 |
+| `inputSuffix`     | `string`                  | `'Input'`    | Defines the suffix required for `InferInput<typeof Schema>` aliases when `convention` is `'suffix'`.            |
+| `outputSuffix`    | `string`                  | `'Output'`   | Defines the suffix required for `InferOutput<typeof Schema>` aliases when `convention` is `'suffix'`.           |
+| `dataSuffix`      | `string`                  | `'Data'`     | Defines the optional shared suffix that can stand in for inferred type aliases under the `'suffix'` convention. |
+| `allowDataSuffix` | `boolean`                 | `true`       | Allows `Data`-style aliases such as `UserData` as an alternative to `Input` or `Output`.                        |
+
+### Example `same-name` configuration
+
+```json
+{
+  "rules": {
+    "valibot/consistent-schema-convention": [
+      "warn",
+      { "convention": "same-name" }
+    ]
+  }
+}
+```
+
+### Example `scope: all` configuration
+
+```json
+{
+  "rules": {
+    "valibot/consistent-schema-convention": ["warn", { "scope": "all" }]
+  }
+}
+```
+
 ## Incorrect
 
 ### Default `suffix` convention
@@ -71,53 +118,12 @@ export const PublicUser = v.object({
 export type PublicUser = v.InferOutput<typeof PublicUser>;
 ```
 
-## Options
-
-```json
-{
-  "convention": "suffix",
-  "scope": "exported",
-  "schemaSuffix": "Schema",
-  "inputSuffix": "Input",
-  "outputSuffix": "Output",
-  "dataSuffix": "Data",
-  "allowDataSuffix": true
-}
-```
-
-- `convention`: choose `'suffix'` or `'same-name'`. Default: `'suffix'`.
-- `scope`: check only exported bindings or all bindings. Default: `'exported'`.
-- `schemaSuffix`: schema suffix for the `suffix` convention. Default: `'Schema'`.
-- `inputSuffix`: input type suffix for the `suffix` convention. Default: `'Input'`.
-- `outputSuffix`: output type suffix for the `suffix` convention. Default: `'Output'`.
-- `dataSuffix`: optional shared type suffix for the `suffix` convention. Default: `'Data'`.
-- `allowDataSuffix`: allow `Data` as an alternative inferred type suffix. Default: `true`.
-
-### Example `same-name` configuration
-
-```json
-{
-  "rules": {
-    "valibot/consistent-schema-convention": [
-      "warn",
-      { "convention": "same-name" }
-    ]
-  }
-}
-```
-
-### Example `scope: all` configuration
-
-```json
-{
-  "rules": {
-    "valibot/consistent-schema-convention": ["warn", { "scope": "all" }]
-  }
-}
-```
-
 <!-- end auto-generated rule options -->
 
 ## Autofix
 
 No.
+
+## Further Reading
+
+- [Valibot Naming Convention Guide](https://valibot.dev/guides/naming-convention/)
