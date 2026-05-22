@@ -119,6 +119,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 | [no-schema-as-pipe-action](docs/rules/no-schema-as-pipe-action.md)                 | Ensure the first argument of pipe() is a schema and subsequent arguments are actions.              | ✅ 🔒 |      |    |
 | [no-schema-as-type](docs/rules/no-schema-as-type.md)                               | Disallow using a Valibot schema value itself as a TypeScript type.                                 | 🔒   |      |    |
 | [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                             | Require Valibot parse() and assert() calls to be wrapped in try/catch.                             | ✅ 🔒 |      |    |
+| [no-unknown-schema](docs/rules/no-unknown-schema.md)                               | Disallow Valibot unknown() schemas.                                                                |      | 🔒   |    |
 | [prefer-nullish](docs/rules/prefer-nullish.md)                                     | Prefer nullish() over nested optional() and nullable() wrappers.                                   |      | ✅ 🔒 | 🔧 |
 | [require-default-in-optional-pipe](docs/rules/require-default-in-optional-pipe.md) | Require a default when optional() or nullish() starts a pipe inside an object schema entry.        |      | ✅ 🔒 |    |
 | [require-safe-parse-success-check](docs/rules/require-safe-parse-success-check.md) | Require checking result.success before reading output or issues from a Valibot safeParse() result. | ✅ 🔒 |      |    |

@@ -8,6 +8,7 @@ import { preferNullish } from './prefer-nullish';
 import { noUnguardedParse } from './no-unguarded-parse';
 import { noRedundantSchemaWrappers } from './no-redundant-schema-wrappers';
 import { noAnySchema } from './no-any-schema';
+import { noUnknownSchema } from './no-unknown-schema';
 import { noLazyNonFunction } from './no-lazy-non-function';
 import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
@@ -23,6 +24,7 @@ export {
   getRuleNamesForConfig,
   getRulesForConfig,
   noAnySchema,
+  noUnknownSchema,
   noDuplicatePipeActions,
   noRecreatedSchemas,
   noSchemaAsType,

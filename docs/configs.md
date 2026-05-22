@@ -31,6 +31,7 @@ Includes:
 - `valibot/no-schema-as-pipe-action`: `error`
 - `valibot/no-schema-as-type`: `error`
 - `valibot/no-unguarded-parse`: `error`
+- `valibot/no-unknown-schema`: `warn`
 - `valibot/prefer-nullish`: `warn`
 - `valibot/require-default-in-optional-pipe`: `warn`
 - `valibot/require-safe-parse-success-check`: `error`

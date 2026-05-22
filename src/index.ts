@@ -4,6 +4,7 @@ export {
   getRulesForConfig,
   rules,
   noAnySchema,
+  noUnknownSchema,
   noDuplicatePipeActions,
   noRecreatedSchemas,
   noSchemaAsType,
