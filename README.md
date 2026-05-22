@@ -107,24 +107,25 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 🎨 Set in the `stylistic` configuration.\
 🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
 
-| Name                                                                               | Description                                                                                        | 💼   | ⚠️   | 🔧 |
-| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :--- | :--- | :- |
-| [consistent-schema-convention](docs/rules/consistent-schema-convention.md)         | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.     |      | 🎨   |    |
-| [no-any-schema](docs/rules/no-any-schema.md)                                       | Disallow Valibot any() schemas.                                                                    |      | 🔒   |    |
-| [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)               | Disallow duplicate Valibot actions inside the same pipe() call.                                    |      | ✅ 🔒 | 🔧 |
-| [no-empty-pipe](docs/rules/no-empty-pipe.md)                                       | Disallow empty pipe() calls or pipe() calls with a single argument.                                | ✅ 🔒 |      | 🔧 |
-| [no-instanceof-builtins](docs/rules/no-instanceof-builtins.md)                     | Prefer primitive schema functions over instance(Constructor) for built-in types.                   | ✅ 🔒 |      | 🔧 |
-| [no-loose-object](docs/rules/no-loose-object.md)                                   | Disallow disallowed Valibot object schema constructors such as looseObject().                      |      | 🔒   |    |
-| [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                         | Disallow recreating static Valibot schemas inside function scope.                                  |      | 🔒   |    |
-| [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)         | Disallow redundant nested Valibot schema wrappers.                                                 | ✅ 🔒 |      | 🔧 |
-| [no-schema-as-type](docs/rules/no-schema-as-type.md)                               | Disallow using a Valibot schema value itself as a TypeScript type.                                 | 🔒   |      |    |
-| [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)             | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions.  | ✅ 🔒 |      |    |
-| [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                             | Require Valibot parse() and assert() calls to be wrapped in try/catch.                             | ✅ 🔒 |      |    |
-| [no-unknown-schema](docs/rules/no-unknown-schema.md)                               | Disallow Valibot unknown() schemas.                                                                |      | 🔒   |    |
-| [prefer-nullish](docs/rules/prefer-nullish.md)                                     | Prefer nullish() over nested optional() and nullable() wrappers.                                   |      | ✅ 🔒 | 🔧 |
-| [require-default-in-optional-pipe](docs/rules/require-default-in-optional-pipe.md) | Require a default when optional() or nullish() starts a pipe inside an object schema entry.        |      | ✅ 🔒 |    |
-| [require-issue-messages](docs/rules/require-issue-messages.md)                     | Require explicit custom issue messages on Valibot schemas and issue-producing actions.             |      | 🔒   |    |
-| [require-safe-parse-success-check](docs/rules/require-safe-parse-success-check.md) | Require checking result.success before reading output or issues from a Valibot safeParse() result. | ✅ 🔒 |      |    |
+| Name                                                                                       | Description                                                                                        | 💼   | ⚠️   | 🔧 |
+| :----------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :--- | :--- | :- |
+| [consistent-schema-convention](docs/rules/consistent-schema-convention.md)                 | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.     |      | 🎨   |    |
+| [no-any-schema](docs/rules/no-any-schema.md)                                               | Disallow Valibot any() schemas.                                                                    |      | 🔒   |    |
+| [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)                       | Disallow duplicate Valibot actions inside the same pipe() call.                                    |      | ✅ 🔒 | 🔧 |
+| [no-empty-pipe](docs/rules/no-empty-pipe.md)                                               | Disallow empty pipe() calls or pipe() calls with a single argument.                                | ✅ 🔒 |      | 🔧 |
+| [no-instanceof-builtins](docs/rules/no-instanceof-builtins.md)                             | Prefer primitive schema functions over instance(Constructor) for built-in types.                   | ✅ 🔒 |      | 🔧 |
+| [no-loose-object](docs/rules/no-loose-object.md)                                           | Disallow disallowed Valibot object schema constructors such as looseObject().                      |      | 🔒   |    |
+| [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                                 | Disallow recreating static Valibot schemas inside function scope.                                  |      | 🔒   |    |
+| [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)                 | Disallow redundant nested Valibot schema wrappers.                                                 | ✅ 🔒 |      | 🔧 |
+| [no-schema-as-type](docs/rules/no-schema-as-type.md)                                       | Disallow using a Valibot schema value itself as a TypeScript type.                                 | 🔒   |      |    |
+| [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)                     | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions.  | ✅ 🔒 |      |    |
+| [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                                     | Require Valibot parse() and assert() calls to be wrapped in try/catch.                             | ✅ 🔒 |      |    |
+| [no-unknown-schema](docs/rules/no-unknown-schema.md)                                       | Disallow Valibot unknown() schemas.                                                                |      | 🔒   |    |
+| [prefer-nullish](docs/rules/prefer-nullish.md)                                             | Prefer nullish() over nested optional() and nullable() wrappers.                                   |      | ✅ 🔒 | 🔧 |
+| [prefer-optional-over-union-undefined](docs/rules/prefer-optional-over-union-undefined.md) | Prefer optional() over union([schema, undefined()]) when they are equivalent.                      |      | ✅ 🔒 | 🔧 |
+| [require-default-in-optional-pipe](docs/rules/require-default-in-optional-pipe.md)         | Require a default when optional() or nullish() starts a pipe inside an object schema entry.        |      | ✅ 🔒 |    |
+| [require-issue-messages](docs/rules/require-issue-messages.md)                             | Require explicit custom issue messages on Valibot schemas and issue-producing actions.             |      | 🔒   |    |
+| [require-safe-parse-success-check](docs/rules/require-safe-parse-success-check.md)         | Require checking result.success before reading output or issues from a Valibot safeParse() result. | ✅ 🔒 |      |    |
 
 <!-- end auto-generated rules list -->
 

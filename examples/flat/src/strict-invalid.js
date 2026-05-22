@@ -5,6 +5,7 @@ const PayloadSchema = v.any();
 const UnknownSchema = v.unknown();
 const WrappedSchema = v.optional(v.optional(v.string()));
 const MaybeSchema = v.optional(v.nullable(v.string()));
+const OptionalUnionSchema = v.union([v.string(), v.undefined()]);
 const ParseSchema = v.string();
 const ObjectSchema = v.object({
   active: v.pipe(v.optional(v.string()), v.transform(Boolean)),
@@ -37,6 +38,7 @@ export {
   UnknownSchema,
   WrappedSchema,
   MaybeSchema,
+  OptionalUnionSchema,
   ParseSchema,
   ObjectSchema,
   LooseObjectSchema,

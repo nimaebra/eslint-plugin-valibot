@@ -13,6 +13,7 @@ Includes:
 - `valibot/no-transform-in-record-key`: `error`
 - `valibot/no-unguarded-parse`: `error`
 - `valibot/prefer-nullish`: `warn`
+- `valibot/prefer-optional-over-union-undefined`: `warn`
 - `valibot/require-default-in-optional-pipe`: `warn`
 - `valibot/require-safe-parse-success-check`: `error`
 
@@ -32,6 +33,7 @@ Includes:
 - `valibot/no-unguarded-parse`: `error`
 - `valibot/no-unknown-schema`: `warn`
 - `valibot/prefer-nullish`: `warn`
+- `valibot/prefer-optional-over-union-undefined`: `warn`
 - `valibot/require-default-in-optional-pipe`: `warn`
 - `valibot/require-issue-messages`: `warn`
 - `valibot/require-safe-parse-success-check`: `error`
