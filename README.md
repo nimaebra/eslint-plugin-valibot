@@ -123,6 +123,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 | [no-unknown-schema](docs/rules/no-unknown-schema.md)                               | Disallow Valibot unknown() schemas.                                                                |      | 🔒   |    |
 | [prefer-nullish](docs/rules/prefer-nullish.md)                                     | Prefer nullish() over nested optional() and nullable() wrappers.                                   |      | ✅ 🔒 | 🔧 |
 | [require-default-in-optional-pipe](docs/rules/require-default-in-optional-pipe.md) | Require a default when optional() or nullish() starts a pipe inside an object schema entry.        |      | ✅ 🔒 |    |
+| [require-issue-messages](docs/rules/require-issue-messages.md)                     | Require explicit custom issue messages on Valibot schemas and issue-producing actions.             |      | 🔒   |    |
 | [require-safe-parse-success-check](docs/rules/require-safe-parse-success-check.md) | Require checking result.success before reading output or issues from a Valibot safeParse() result. | ✅ 🔒 |      |    |
 | [schema-name-suffix](docs/rules/schema-name-suffix.md)                             | Require schema variables to use a consistent suffix such as Schema.                                |      | 🎨   |    |
 

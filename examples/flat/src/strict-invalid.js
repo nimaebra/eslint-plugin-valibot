@@ -2,12 +2,14 @@ import * as v from 'valibot';
 
 const input = 'value';
 const PayloadSchema = v.any();
+const UnknownSchema = v.unknown();
 const WrappedSchema = v.optional(v.optional(v.string()));
 const MaybeSchema = v.optional(v.nullable(v.string()));
 const ParseSchema = v.string();
 const ObjectSchema = v.object({
   active: v.pipe(v.optional(v.string()), v.transform(Boolean)),
 });
+const RecordKeySchema = v.record(v.pipe(v.string(), v.trim()), v.string());
 const NormalizedSchema = v.pipe(v.string(), v.trim(), v.trim());
 const ParsedValue = v.parse(v.string(), input);
 const ParseResult = v.safeParse(ParseSchema, input);
@@ -28,10 +30,12 @@ function validateUser(value) {
 
 export {
   PayloadSchema,
+  UnknownSchema,
   WrappedSchema,
   MaybeSchema,
   ParseSchema,
   ObjectSchema,
+  RecordKeySchema,
   NormalizedSchema,
   ParsedValue,
   ParseResult,

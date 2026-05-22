@@ -14,6 +14,7 @@ import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
 import { noSchemaAsPipeAction } from './no-schema-as-pipe-action';
 import { noTransformInRecordKey } from './no-transform-in-record-key';
+import { requireIssueMessages } from './require-issue-messages';
 import {
   getRuleNamesForConfig,
   getRulesForConfig,
@@ -36,6 +37,7 @@ export {
   noEmptyPipe,
   noSchemaAsPipeAction,
   noTransformInRecordKey,
+  requireIssueMessages,
   schemaNameSuffix,
   preferNullish,
   requireDefaultInOptionalPipe,

@@ -6,6 +6,7 @@ import type {
 } from '../types';
 
 import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
+import { requireIssueMessages } from './require-issue-messages';
 import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
@@ -74,6 +75,13 @@ export const ruleRegistry: RuleRegistryEntry[] = [
     rule: requireDefaultInOptionalPipe,
     configs: {
       recommended: 'warn',
+      strict: 'warn',
+    },
+  },
+  {
+    name: 'require-issue-messages',
+    rule: requireIssueMessages,
+    configs: {
       strict: 'warn',
     },
   },

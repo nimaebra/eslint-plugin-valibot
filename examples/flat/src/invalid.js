@@ -7,6 +7,7 @@ const ParseSchema = v.string();
 const ObjectSchema = v.object({
   active: v.pipe(v.optional(v.string()), v.transform(Boolean)),
 });
+const RecordKeySchema = v.record(v.pipe(v.string(), v.trim()), v.string());
 const NormalizedSchema = v.pipe(v.string(), v.trim(), v.trim());
 const ParsedValue = v.parse(v.string(), input);
 const ParseResult = v.safeParse(ParseSchema, input);
@@ -22,6 +23,7 @@ export {
   MaybeSchema,
   ParseSchema,
   ObjectSchema,
+  RecordKeySchema,
   NormalizedSchema,
   ParsedValue,
   ParseResult,
