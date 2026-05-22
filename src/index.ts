@@ -1,5 +1,6 @@
 export { configs, flatConfigs } from './plugin';
 export {
+  consistentSchemaConvention,
   getRuleNamesForConfig,
   getRulesForConfig,
   rules,
@@ -12,7 +13,6 @@ export {
   noUnguardedParse,
   noRedundantSchemaWrappers,
   noTransformInRecordKey,
-  schemaNameSuffix,
   preferNullish,
   requireDefaultInOptionalPipe,
   requireSafeParseSuccessCheck,

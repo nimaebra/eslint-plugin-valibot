@@ -8,10 +8,10 @@ import type {
 import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
 import { requireIssueMessages } from './require-issue-messages';
 import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
+import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noSchemaAsType } from './no-schema-as-type';
-import { schemaNameSuffix } from './schema-name-suffix';
 import { preferNullish } from './prefer-nullish';
 import { noUnguardedParse } from './no-unguarded-parse';
 import { noRedundantSchemaWrappers } from './no-redundant-schema-wrappers';
@@ -108,8 +108,8 @@ export const ruleRegistry: RuleRegistryEntry[] = [
     typeScriptOnly: true,
   },
   {
-    name: 'schema-name-suffix',
-    rule: schemaNameSuffix,
+    name: 'consistent-schema-convention',
+    rule: consistentSchemaConvention,
     configs: {
       stylistic: 'warn',
     },

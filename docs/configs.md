@@ -40,4 +40,4 @@ Includes:
 
 Includes:
 
-- `valibot/schema-name-suffix`: `warn`
+- `valibot/consistent-schema-convention`: `warn`

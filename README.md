@@ -59,11 +59,11 @@ export default tseslint.config(
 
 ## Config Presets
 
-| Preset        | Intended use                                           | Notes                                                                   |
-| :------------ | :----------------------------------------------------- | :---------------------------------------------------------------------- |
-| `recommended` | Good default for most codebases                        | Focuses on common correctness and safety issues.                        |
-| `strict`      | Tighter policy for teams that want broader enforcement | Includes everything in `recommended` plus stricter schema usage checks. |
-| `stylistic`   | Naming consistency                                     | Adds `schema-name-suffix` without changing the problem-focused presets. |
+| Preset        | Intended use                                           | Notes                                                                      |
+| :------------ | :----------------------------------------------------- | :------------------------------------------------------------------------- |
+| `recommended` | Good default for most codebases                        | Focuses on common correctness and safety issues.                           |
+| `strict`      | Tighter policy for teams that want broader enforcement | Includes everything in `recommended` plus stricter schema usage checks.    |
+| `stylistic`   | Naming consistency                                     | Adds naming-convention rules without changing the problem-focused presets. |
 
 See [docs/configs.md](docs/configs.md) for the exact rule list in each preset.
 
@@ -109,6 +109,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 
 | Name                                                                               | Description                                                                                        | 💼   | ⚠️   | 🔧 |
 | :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :--- | :--- | :- |
+| [consistent-schema-convention](docs/rules/consistent-schema-convention.md)         | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.     |      | 🎨   |    |
 | [no-any-schema](docs/rules/no-any-schema.md)                                       | Disallow Valibot any() schemas.                                                                    |      | 🔒   |    |
 | [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)               | Disallow duplicate Valibot actions inside the same pipe() call.                                    |      | ✅ 🔒 | 🔧 |
 | [no-empty-pipe](docs/rules/no-empty-pipe.md)                                       | Disallow empty pipe() calls or pipe() calls with a single argument.                                | ✅ 🔒 |      | 🔧 |
@@ -124,7 +125,6 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 | [require-default-in-optional-pipe](docs/rules/require-default-in-optional-pipe.md) | Require a default when optional() or nullish() starts a pipe inside an object schema entry.        |      | ✅ 🔒 |    |
 | [require-issue-messages](docs/rules/require-issue-messages.md)                     | Require explicit custom issue messages on Valibot schemas and issue-producing actions.             |      | 🔒   |    |
 | [require-safe-parse-success-check](docs/rules/require-safe-parse-success-check.md) | Require checking result.success before reading output or issues from a Valibot safeParse() result. | ✅ 🔒 |      |    |
-| [schema-name-suffix](docs/rules/schema-name-suffix.md)                             | Require schema variables to use a consistent suffix such as Schema.                                |      | 🎨   |    |
 
 <!-- end auto-generated rules list -->
 
