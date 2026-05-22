@@ -42,8 +42,12 @@ module.exports = {
 | :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :--- | :--- | :- |
 | [no-any-schema](docs/rules/no-any-schema.md)                                       | Disallow Valibot any() schemas.                                                                    |      | 🔒   |    |
 | [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)               | Disallow duplicate Valibot actions inside the same pipe() call.                                    |      | ✅ 🔒 | 🔧 |
+| [no-empty-pipe](docs/rules/no-empty-pipe.md)                                       | Disallow empty pipe() calls or pipe() calls with a single argument.                                | ✅ 🔒 |      | 🔧 |
+| [no-instanceof-builtins](docs/rules/no-instanceof-builtins.md)                     | Prefer primitive schema functions over instance(Constructor) for built-in types.                   | ✅ 🔒 |      | 🔧 |
+| [no-lazy-non-function](docs/rules/no-lazy-non-function.md)                         | Disallow passing a direct schema or non-function value to lazy().                                  | ✅ 🔒 |      |    |
 | [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                         | Disallow recreating static Valibot schemas inside function scope.                                  |      | 🔒   |    |
 | [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)         | Disallow redundant nested Valibot schema wrappers.                                                 | ✅ 🔒 |      | 🔧 |
+| [no-schema-as-pipe-action](docs/rules/no-schema-as-pipe-action.md)                 | Ensure the first argument of pipe() is a schema and subsequent arguments are actions.              | ✅ 🔒 |      |    |
 | [no-schema-as-type](docs/rules/no-schema-as-type.md)                               | Disallow using a Valibot schema value itself as a TypeScript type.                                 | 🔒   |      |    |
 | [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                             | Require Valibot parse() and assert() calls to be wrapped in try/catch.                             | ✅ 🔒 |      |    |
 | [prefer-nullish](docs/rules/prefer-nullish.md)                                     | Prefer nullish() over nested optional() and nullable() wrappers.                                   |      | ✅ 🔒 | 🔧 |

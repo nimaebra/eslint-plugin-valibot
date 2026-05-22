@@ -15,6 +15,10 @@ import { preferNullish } from './prefer-nullish';
 import { noUnguardedParse } from './no-unguarded-parse';
 import { noRedundantSchemaWrappers } from './no-redundant-schema-wrappers';
 import { noAnySchema } from './no-any-schema';
+import { noLazyNonFunction } from './no-lazy-non-function';
+import { noInstanceofBuiltins } from './no-instanceof-builtins';
+import { noEmptyPipe } from './no-empty-pipe';
+import { noSchemaAsPipeAction } from './no-schema-as-pipe-action';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
   {
@@ -92,6 +96,38 @@ export const ruleRegistry: RuleRegistryEntry[] = [
     rule: schemaNameSuffix,
     configs: {
       stylistic: 'warn',
+    },
+  },
+  {
+    name: 'no-lazy-non-function',
+    rule: noLazyNonFunction,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-instanceof-builtins',
+    rule: noInstanceofBuiltins,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-empty-pipe',
+    rule: noEmptyPipe,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-schema-as-pipe-action',
+    rule: noSchemaAsPipeAction,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
     },
   },
 ];
