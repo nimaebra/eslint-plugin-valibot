@@ -20,10 +20,8 @@ const UnsafeTypeGuardResult = v.is(ObjectSchema, {
   extra: true,
 });
 
-const LazyNonFunctionSchema = v.lazy(v.string());
 const InstanceofBuiltinSchema = v.instance(Date);
 const EmptyPipeSchema = v.pipe(v.string());
-const SchemaAsPipeActionSchema = v.pipe(v.string(), v.number());
 
 function validateUser(value) {
   const UserSchema = v.object({
@@ -47,9 +45,7 @@ export {
   ParseResult,
   UnsafeOutput,
   UnsafeTypeGuardResult,
-  LazyNonFunctionSchema,
   InstanceofBuiltinSchema,
   EmptyPipeSchema,
-  SchemaAsPipeActionSchema,
   validateUser,
 };
