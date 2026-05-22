@@ -9,7 +9,7 @@ The plugin ships with both flat-config and legacy-config presets, plus individua
 ## Installation
 
 ```sh
-pnpm add -D eslint eslint-plugin-valibot valibot
+pnpm add -D eslint-plugin-valibot
 ```
 
 It is designed for `eslint@^9 || ^10` and `valibot@^1`.
