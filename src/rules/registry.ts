@@ -20,6 +20,7 @@ import { noLazyNonFunction } from './no-lazy-non-function';
 import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
 import { noSchemaAsPipeAction } from './no-schema-as-pipe-action';
+import { noTransformInRecordKey } from './no-transform-in-record-key';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
   {
@@ -125,6 +126,14 @@ export const ruleRegistry: RuleRegistryEntry[] = [
   {
     name: 'no-empty-pipe',
     rule: noEmptyPipe,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-transform-in-record-key',
+    rule: noTransformInRecordKey,
     configs: {
       recommended: 'error',
       strict: 'error',

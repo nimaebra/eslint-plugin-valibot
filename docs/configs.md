@@ -12,6 +12,7 @@ Includes:
 - `valibot/no-lazy-non-function`: `error`
 - `valibot/no-redundant-schema-wrappers`: `error`
 - `valibot/no-schema-as-pipe-action`: `error`
+- `valibot/no-transform-in-record-key`: `error`
 - `valibot/no-unguarded-parse`: `error`
 - `valibot/prefer-nullish`: `warn`
 - `valibot/require-default-in-optional-pipe`: `warn`
@@ -30,6 +31,7 @@ Includes:
 - `valibot/no-redundant-schema-wrappers`: `error`
 - `valibot/no-schema-as-pipe-action`: `error`
 - `valibot/no-schema-as-type`: `error`
+- `valibot/no-transform-in-record-key`: `error`
 - `valibot/no-unguarded-parse`: `error`
 - `valibot/no-unknown-schema`: `warn`
 - `valibot/prefer-nullish`: `warn`

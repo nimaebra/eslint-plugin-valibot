@@ -13,6 +13,7 @@ import { noLazyNonFunction } from './no-lazy-non-function';
 import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
 import { noSchemaAsPipeAction } from './no-schema-as-pipe-action';
+import { noTransformInRecordKey } from './no-transform-in-record-key';
 import {
   getRuleNamesForConfig,
   getRulesForConfig,
@@ -34,6 +35,7 @@ export {
   noInstanceofBuiltins,
   noEmptyPipe,
   noSchemaAsPipeAction,
+  noTransformInRecordKey,
   schemaNameSuffix,
   preferNullish,
   requireDefaultInOptionalPipe,

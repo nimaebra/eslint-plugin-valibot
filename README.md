@@ -118,6 +118,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 | [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)         | Disallow redundant nested Valibot schema wrappers.                                                 | ✅ 🔒 |      | 🔧 |
 | [no-schema-as-pipe-action](docs/rules/no-schema-as-pipe-action.md)                 | Ensure the first argument of pipe() is a schema and subsequent arguments are actions.              | ✅ 🔒 |      |    |
 | [no-schema-as-type](docs/rules/no-schema-as-type.md)                               | Disallow using a Valibot schema value itself as a TypeScript type.                                 | 🔒   |      |    |
+| [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)             | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions.  | ✅ 🔒 |      |    |
 | [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                             | Require Valibot parse() and assert() calls to be wrapped in try/catch.                             | ✅ 🔒 |      |    |
 | [no-unknown-schema](docs/rules/no-unknown-schema.md)                               | Disallow Valibot unknown() schemas.                                                                |      | 🔒   |    |
 | [prefer-nullish](docs/rules/prefer-nullish.md)                                     | Prefer nullish() over nested optional() and nullable() wrappers.                                   |      | ✅ 🔒 | 🔧 |

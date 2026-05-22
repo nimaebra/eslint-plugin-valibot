@@ -10,6 +10,7 @@ export {
   noSchemaAsType,
   noUnguardedParse,
   noRedundantSchemaWrappers,
+  noTransformInRecordKey,
   schemaNameSuffix,
   preferNullish,
   requireDefaultInOptionalPipe,
