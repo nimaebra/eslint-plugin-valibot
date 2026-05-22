@@ -13,6 +13,11 @@ const ParsedValue = v.parse(v.string(), input);
 const ParseResult = v.safeParse(ParseSchema, input);
 const UnsafeOutput = ParseResult.output.length;
 
+const LazyNonFunctionSchema = v.lazy(v.string());
+const InstanceofBuiltinSchema = v.instance(Date);
+const RedundantPipeSchema = v.pipe(v.string());
+const SchemaAsPipeActionSchema = v.pipe(v.string(), v.number());
+
 function validateUser(value) {
   const UserSchema = v.object({
     name: v.string(),
@@ -31,5 +36,9 @@ export {
   ParsedValue,
   ParseResult,
   UnsafeOutput,
+  LazyNonFunctionSchema,
+  InstanceofBuiltinSchema,
+  RedundantPipeSchema,
+  SchemaAsPipeActionSchema,
   validateUser,
 };
