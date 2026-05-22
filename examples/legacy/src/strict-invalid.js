@@ -10,6 +10,12 @@ const InternalRun = ParseSchema['~run'];
 const ObjectSchema = v.object({
   active: v.pipe(v.optional(v.string()), v.transform(Boolean)),
 });
+const LooseObjectSchema = v.looseObject(
+  {
+    role: v.string('Role must be text'),
+  },
+  'Unexpected extra properties are allowed',
+);
 const RecordKeySchema = v.record(v.pipe(v.string(), v.trim()), v.string());
 const NormalizedSchema = v.pipe(v.string(), v.trim(), v.trim());
 const ParsedValue = v.parse(v.string(), input);
@@ -39,6 +45,7 @@ export {
   ParseSchema,
   InternalRun,
   ObjectSchema,
+  LooseObjectSchema,
   RecordKeySchema,
   NormalizedSchema,
   ParsedValue,

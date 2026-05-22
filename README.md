@@ -113,6 +113,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 | [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)               | Disallow duplicate Valibot actions inside the same pipe() call.                                    |      | ✅ 🔒 | 🔧 |
 | [no-empty-pipe](docs/rules/no-empty-pipe.md)                                       | Disallow empty pipe() calls or pipe() calls with a single argument.                                | ✅ 🔒 |      | 🔧 |
 | [no-instanceof-builtins](docs/rules/no-instanceof-builtins.md)                     | Prefer primitive schema functions over instance(Constructor) for built-in types.                   | ✅ 🔒 |      | 🔧 |
+| [no-loose-object](docs/rules/no-loose-object.md)                                   | Disallow disallowed Valibot object schema constructors such as looseObject().                      |      | 🔒   |    |
 | [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                         | Disallow recreating static Valibot schemas inside function scope.                                  |      | 🔒   |    |
 | [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)         | Disallow redundant nested Valibot schema wrappers.                                                 | ✅ 🔒 |      | 🔧 |
 | [no-schema-as-type](docs/rules/no-schema-as-type.md)                               | Disallow using a Valibot schema value itself as a TypeScript type.                                 | 🔒   |      |    |

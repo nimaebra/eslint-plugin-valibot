@@ -24,6 +24,7 @@ Includes:
 - `valibot/no-duplicate-pipe-actions`: `warn`
 - `valibot/no-empty-pipe`: `error`
 - `valibot/no-instanceof-builtins`: `error`
+- `valibot/no-loose-object`: `warn`
 - `valibot/no-recreated-schemas`: `warn`
 - `valibot/no-redundant-schema-wrappers`: `error`
 - `valibot/no-schema-as-type`: `error`
