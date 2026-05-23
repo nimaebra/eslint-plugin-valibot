@@ -14,6 +14,7 @@ export {
   noUnguardedParse,
   noRedundantSchemaWrappers,
   noTransformInRecordKey,
+  preferPicklist,
   preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
   preferVariant,

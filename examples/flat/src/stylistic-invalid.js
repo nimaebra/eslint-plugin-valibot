@@ -9,4 +9,6 @@ const EventSchema = union([
   object({ type: literal('updated'), id: string() }),
 ]);
 
-export { EventSchema, User };
+const StatusSchema = union([literal('active'), literal('inactive')]);
+
+export { EventSchema, StatusSchema, User };

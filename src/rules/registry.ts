@@ -11,6 +11,7 @@ import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noSchemaAsType } from './no-schema-as-type';
+import { preferPicklist } from './prefer-picklist';
 import { preferNullableOverUnionNull } from './prefer-nullable-over-union-null';
 import { preferOptionalOverUnionUndefined } from './prefer-optional-over-union-undefined';
 import { preferVariant } from './prefer-variant';
@@ -126,6 +127,13 @@ export const ruleRegistry: RuleRegistryEntry[] = [
   {
     name: 'prefer-variant',
     rule: preferVariant,
+    configs: {
+      stylistic: 'warn',
+    },
+  },
+  {
+    name: 'prefer-picklist',
+    rule: preferPicklist,
     configs: {
       stylistic: 'warn',
     },

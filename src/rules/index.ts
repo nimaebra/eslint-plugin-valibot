@@ -3,6 +3,7 @@ import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noSchemaAsType } from './no-schema-as-type';
+import { preferPicklist } from './prefer-picklist';
 import { preferNullableOverUnionNull } from './prefer-nullable-over-union-null';
 import { preferOptionalOverUnionUndefined } from './prefer-optional-over-union-undefined';
 import { preferVariant } from './prefer-variant';
@@ -34,6 +35,7 @@ export {
   noDuplicatePipeActions,
   noRecreatedSchemas,
   noSchemaAsType,
+  preferPicklist,
   preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
   preferVariant,
