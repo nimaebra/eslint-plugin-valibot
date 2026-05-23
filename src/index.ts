@@ -17,8 +17,6 @@ export {
   preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
   preferNullish,
-  requireDefaultInOptionalPipe,
-  requireSafeParseSuccessCheck,
   ruleRegistry,
 } from './rules';
 export type {

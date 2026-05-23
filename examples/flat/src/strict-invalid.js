@@ -20,8 +20,6 @@ const LooseObjectSchema = v.looseObject(
 const RecordKeySchema = v.record(v.pipe(v.string(), v.trim()), v.string());
 const NormalizedSchema = v.pipe(v.string(), v.trim(), v.trim());
 const ParsedValue = v.parse(v.string(), input);
-const ParseResult = v.safeParse(ParseSchema, input);
-const UnsafeOutput = ParseResult.output.length;
 
 const InstanceofBuiltinSchema = v.instance(Date);
 const EmptyPipeSchema = v.pipe(v.string());
@@ -47,8 +45,6 @@ export {
   RecordKeySchema,
   NormalizedSchema,
   ParsedValue,
-  ParseResult,
-  UnsafeOutput,
   InstanceofBuiltinSchema,
   EmptyPipeSchema,
   validateUser,

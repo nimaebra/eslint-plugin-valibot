@@ -15,8 +15,6 @@ Includes:
 - `valibot/prefer-nullable-over-union-null`: `warn`
 - `valibot/prefer-nullish`: `warn`
 - `valibot/prefer-optional-over-union-undefined`: `warn`
-- `valibot/require-default-in-optional-pipe`: `warn`
-- `valibot/require-safe-parse-success-check`: `error`
 
 ## strict
 
@@ -36,9 +34,7 @@ Includes:
 - `valibot/prefer-nullable-over-union-null`: `warn`
 - `valibot/prefer-nullish`: `warn`
 - `valibot/prefer-optional-over-union-undefined`: `warn`
-- `valibot/require-default-in-optional-pipe`: `warn`
 - `valibot/require-issue-messages`: `warn`
-- `valibot/require-safe-parse-success-check`: `error`
 
 ## stylistic
 
