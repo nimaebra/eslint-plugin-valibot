@@ -42,4 +42,9 @@ Dynamic schema factories that genuinely depend on runtime inputs can stay inside
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because safely hoisting or memoizing a schema can change closures, initialization order, or runtime dependencies.
+
+## Further Reading
+
+- [Valibot object() API](https://valibot.dev/api/object/)
+- [Valibot safeParse() API](https://valibot.dev/api/safeParse/)

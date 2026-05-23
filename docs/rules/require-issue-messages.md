@@ -46,4 +46,9 @@ const PasswordSchema = v.pipe(
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because creating meaningful, localized validation messages requires domain-specific wording.
+
+## Further Reading
+
+- [Valibot message() API](https://valibot.dev/api/message/)
+- [Valibot pipe() API](https://valibot.dev/api/pipe/)

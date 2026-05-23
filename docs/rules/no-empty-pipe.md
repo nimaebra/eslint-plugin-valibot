@@ -13,31 +13,32 @@ This rule ensures that `pipe()` calls are only used when chaining validation or 
 ## Why
 
 In Valibot, `pipe()` is used to connect a base schema with validation or transformation actions (e.g. `pipe(string(), nonEmpty(), trim())`).
+
 - Calling `pipe()` with no arguments is an invalid operation that triggers an error at runtime or compile-time.
 - Calling `pipe(string())` with only a single schema is redundant. It introduces unnecessary function calls and object allocation at runtime without adding any validation or transformation behavior. It should be simplified directly to `string()`.
 
 ## Incorrect
 
 ```ts
-import { pipe, string } from 'valibot';
+import * as v from 'valibot';
 
 // Empty pipe call
-const EmptySchema = pipe();
+const EmptySchema = v.pipe();
 
 // Redundant pipe call with a single argument
-const RedundantSchema = pipe(string());
+const RedundantSchema = v.pipe(v.string());
 ```
 
 ## Correct
 
 ```ts
-import { pipe, string, email, trim } from 'valibot';
+import * as v from 'valibot';
 
 // Simplified schema without redundant pipe
-const SimplifiedSchema = string();
+const SimplifiedSchema = v.string();
 
 // Correct pipeline usage
-const PipedSchema = pipe(string(), email(), trim());
+const PipedSchema = v.pipe(v.string(), v.email(), v.trim());
 ```
 
 <!-- end auto-generated rule options -->
@@ -45,3 +46,7 @@ const PipedSchema = pipe(string(), email(), trim());
 ## Autofix
 
 Yes, this rule automatically rewrites single-argument pipes to extract the inner schema (e.g., `pipe(string())` becomes `string()`).
+
+## Further Reading
+
+- [Valibot pipe() API](https://valibot.dev/api/pipe/)

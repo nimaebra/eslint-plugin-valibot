@@ -66,4 +66,10 @@ With that configuration, `strictObject()` becomes invalid as well.
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because swapping object constructor semantics (`object`, `strictObject`, `looseObject`) can change runtime behavior for unknown keys.
+
+## Further Reading
+
+- [Valibot object() API](https://valibot.dev/api/object/)
+- [Valibot strictObject() API](https://valibot.dev/api/strictObject/)
+- [Valibot looseObject() API](https://valibot.dev/api/looseObject/)

@@ -10,6 +10,15 @@
 
 Disallow redundant nested Valibot wrappers such as `optional(optional(schema))`.
 
+This rule flags duplicate chains of the following methods:
+
+- `optional`
+- `nullable`
+- `nullish`
+- `nonOptional`
+- `nonNullable`
+- `nonNullish`
+
 ## Why
 
 Repeated wrappers add noise and usually do not change the schema behavior. They often appear during refactors or wrapper composition changes.
@@ -35,3 +44,12 @@ const Schema = v.optional(v.string());
 ## Autofix
 
 Yes, when both wrappers are identical and neither wrapper uses a default argument.
+
+## Further Reading
+
+- [Valibot optional() API](https://valibot.dev/api/optional/)
+- [Valibot nullable() API](https://valibot.dev/api/nullable/)
+- [Valibot nullish() API](https://valibot.dev/api/nullish/)
+- [Valibot nonOptional() API](https://valibot.dev/api/nonOptional/)
+- [Valibot nonNullable() API](https://valibot.dev/api/nonNullable/)
+- [Valibot nonNullish() API](https://valibot.dev/api/nonNullish/)

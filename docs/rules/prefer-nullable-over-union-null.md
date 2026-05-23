@@ -37,3 +37,9 @@ const Schema = v.nullable(v.string());
 ## Autofix
 
 Yes, when the existing import style already provides a `nullable` callee and the union form is behaviorally equivalent.
+
+## Further Reading
+
+- [Valibot nullable() API](https://valibot.dev/api/nullable/)
+- [Valibot union() API](https://valibot.dev/api/union/)
+- [Valibot null() API](https://valibot.dev/api/null/)

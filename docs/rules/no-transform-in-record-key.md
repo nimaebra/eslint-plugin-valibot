@@ -55,4 +55,10 @@ const TransformedValues = v.record(v.string(), v.pipe(v.string(), v.trim()));
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because moving key transforms out of `record()` requires domain-specific collision handling that cannot be inferred automatically.
+
+## Further Reading
+
+- [Valibot record() API](https://valibot.dev/api/record/)
+- [Valibot transform() API](https://valibot.dev/api/transform/)
+- [Valibot pipe() API](https://valibot.dev/api/pipe/)

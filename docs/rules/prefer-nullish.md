@@ -35,3 +35,9 @@ const Schema = v.nullish(v.string());
 ## Autofix
 
 Yes, when the nested wrappers are simple and a usable `nullish` callee is already available in the current import style.
+
+## Further Reading
+
+- [Valibot nullish() API](https://valibot.dev/api/nullish/)
+- [Valibot optional() API](https://valibot.dev/api/optional/)
+- [Valibot nullable() API](https://valibot.dev/api/nullable/)

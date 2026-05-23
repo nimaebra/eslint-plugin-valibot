@@ -37,4 +37,10 @@ try {
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because introducing try/catch boundaries or switching to `safeParse()` requires flow-specific error handling decisions.
+
+## Further Reading
+
+- [Valibot parse() API](https://valibot.dev/api/parse/)
+- [Valibot assert() API](https://valibot.dev/api/assert/)
+- [Valibot safeParse() API](https://valibot.dev/api/safeParse/)

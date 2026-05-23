@@ -32,4 +32,9 @@ const PayloadSchema = v.unknown();
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because replacing `any()` with `unknown()` or a concrete schema is a modeling decision that cannot be inferred safely.
+
+## Further Reading
+
+- [Valibot any() API](https://valibot.dev/api/any/)
+- [Valibot unknown() API](https://valibot.dev/api/unknown/)

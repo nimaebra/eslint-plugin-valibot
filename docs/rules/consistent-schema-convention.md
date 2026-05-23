@@ -122,7 +122,7 @@ export type PublicUser = v.InferOutput<typeof PublicUser>;
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because renaming schema and inferred type identifiers requires coordinated symbol renames across the project.
 
 ## Further Reading
 

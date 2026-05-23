@@ -35,3 +35,7 @@ const Schema = v.pipe(v.string(), v.trim(), v.minLength(1));
 ## Autofix
 
 Yes, when the duplicated action is an exact repeated call and removing the later call does not cross nearby comments.
+
+## Further Reading
+
+- [Valibot pipe() API](https://valibot.dev/api/pipe/)

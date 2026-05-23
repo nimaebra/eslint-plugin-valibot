@@ -37,3 +37,9 @@ const Schema = v.optional(v.string());
 ## Autofix
 
 Yes, when the existing import style already provides an `optional` callee and the union form is behaviorally equivalent.
+
+## Further Reading
+
+- [Valibot optional() API](https://valibot.dev/api/optional/)
+- [Valibot union() API](https://valibot.dev/api/union/)
+- [Valibot undefined() API](https://valibot.dev/api/undefined/)

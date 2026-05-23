@@ -48,10 +48,10 @@ Mixed import styles create churn and make modules less predictable. A single, ex
 ### Default namespace mode
 
 ```ts
-import { object, string } from 'valibot';
+import * as v from 'valibot';
 
-const UserSchema = object({
-  id: string(),
+const UserSchema = v.object({
+  id: v.string(),
 });
 ```
 
@@ -79,16 +79,14 @@ const UserSchema = v.object({
 
 ### Named mode
 
-```ts
-import { object, string } from 'valibot';
-
-const UserSchema = object({
-  id: string(),
-});
-```
+When configured with `{ "style": "named" }`, this rule requires named imports from Valibot.
 
 <!-- end auto-generated rule options -->
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because converting between namespace and named imports safely requires rewriting both the import declaration and every affected usage site.
+
+## Further Reading
+
+- [Valibot Introduction](https://valibot.dev/guides/introduction/)

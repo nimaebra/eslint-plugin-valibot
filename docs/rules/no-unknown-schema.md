@@ -32,8 +32,8 @@ const PayloadSchema = v.string();
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because replacing `unknown()` requires choosing a more specific schema based on application constraints.
 
 ## Further Reading
 
-- https://valibot.dev/api/unknown/
+- [Valibot unknown() API](https://valibot.dev/api/unknown/)

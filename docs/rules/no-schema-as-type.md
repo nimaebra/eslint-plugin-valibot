@@ -34,4 +34,9 @@ type User = v.InferOutput<typeof UserSchema>;
 
 ## Autofix
 
-No.
+No. This rule does not provide autofix because choosing between `InferInput` and `InferOutput` depends on whether the type represents accepted input or parsed output.
+
+## Further Reading
+
+- [Valibot InferInput utility](https://valibot.dev/api/InferInput/)
+- [Valibot InferOutput utility](https://valibot.dev/api/InferOutput/)

@@ -13,6 +13,7 @@ This rule encourages the use of highly optimized, native Valibot primitive schem
 ## Why
 
 Valibot provides dedicated, lightweight, and highly optimized schema functions for standard JavaScript and TypeScript built-in objects.
+
 - Using `instance(Date)` is less optimized and less specific than using the native `date()` schema.
 - Using `instance(Array)` is slower and less versatile than the standard `array()` schema.
 - Using `instance(String)` checks if a value is an instance of the `String` object wrapper class (e.g. `new String()`), which is highly uncommon and usually a bug when the developer simply intended to validate standard primitive strings using `string()`.
@@ -22,40 +23,40 @@ By utilizing Valibot's dedicated primitive schemas, you gain better performance,
 ### Supported Constructor Mappings
 
 | Constructor | Preferred Valibot Schema |
-| :--- | :--- |
-| `Date` | `date()` |
-| `Array` | `array()` |
-| `Function` | `function()` |
-| `Promise` | `promise()` |
-| `Map` | `map()` |
-| `Set` | `set()` |
-| `String` | `string()` |
-| `Number` | `number()` |
-| `Boolean` | `boolean()` |
-| `Symbol` | `symbol()` |
-| `BigInt` | `bigint()` |
-| `Blob` | `blob()` |
+| :---------- | :----------------------- |
+| `Date`      | `date()`                 |
+| `Array`     | `array()`                |
+| `Function`  | `function()`             |
+| `Promise`   | `promise()`              |
+| `Map`       | `map()`                  |
+| `Set`       | `set()`                  |
+| `String`    | `string()`               |
+| `Number`    | `number()`               |
+| `Boolean`   | `boolean()`              |
+| `Symbol`    | `symbol()`               |
+| `BigInt`    | `bigint()`               |
+| `Blob`      | `blob()`                 |
 
 ## Incorrect
 
 ```ts
-import { instance } from 'valibot';
+import * as v from 'valibot';
 
-const DateSchema = instance(Date);
-const MapSchema = instance(Map);
-const SetSchema = instance(Set);
-const StringSchema = instance(String);
+const DateSchema = v.instance(Date);
+const MapSchema = v.instance(Map);
+const SetSchema = v.instance(Set);
+const StringSchema = v.instance(String);
 ```
 
 ## Correct
 
 ```ts
-import { date, map, set, string } from 'valibot';
+import * as v from 'valibot';
 
-const DateSchema = date();
-const MapSchema = map();
-const SetSchema = set();
-const StringSchema = string();
+const DateSchema = v.date();
+const MapSchema = v.map();
+const SetSchema = v.set();
+const StringSchema = v.string();
 ```
 
 <!-- end auto-generated rule options -->
@@ -63,3 +64,7 @@ const StringSchema = string();
 ## Autofix
 
 Yes, this rule is fully autofixable.
+
+## Further Reading
+
+- [Valibot instance() API](https://valibot.dev/api/instance/)
