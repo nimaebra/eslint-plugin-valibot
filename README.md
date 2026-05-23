@@ -1,8 +1,8 @@
 # eslint-plugin-valibot
 
-ESLint rules for safer, more maintainable Valibot usage.
+[ESLint](https://eslint.org/) rules for safer, more maintainable [Valibot](https://valibot.dev/) usage.
 
-`eslint-plugin-valibot` helps catch common schema mistakes such as unguarded parsing, invalid `pipe()` usage, redundant wrappers, and other patterns that make Valibot code harder to maintain.
+`eslint-plugin-valibot` helps catch common schema mistakes and patterns that make Valibot code harder to maintain.
 
 The plugin ships with both flat-config and legacy-config presets, plus individual rules that you can enable as needed.
 
