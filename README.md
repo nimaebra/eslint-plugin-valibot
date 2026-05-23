@@ -125,6 +125,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 | [prefer-nullable-over-union-null](docs/rules/prefer-nullable-over-union-null.md)           | Prefer nullable() over union([schema, null()]) when they are equivalent.                          |      | ✅ 🔒 | 🔧 |
 | [prefer-nullish](docs/rules/prefer-nullish.md)                                             | Prefer nullish() over nested optional() and nullable() wrappers.                                  |      | ✅ 🔒 | 🔧 |
 | [prefer-optional-over-union-undefined](docs/rules/prefer-optional-over-union-undefined.md) | Prefer optional() over union([schema, undefined()]) when they are equivalent.                     |      | ✅ 🔒 | 🔧 |
+| [prefer-variant](docs/rules/prefer-variant.md)                                             | Prefer variant() over union() when object schemas share an obvious discriminant key.              |      | 🎨   | 🔧 |
 | [require-issue-messages](docs/rules/require-issue-messages.md)                             | Require explicit custom issue messages on Valibot schemas and issue-producing actions.            |      | 🔒   |    |
 
 <!-- end auto-generated rules list -->

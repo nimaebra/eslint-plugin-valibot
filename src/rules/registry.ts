@@ -13,6 +13,7 @@ import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noSchemaAsType } from './no-schema-as-type';
 import { preferNullableOverUnionNull } from './prefer-nullable-over-union-null';
 import { preferOptionalOverUnionUndefined } from './prefer-optional-over-union-undefined';
+import { preferVariant } from './prefer-variant';
 import { preferNullish } from './prefer-nullish';
 import { noUnguardedParse } from './no-unguarded-parse';
 import { noRedundantSchemaWrappers } from './no-redundant-schema-wrappers';
@@ -118,6 +119,13 @@ export const ruleRegistry: RuleRegistryEntry[] = [
   {
     name: 'consistent-schema-convention',
     rule: consistentSchemaConvention,
+    configs: {
+      stylistic: 'warn',
+    },
+  },
+  {
+    name: 'prefer-variant',
+    rule: preferVariant,
     configs: {
       stylistic: 'warn',
     },

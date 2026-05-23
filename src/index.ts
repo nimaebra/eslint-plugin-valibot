@@ -16,6 +16,7 @@ export {
   noTransformInRecordKey,
   preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
+  preferVariant,
   preferNullish,
   ruleRegistry,
 } from './rules';
