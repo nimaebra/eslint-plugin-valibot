@@ -4,6 +4,7 @@ import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noSchemaAsType } from './no-schema-as-type';
+import { preferNullableOverUnionNull } from './prefer-nullable-over-union-null';
 import { preferOptionalOverUnionUndefined } from './prefer-optional-over-union-undefined';
 import { preferNullish } from './prefer-nullish';
 import { noUnguardedParse } from './no-unguarded-parse';
@@ -32,6 +33,7 @@ export {
   noDuplicatePipeActions,
   noRecreatedSchemas,
   noSchemaAsType,
+  preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
   noUnguardedParse,
   noRedundantSchemaWrappers,

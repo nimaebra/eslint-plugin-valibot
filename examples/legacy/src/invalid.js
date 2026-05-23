@@ -3,6 +3,7 @@ import * as v from 'valibot';
 const input = 'value';
 const WrappedSchema = v.optional(v.optional(v.string()));
 const MaybeSchema = v.optional(v.nullable(v.string()));
+const NullableUnionSchema = v.union([v.string(), v.null()]);
 const OptionalUnionSchema = v.union([v.string(), v.undefined()]);
 const ParseSchema = v.string();
 const ObjectSchema = v.object({
@@ -20,6 +21,7 @@ const EmptyPipeSchema = v.pipe(v.string());
 export {
   WrappedSchema,
   MaybeSchema,
+  NullableUnionSchema,
   OptionalUnionSchema,
   ParseSchema,
   ObjectSchema,

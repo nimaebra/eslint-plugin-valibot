@@ -13,6 +13,7 @@ export {
   noUnguardedParse,
   noRedundantSchemaWrappers,
   noTransformInRecordKey,
+  preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
   preferNullish,
   requireDefaultInOptionalPipe,
