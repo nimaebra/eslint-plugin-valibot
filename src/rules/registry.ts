@@ -8,6 +8,7 @@ import type {
 import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
 import { requireIssueMessages } from './require-issue-messages';
 import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
+import { consistentImport } from './consistent-import';
 import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
@@ -124,6 +125,13 @@ export const ruleRegistry: RuleRegistryEntry[] = [
       strict: 'error',
     },
     typeScriptOnly: true,
+  },
+  {
+    name: 'consistent-import',
+    rule: consistentImport,
+    configs: {
+      stylistic: 'warn',
+    },
   },
   {
     name: 'consistent-schema-convention',

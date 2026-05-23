@@ -1,7 +1,7 @@
-import * as v from 'valibot';
+import { object, string } from 'valibot';
 
-const User = v.object({
-  id: v.string(),
+const User = object({
+  id: string(),
 });
 
 export { User };

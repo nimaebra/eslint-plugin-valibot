@@ -44,4 +44,5 @@ Includes:
 
 Includes:
 
+- `valibot/consistent-import`: `warn`
 - `valibot/consistent-schema-convention`: `warn`

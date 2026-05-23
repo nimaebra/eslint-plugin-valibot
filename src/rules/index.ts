@@ -1,5 +1,6 @@
 import { requireSafeParseSuccessCheck } from './require-safe-parse-success-check';
 import { requireDefaultInOptionalPipe } from './require-default-in-optional-pipe';
+import { consistentImport } from './consistent-import';
 import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noRecreatedSchemas } from './no-recreated-schemas';
@@ -24,6 +25,7 @@ import {
 } from './registry';
 
 export {
+  consistentImport,
   consistentSchemaConvention,
   getRuleNamesForConfig,
   getRulesForConfig,

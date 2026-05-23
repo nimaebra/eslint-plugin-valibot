@@ -1,5 +1,6 @@
 export { configs, flatConfigs } from './plugin';
 export {
+  consistentImport,
   consistentSchemaConvention,
   getRuleNamesForConfig,
   getRulesForConfig,

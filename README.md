@@ -109,6 +109,7 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 
 | Name                                                                                       | Description                                                                                        | 💼   | ⚠️   | 🔧 |
 | :----------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :--- | :--- | :- |
+| [consistent-import](docs/rules/consistent-import.md)                                       | Enforce a consistent Valibot import style using either namespace or named imports.                 |      | 🎨   |    |
 | [consistent-schema-convention](docs/rules/consistent-schema-convention.md)                 | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.     |      | 🎨   |    |
 | [no-any-schema](docs/rules/no-any-schema.md)                                               | Disallow Valibot any() schemas.                                                                    |      | 🔒   |    |
 | [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)                       | Disallow duplicate Valibot actions inside the same pipe() call.                                    |      | ✅ 🔒 | 🔧 |
