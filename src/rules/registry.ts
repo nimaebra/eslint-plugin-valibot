@@ -23,6 +23,7 @@ import { noLooseObject } from './no-loose-object';
 import { noUnknownSchema } from './no-unknown-schema';
 import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
+import { noRedundantTransformation } from './no-redundant-transformation';
 import { noTransformInRecordKey } from './no-transform-in-record-key';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
@@ -159,6 +160,14 @@ export const ruleRegistry: RuleRegistryEntry[] = [
     configs: {
       recommended: 'error',
       strict: 'error',
+    },
+  },
+  {
+    name: 'no-redundant-transformation',
+    rule: noRedundantTransformation,
+    configs: {
+      recommended: 'warn',
+      strict: 'warn',
     },
   },
   {

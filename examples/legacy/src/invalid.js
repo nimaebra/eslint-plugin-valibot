@@ -15,6 +15,10 @@ const ParsedValue = v.parse(v.string(), input);
 
 const InstanceofBuiltinSchema = v.instance(Date);
 const EmptyPipeSchema = v.pipe(v.string());
+const RedundantTransformSchema = v.pipe(
+  v.string(),
+  v.transform((val) => val.toLowerCase()),
+);
 
 export {
   WrappedSchema,
@@ -28,4 +32,5 @@ export {
   ParsedValue,
   InstanceofBuiltinSchema,
   EmptyPipeSchema,
+  RedundantTransformSchema,
 };

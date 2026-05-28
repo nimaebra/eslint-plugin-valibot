@@ -28,6 +28,10 @@ const UnsafeTypeGuardResult = v.is(ObjectSchema, {
 
 const InstanceofBuiltinSchema = v.instance(Date);
 const EmptyPipeSchema = v.pipe(v.string());
+const RedundantTransformSchema = v.pipe(
+  v.string(),
+  v.transform((val) => val.toLowerCase()),
+);
 
 function validateUser(value) {
   const UserSchema = v.object({
@@ -54,5 +58,6 @@ export {
   UnsafeTypeGuardResult,
   InstanceofBuiltinSchema,
   EmptyPipeSchema,
+  RedundantTransformSchema,
   validateUser,
 };
