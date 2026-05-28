@@ -62,6 +62,10 @@ ruleTester.run(
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((...args) => args[0].toLowerCase()));",
       },
+      // Block body with expression statement but no return
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => { val.toLowerCase(); }));",
+      },
     ],
     invalid: [
       // toLowerCase with namespace import
@@ -193,6 +197,17 @@ ruleTester.run(
           {
             messageId: 'redundantTransform' as const,
             data: { valibotAction: 'toWellFormed' },
+          },
+        ],
+      },
+      // Named import without target action imported (report only, no fix)
+      {
+        code: "import { pipe, string, transform } from 'valibot';\nconst Schema = pipe(string(), transform((val) => val.toLowerCase()));",
+        output: null,
+        errors: [
+          {
+            messageId: 'redundantTransform' as const,
+            data: { valibotAction: 'toLowerCase' },
           },
         ],
       },

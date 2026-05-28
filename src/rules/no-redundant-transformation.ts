@@ -129,15 +129,11 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
           return;
         }
 
-        const valibotActionLocalName = getLocalImportName(
+        const preferredCalleeText = getPreferredCalleeText(
+          node,
           imports,
           valibotAction,
         );
-
-        const replacementCalleeText =
-          node.callee.type === 'MemberExpression'
-            ? `${getMemberNamespace(node.callee)}.${valibotActionLocalName ?? valibotAction}`
-            : valibotActionLocalName ?? valibotAction;
 
         context.report({
           node,
@@ -145,9 +141,10 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
           data: {
             valibotAction,
           },
-          fix(fixer) {
-            return fixer.replaceText(node, `${replacementCalleeText}()`);
-          },
+          fix: preferredCalleeText
+            ? (fixer) =>
+                fixer.replaceText(node, `${preferredCalleeText}()`)
+            : null,
         });
       },
     };
@@ -171,21 +168,39 @@ function getReturnExpression(
     return statement.argument ?? null;
   }
 
-  if (statement.type === 'ExpressionStatement') {
-    return statement.expression;
+  return null;
+}
+
+function getPreferredCalleeText(
+  call: TSESTree.CallExpression,
+  imports: ValibotImports,
+  valibotAction: string,
+): string | null {
+  if (call.callee.type === 'MemberExpression') {
+    const namespace = getMemberNamespace(call.callee);
+
+    if (!namespace) {
+      return null;
+    }
+
+    const localActionName = getLocalImportName(imports, valibotAction);
+
+    return `${namespace}.${localActionName ?? valibotAction}`;
   }
 
-  return null;
+  const localActionName = getLocalImportName(imports, valibotAction);
+
+  return localActionName ?? null;
 }
 
 function getMemberNamespace(
   callee: TSESTree.MemberExpression,
-): string {
+): string | null {
   if (callee.object.type === 'Identifier') {
     return callee.object.name;
   }
 
-  return 'v';
+  return null;
 }
 
 function getLocalImportName(
