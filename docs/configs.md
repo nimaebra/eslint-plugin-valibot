@@ -10,6 +10,7 @@ Includes:
 - `valibot/no-empty-pipe`: `error`
 - `valibot/no-instanceof-builtins`: `error`
 - `valibot/no-redundant-schema-wrappers`: `error`
+- `valibot/no-redundant-transformation`: `warn`
 - `valibot/no-transform-in-record-key`: `error`
 - `valibot/no-unguarded-parse`: `error`
 - `valibot/prefer-nullable-over-union-null`: `warn`
@@ -27,6 +28,7 @@ Includes:
 - `valibot/no-loose-object`: `warn`
 - `valibot/no-recreated-schemas`: `warn`
 - `valibot/no-redundant-schema-wrappers`: `error`
+- `valibot/no-redundant-transformation`: `warn`
 - `valibot/no-schema-as-type`: `error`
 - `valibot/no-transform-in-record-key`: `error`
 - `valibot/no-unguarded-parse`: `error`

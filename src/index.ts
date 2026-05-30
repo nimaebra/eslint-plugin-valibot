@@ -10,6 +10,7 @@ export {
   noUnknownSchema,
   noDuplicatePipeActions,
   noRecreatedSchemas,
+  noRedundantTransformation,
   noSchemaAsType,
   noUnguardedParse,
   noRedundantSchemaWrappers,

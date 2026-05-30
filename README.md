@@ -28,6 +28,7 @@ The plugin ships with both flat-config and legacy-config presets, plus individua
 | [no-loose-object](docs/rules/no-loose-object.md)                                           | Disallow disallowed Valibot object schema constructors such as looseObject().                     |      | 🔒   |    |
 | [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                                 | Disallow recreating static Valibot schemas inside function scope.                                 |      | 🔒   |    |
 | [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)                 | Disallow redundant nested Valibot schema wrappers.                                                | ✅ 🔒 |      | 🔧 |
+| [no-redundant-transformation](docs/rules/no-redundant-transformation.md)                   | Disallow redundant manual transformations that duplicate built-in Valibot actions.                |      | ✅ 🔒 | 🔧 |
 | [no-schema-as-type](docs/rules/no-schema-as-type.md)                                       | Disallow using a Valibot schema value itself as a TypeScript type.                                | 🔒   |      |    |
 | [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)                     | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions. | ✅ 🔒 |      |    |
 | [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                                     | Require Valibot parse() and assert() calls to be wrapped in try/catch.                            | ✅ 🔒 |      |    |
