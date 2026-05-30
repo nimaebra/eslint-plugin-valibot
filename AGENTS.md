@@ -9,7 +9,7 @@ This file is the maintainer-oriented working guide for coding agents operating i
 - Purpose: ESLint rules for safer and more maintainable Valibot usage.
 - Runtime model: published as a Node ESM/CJS library built from TypeScript.
 - Package manager: `pnpm`
-- Supported Node versions: `^20.19.0 || ^22.13.0 || >=24.0.0`
+- Supported Node versions: `^22.13.0 || >=24.0.0`
 - Supported peers: `eslint@^9 || ^10`, `valibot@^1.0.0`
 
 ## Package Snapshot
@@ -304,13 +304,13 @@ If the README rules table does not refresh after adding or exporting a rule, bui
 
 GitHub Actions currently enforce:
 
-- CI matrix on Node `20`, `22`, and `24`
+- CI matrix on Node `22` and `24`
 - compatibility smoke tests against Valibot `1.0.0` and `latest`
 - lint, typecheck, knip, tests, build, pack dry run, integration tests, docs check, and config check
 
 Release automation on `main` and `workflow_dispatch`:
 
-- installs with pnpm 10.33.4
+- installs with pnpm 11.4.0
 - runs `pnpm check`
 - runs smoke pack against Valibot `1.0.0` and `latest`
 - runs `pnpm pack:dry-run`

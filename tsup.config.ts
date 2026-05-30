@@ -8,7 +8,7 @@ export default defineConfig({
   external: ['eslint', 'valibot', '@typescript-eslint/utils'],
   sourcemap: true,
   clean: true,
-  target: 'node20',
+  target: 'node22',
   splitting: false,
   outDir: 'dist',
   outExtension({ format }) {
