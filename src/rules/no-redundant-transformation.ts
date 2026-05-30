@@ -16,9 +16,7 @@ interface RedundantTransformMapping {
 
 const REDUNDANT_TRANSFORM_MAPPINGS: RedundantTransformMapping[] = [
   { methodName: 'toLowerCase', valibotAction: 'toLowerCase' },
-  { methodName: 'toLocaleLowerCase', valibotAction: 'toLowerCase' },
   { methodName: 'toUpperCase', valibotAction: 'toUpperCase' },
-  { methodName: 'toLocaleUpperCase', valibotAction: 'toUpperCase' },
   { methodName: 'trim', valibotAction: 'trim' },
   { methodName: 'trimStart', valibotAction: 'trimStart' },
   { methodName: 'trimEnd', valibotAction: 'trimEnd' },
@@ -142,8 +140,7 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
             valibotAction,
           },
           fix: preferredCalleeText
-            ? (fixer) =>
-                fixer.replaceText(node, `${preferredCalleeText}()`)
+            ? (fixer) => fixer.replaceText(node, `${preferredCalleeText}()`)
             : null,
         });
       },
@@ -191,9 +188,7 @@ function getPreferredCalleeText(
   return localActionName ?? null;
 }
 
-function getMemberNamespace(
-  callee: TSESTree.MemberExpression,
-): string | null {
+function getMemberNamespace(callee: TSESTree.MemberExpression): string | null {
   if (callee.object.type === 'Identifier') {
     return callee.object.name;
   }

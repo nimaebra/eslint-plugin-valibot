@@ -20,17 +20,15 @@ Valibot provides dedicated, optimized built-in actions for common string transfo
 
 ## Supported Mappings
 
-| Manual Transform              | Preferred Valibot Action |
-| :---------------------------- | :----------------------- |
-| `val.toLowerCase()`           | `toLowerCase()`          |
-| `val.toLocaleLowerCase()`     | `toLowerCase()`          |
-| `val.toUpperCase()`           | `toUpperCase()`          |
-| `val.toLocaleUpperCase()`     | `toUpperCase()`          |
-| `val.trim()`                  | `trim()`                 |
-| `val.trimStart()`             | `trimStart()`            |
-| `val.trimEnd()`               | `trimEnd()`              |
-| `val.normalize()`             | `normalize()`            |
-| `val.toWellFormed()`          | `toWellFormed()`         |
+| Manual Transform     | Preferred Valibot Action |
+| :------------------- | :----------------------- |
+| `val.toLowerCase()`  | `toLowerCase()`          |
+| `val.toUpperCase()`  | `toUpperCase()`          |
+| `val.trim()`         | `trim()`                 |
+| `val.trimStart()`    | `trimStart()`            |
+| `val.trimEnd()`      | `trimEnd()`              |
+| `val.normalize()`    | `normalize()`            |
+| `val.toWellFormed()` | `toWellFormed()`         |
 
 ## Incorrect
 

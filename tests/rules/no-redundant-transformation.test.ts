@@ -71,7 +71,8 @@ ruleTester.run(
       // toLowerCase with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toLowerCase()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toLowerCase());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toLowerCase());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -94,7 +95,8 @@ ruleTester.run(
       // toUpperCase with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toUpperCase()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toUpperCase());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toUpperCase());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -105,7 +107,8 @@ ruleTester.run(
       // trim with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.trim()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trim());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trim());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -116,7 +119,8 @@ ruleTester.run(
       // trimStart with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.trimStart()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trimStart());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trimStart());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -127,7 +131,8 @@ ruleTester.run(
       // trimEnd with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.trimEnd()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trimEnd());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trimEnd());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -138,7 +143,8 @@ ruleTester.run(
       // normalize with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.normalize()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.normalize());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.normalize());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -149,7 +155,8 @@ ruleTester.run(
       // toLowerCase with named import
       {
         code: "import { pipe, string, transform, toLowerCase } from 'valibot';\nconst Schema = pipe(string(), transform((val) => val.toLowerCase()));",
-        output: "import { pipe, string, transform, toLowerCase } from 'valibot';\nconst Schema = pipe(string(), toLowerCase());",
+        output:
+          "import { pipe, string, transform, toLowerCase } from 'valibot';\nconst Schema = pipe(string(), toLowerCase());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -160,29 +167,8 @@ ruleTester.run(
       // toUpperCase with named import (aliased)
       {
         code: "import { pipe, string, transform, toUpperCase as toUpper } from 'valibot';\nconst Schema = pipe(string(), transform((val) => val.toUpperCase()));",
-        output: "import { pipe, string, transform, toUpperCase as toUpper } from 'valibot';\nconst Schema = pipe(string(), toUpper());",
-        errors: [
-          {
-            messageId: 'redundantTransform' as const,
-            data: { valibotAction: 'toUpperCase' },
-          },
-        ],
-      },
-      // toLocaleLowerCase maps to toLowerCase
-      {
-        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toLocaleLowerCase()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toLowerCase());",
-        errors: [
-          {
-            messageId: 'redundantTransform' as const,
-            data: { valibotAction: 'toLowerCase' },
-          },
-        ],
-      },
-      // toLocaleUpperCase maps to toUpperCase
-      {
-        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toLocaleUpperCase()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toUpperCase());",
+        output:
+          "import { pipe, string, transform, toUpperCase as toUpper } from 'valibot';\nconst Schema = pipe(string(), toUpper());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -193,7 +179,8 @@ ruleTester.run(
       // Block body with return statement
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => { return val.toLowerCase(); }));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toLowerCase());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toLowerCase());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
@@ -204,7 +191,8 @@ ruleTester.run(
       // toWellFormed with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toWellFormed()));",
-        output: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toWellFormed());",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toWellFormed());",
         errors: [
           {
             messageId: 'redundantTransform' as const,
