@@ -79,6 +79,18 @@ ruleTester.run(
           },
         ],
       },
+      // Namespace import uses the Valibot action name even when a named alias exists
+      {
+        code: "import * as v from 'valibot';\nimport { toLowerCase as tlc } from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toLowerCase()));",
+        output:
+          "import * as v from 'valibot';\nimport { toLowerCase as tlc } from 'valibot';\nconst Schema = v.pipe(v.string(), v.toLowerCase());",
+        errors: [
+          {
+            messageId: 'redundantTransform' as const,
+            data: { valibotAction: 'toLowerCase' },
+          },
+        ],
+      },
       // toUpperCase with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toUpperCase()));",

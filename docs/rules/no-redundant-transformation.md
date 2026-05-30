@@ -2,7 +2,7 @@
 
 📝 Disallow redundant manual transformations that duplicate built-in Valibot actions.
 
-💼 This rule is enabled in the following configs: ✅ `recommended`, 🔒 `strict`.
+⚠️ This rule _warns_ in the following configs: ✅ `recommended`, 🔒 `strict`.
 
 🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
 

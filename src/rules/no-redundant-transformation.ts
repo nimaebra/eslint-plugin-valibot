@@ -183,9 +183,7 @@ function getPreferredCalleeText(
       return null;
     }
 
-    const localActionName = getLocalImportName(imports, valibotAction);
-
-    return `${namespace}.${localActionName ?? valibotAction}`;
+    return `${namespace}.${valibotAction}`;
   }
 
   const localActionName = getLocalImportName(imports, valibotAction);
