@@ -104,6 +104,22 @@ ruleTester.run(
           },
         ],
       },
+      // toUpperCase with CommonJS namespace require
+      {
+        code: "const v = require('valibot');\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toUpperCase()));",
+        output:
+          "const v = require('valibot');\nconst Schema = v.pipe(v.string(), v.toUpperCase());",
+        languageOptions: {
+          ecmaVersion: 2022,
+          sourceType: 'script',
+        },
+        errors: [
+          {
+            messageId: 'redundantTransform' as const,
+            data: { valibotAction: 'toUpperCase' },
+          },
+        ],
+      },
       // trim with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.trim()));",
@@ -157,6 +173,22 @@ ruleTester.run(
         code: "import { pipe, string, transform, toLowerCase } from 'valibot';\nconst Schema = pipe(string(), transform((val) => val.toLowerCase()));",
         output:
           "import { pipe, string, transform, toLowerCase } from 'valibot';\nconst Schema = pipe(string(), toLowerCase());",
+        errors: [
+          {
+            messageId: 'redundantTransform' as const,
+            data: { valibotAction: 'toLowerCase' },
+          },
+        ],
+      },
+      // toLowerCase with CommonJS destructured require
+      {
+        code: "const { pipe, string, transform, toLowerCase } = require('valibot');\nconst Schema = pipe(string(), transform((val) => val.toLowerCase()));",
+        output:
+          "const { pipe, string, transform, toLowerCase } = require('valibot');\nconst Schema = pipe(string(), toLowerCase());",
+        languageOptions: {
+          ecmaVersion: 2022,
+          sourceType: 'script',
+        },
         errors: [
           {
             messageId: 'redundantTransform' as const,
