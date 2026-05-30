@@ -1,5 +1,11 @@
 # eslint-plugin-valibot
 
+## 1.1.0
+
+### Minor Changes
+
+- d758957: feat: adds the `no-redundant-transformation` rule to flag manual transform() wrappers
+
 ## 1.0.0
 
 ### Major Changes
