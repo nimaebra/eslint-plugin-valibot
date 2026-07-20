@@ -19,6 +19,18 @@ const RedundantTransformSchema = v.pipe(
   v.string(),
   v.transform((val) => val.toLowerCase()),
 );
+const EmptyUnionSchema = v.union([]);
+const SingleMemberUnionSchema = v.union([v.number()]);
+const NestedPipeSchema = v.pipe(v.pipe(v.string(), v.trim()), v.minLength(1));
+const ConflictingLengthSchema = v.pipe(
+  v.string(),
+  v.minLength(10),
+  v.maxLength(2),
+);
+const IdentityTransformSchema = v.pipe(
+  v.string(),
+  v.transform((val) => val),
+);
 
 export {
   WrappedSchema,
@@ -33,4 +45,9 @@ export {
   InstanceofBuiltinSchema,
   EmptyPipeSchema,
   RedundantTransformSchema,
+  EmptyUnionSchema,
+  SingleMemberUnionSchema,
+  NestedPipeSchema,
+  ConflictingLengthSchema,
+  IdentityTransformSchema,
 };

@@ -1,14 +1,17 @@
 # valibot/no-redundant-transformation
 
-📝 Disallow redundant manual transformations that duplicate built-in Valibot actions.
+📝 Disallow redundant Valibot transform() actions.
 
-⚠️ This rule _warns_ in the following configs: ✅ `recommended`, 🔒 `strict`.
+💼 This rule is enabled in the following configs: ✅ `recommended`, 🔒 `strict`.
 
 🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
 
 <!-- end auto-generated rule header -->
 
-This rule detects manual `transform()` calls that wrap simple string methods already provided as built-in Valibot actions, and suggests using the native action instead.
+This rule detects redundant `transform()` usage in pipes:
+
+- manual wrappers around built-in string actions such as `toLowerCase()`
+- identity transforms that return the input unchanged
 
 ## Why
 
@@ -20,15 +23,14 @@ Valibot provides dedicated, optimized built-in actions for common string transfo
 
 ## Supported Mappings
 
-| Manual Transform     | Preferred Valibot Action |
-| :------------------- | :----------------------- |
-| `val.toLowerCase()`  | `toLowerCase()`          |
-| `val.toUpperCase()`  | `toUpperCase()`          |
-| `val.trim()`         | `trim()`                 |
-| `val.trimStart()`    | `trimStart()`            |
-| `val.trimEnd()`      | `trimEnd()`              |
-| `val.normalize()`    | `normalize()`            |
-| `val.toWellFormed()` | `toWellFormed()`         |
+| Manual Transform    | Preferred Valibot Action |
+| :------------------ | :----------------------- |
+| `val.toLowerCase()` | `toLowerCase()`          |
+| `val.toUpperCase()` | `toUpperCase()`          |
+| `val.trim()`        | `trim()`                 |
+| `val.trimStart()`   | `trimStart()`            |
+| `val.trimEnd()`     | `trimEnd()`              |
+| `val.normalize()`   | `normalize()`            |
 
 ## Incorrect
 
@@ -44,6 +46,11 @@ const CleanSchema = v.pipe(
   v.string(),
   v.transform((val) => val.trim()),
 );
+
+const IdentitySchema = v.pipe(
+  v.string(),
+  v.transform((val) => val),
+);
 ```
 
 ## Correct
@@ -54,13 +61,15 @@ import * as v from 'valibot';
 const SlugSchema = v.pipe(v.string(), v.toLowerCase());
 
 const CleanSchema = v.pipe(v.string(), v.trim());
+
+const IdentitySchema = v.string();
 ```
 
 <!-- end auto-generated rule options -->
 
 ## Autofix
 
-Yes, this rule is fully autofixable. It replaces the entire `transform()` call with the equivalent built-in action call, preserving the correct import style (namespace or named).
+The rule replaces a `transform()` call when a safe equivalent exists. Identity transforms are reported without a fix when removing them would also remove a comment.
 
 ## Further Reading
 
@@ -71,4 +80,3 @@ Yes, this rule is fully autofixable. It replaces the entire `transform()` call w
 - [Valibot trimStart() API](https://valibot.dev/api/trimStart/)
 - [Valibot trimEnd() API](https://valibot.dev/api/trimEnd/)
 - [Valibot normalize() API](https://valibot.dev/api/normalize/)
-- [Valibot toWellFormed() API](https://valibot.dev/api/toWellFormed/)

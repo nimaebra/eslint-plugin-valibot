@@ -5,7 +5,7 @@ This file is the maintainer-oriented working guide for coding agents operating i
 ## Scope
 
 - Package: `eslint-plugin-valibot`
-- Current package version: `1.0.0`
+- Current package version: `1.1.0`
 - Purpose: ESLint rules for safer and more maintainable Valibot usage.
 - Runtime model: published as a Node ESM/CJS library built from TypeScript.
 - Package manager: `pnpm`
@@ -107,29 +107,34 @@ Rule docs contain auto-generated markers that must remain intact:
 
 ## Current Rule Inventory
 
-This is the current registry state at version `1.0.0`.
+This is the planned registry state for version `1.2.0`.
 
-| Rule                                   | Preset membership                     | Notes                                                                |
-| :------------------------------------- | :------------------------------------ | :------------------------------------------------------------------- |
-| `no-any-schema`                        | `strict: warn`                        | Disallows `any()`                                                    |
-| `no-unknown-schema`                    | `strict: warn`                        | Disallows `unknown()`                                                |
-| `no-unguarded-parse`                   | `recommended: error`, `strict: error` | Requires guarding `parse()` and `assert()`                           |
-| `no-redundant-schema-wrappers`         | `recommended: error`, `strict: error` | Removes unnecessary wrapper nesting                                  |
-| `prefer-nullish`                       | `recommended: warn`, `strict: warn`   | Prefer `nullish()` over nested nullable/optional wrappers            |
-| `prefer-nullable-over-union-null`      | `recommended: warn`, `strict: warn`   | Prefer `nullable()` over `union(..., null())`                        |
-| `prefer-optional-over-union-undefined` | `recommended: warn`, `strict: warn`   | Prefer `optional()` over `union(..., undefined())`                   |
-| `no-duplicate-pipe-actions`            | `recommended: warn`, `strict: warn`   | Deduplicates equivalent `pipe()` actions                             |
-| `require-issue-messages`               | `strict: warn`                        | Enforces explicit custom issue messages                              |
-| `no-recreated-schemas`                 | `strict: warn`                        | Disallows recreating static schemas in function scope                |
-| `no-schema-as-type`                    | `strict: error`                       | TypeScript-only                                                      |
-| `consistent-import`                    | `stylistic: warn`                     | Enforces namespace vs named Valibot import style                     |
-| `consistent-schema-convention`         | `stylistic: warn`                     | Enforces exported schema/type naming convention                      |
-| `prefer-variant`                       | `stylistic: warn`                     | Prefer `variant()` for discriminated object unions                   |
-| `prefer-picklist`                      | `stylistic: warn`                     | Prefer `picklist()` for string-literal unions                        |
-| `no-loose-object`                      | `strict: warn`                        | Disallows permissive object constructors such as `looseObject()`     |
-| `no-instanceof-builtins`               | `recommended: error`, `strict: error` | Prefer primitive schema constructors over `instance()` for built-ins |
-| `no-empty-pipe`                        | `recommended: error`, `strict: error` | Disallows empty or single-argument `pipe()` calls                    |
-| `no-transform-in-record-key`           | `recommended: error`, `strict: error` | Disallows transforms in `record()` key schemas                       |
+| Rule                                   | Preset membership                     | Notes                                                                  |
+| :------------------------------------- | :------------------------------------ | :--------------------------------------------------------------------- |
+| `no-any-schema`                        | `strict: warn`                        | Disallows `any()`                                                      |
+| `no-unknown-schema`                    | `strict: warn`                        | Disallows `unknown()`                                                  |
+| `no-unguarded-parse`                   | `recommended: error`, `strict: error` | Requires guarding `parse()` and `assert()`                             |
+| `no-redundant-schema-wrappers`         | `recommended: error`, `strict: error` | Removes unnecessary wrapper nesting                                    |
+| `prefer-nullish`                       | `recommended: warn`, `strict: warn`   | Prefer `nullish()` over nested nullable/optional wrappers              |
+| `prefer-nullable-over-union-null`      | `recommended: warn`, `strict: warn`   | Prefer `nullable()` over `union(..., null())`                          |
+| `prefer-optional-over-union-undefined` | `recommended: warn`, `strict: warn`   | Prefer `optional()` over `union(..., undefined())`                     |
+| `no-duplicate-pipe-actions`            | `recommended: warn`, `strict: warn`   | Deduplicates equivalent `pipe()` actions                               |
+| `require-issue-messages`               | `strict: warn`                        | Enforces explicit custom issue messages                                |
+| `no-recreated-schemas`                 | `strict: warn`                        | Disallows recreating static schemas in function scope                  |
+| `no-schema-as-type`                    | `strict: error`                       | TypeScript-only                                                        |
+| `consistent-import`                    | `stylistic: warn`                     | Enforces namespace vs named Valibot import style                       |
+| `consistent-schema-convention`         | `stylistic: warn`                     | Enforces exported schema/type naming convention                        |
+| `prefer-variant`                       | `stylistic: warn`                     | Prefer `variant()` for discriminated object unions                     |
+| `prefer-picklist`                      | `stylistic: warn`                     | Prefer `picklist()` for string-literal unions                          |
+| `no-loose-object`                      | `strict: warn`                        | Disallows permissive object constructors such as `looseObject()`       |
+| `no-instanceof-builtins`               | `recommended: error`, `strict: error` | Prefer primitive schema constructors over `instance()` for built-ins   |
+| `no-empty-pipe`                        | `recommended: error`, `strict: error` | Disallows empty or single-argument `pipe()` calls                      |
+| `no-empty-union`                       | `recommended: error`, `strict: error` | Disallows `union()` with an empty options array                        |
+| `no-single-member-union`               | `recommended: error`, `strict: error` | Disallows `union()` with only one schema option                        |
+| `prefer-flatten-pipe`                  | `recommended: warn`, `strict: warn`   | Flattens nested `pipe()` calls into one pipe                           |
+| `no-redundant-transformation`          | `recommended: error`, `strict: error` | Disallows redundant or identity `transform()` usage in pipes           |
+| `no-conflicting-pipe-actions`          | `recommended: error`, `strict: error` | Disallows contradictory pipe actions such as conflicting length limits |
+| `no-transform-in-record-key`           | `recommended: error`, `strict: error` | Disallows transforms in `record()` key schemas                         |
 
 ## File Map
 

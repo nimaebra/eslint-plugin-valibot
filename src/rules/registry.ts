@@ -25,6 +25,10 @@ import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
 import { noRedundantTransformation } from './no-redundant-transformation';
 import { noTransformInRecordKey } from './no-transform-in-record-key';
+import { noEmptyUnion } from './no-empty-union';
+import { noSingleMemberUnion } from './no-single-member-union';
+import { preferFlattenPipe } from './prefer-flatten-pipe';
+import { noConflictingPipeActions } from './no-conflicting-pipe-actions';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
   {
@@ -163,11 +167,43 @@ export const ruleRegistry: RuleRegistryEntry[] = [
     },
   },
   {
-    name: 'no-redundant-transformation',
-    rule: noRedundantTransformation,
+    name: 'no-empty-union',
+    rule: noEmptyUnion,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-single-member-union',
+    rule: noSingleMemberUnion,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'prefer-flatten-pipe',
+    rule: preferFlattenPipe,
     configs: {
       recommended: 'warn',
       strict: 'warn',
+    },
+  },
+  {
+    name: 'no-redundant-transformation',
+    rule: noRedundantTransformation,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-conflicting-pipe-actions',
+    rule: noConflictingPipeActions,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
     },
   },
   {

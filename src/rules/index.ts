@@ -17,6 +17,10 @@ import { noInstanceofBuiltins } from './no-instanceof-builtins';
 import { noEmptyPipe } from './no-empty-pipe';
 import { noRedundantTransformation } from './no-redundant-transformation';
 import { noTransformInRecordKey } from './no-transform-in-record-key';
+import { noEmptyUnion } from './no-empty-union';
+import { noSingleMemberUnion } from './no-single-member-union';
+import { preferFlattenPipe } from './prefer-flatten-pipe';
+import { noConflictingPipeActions } from './no-conflicting-pipe-actions';
 import { requireIssueMessages } from './require-issue-messages';
 import {
   getRuleNamesForConfig,
@@ -36,6 +40,10 @@ export {
   noDuplicatePipeActions,
   noRecreatedSchemas,
   noRedundantTransformation,
+  noEmptyUnion,
+  noSingleMemberUnion,
+  preferFlattenPipe,
+  noConflictingPipeActions,
   noSchemaAsType,
   preferPicklist,
   preferNullableOverUnionNull,

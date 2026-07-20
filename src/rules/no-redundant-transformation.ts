@@ -21,7 +21,6 @@ const REDUNDANT_TRANSFORM_MAPPINGS: RedundantTransformMapping[] = [
   { methodName: 'trimStart', valibotAction: 'trimStart' },
   { methodName: 'trimEnd', valibotAction: 'trimEnd' },
   { methodName: 'normalize', valibotAction: 'normalize' },
-  { methodName: 'toWellFormed', valibotAction: 'toWellFormed' },
 ];
 
 const METHOD_NAME_TO_ACTION = new Map(
@@ -29,26 +28,28 @@ const METHOD_NAME_TO_ACTION = new Map(
 );
 
 type Options = [];
-type MessageIds = 'redundantTransform';
+type MessageIds = 'redundantTransform' | 'identityTransform';
 
 export const noRedundantTransformation = createRule<Options, MessageIds>({
   name: 'no-redundant-transformation',
   meta: {
     type: 'suggestion',
     docs: {
-      description:
-        'Disallow redundant manual transformations that duplicate built-in Valibot actions.',
+      description: 'Disallow redundant Valibot transform() actions.',
     },
     fixable: 'code',
     schema: [],
     messages: {
       redundantTransform:
         "Use the built-in '{{valibotAction}}()' action instead of a manual transform() wrapper.",
+      identityTransform:
+        'Remove this identity transform(). It does not change the parsed value.',
     },
   },
   defaultOptions: [],
   create(context) {
     let imports = createEmptyValibotImports();
+    const sourceCode = context.sourceCode;
 
     return {
       Program(node) {
@@ -75,6 +76,10 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
           return;
         }
 
+        if (callback.async || callback.generator) {
+          return;
+        }
+
         if (callback.params.length !== 1) {
           return;
         }
@@ -90,6 +95,23 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
         const expression = getReturnExpression(callback.body);
 
         if (!expression) {
+          return;
+        }
+
+        if (isIdentityReturn(expression, paramName)) {
+          const removalRange = getTransformRemovalRange(node, imports);
+
+          if (!removalRange) {
+            return;
+          }
+
+          context.report({
+            node,
+            messageId: 'identityTransform',
+            fix: hasCommentInRange(sourceCode.getAllComments(), removalRange)
+              ? null
+              : (fixer) => fixer.removeRange(removalRange),
+          });
           return;
         }
 
@@ -147,6 +169,57 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
     };
   },
 });
+
+function isIdentityReturn(
+  expression: TSESTree.Expression,
+  paramName: string,
+): boolean {
+  return expression.type === 'Identifier' && expression.name === paramName;
+}
+
+function hasCommentInRange(
+  comments: TSESTree.Comment[],
+  range: TSESTree.Range,
+): boolean {
+  return comments.some(
+    (comment) => comment.range[0] < range[1] && comment.range[1] > range[0],
+  );
+}
+
+function getTransformRemovalRange(
+  transformCall: TSESTree.CallExpression,
+  imports: ValibotImports,
+): TSESTree.Range | null {
+  const parent = transformCall.parent;
+
+  if (
+    parent?.type !== 'CallExpression' ||
+    !isValibotCall(parent, imports, 'pipe') ||
+    !parent.arguments.includes(transformCall)
+  ) {
+    return null;
+  }
+
+  const actionIndex = parent.arguments.indexOf(transformCall);
+
+  if (actionIndex <= 0) {
+    return null;
+  }
+
+  const nextAction = parent.arguments[actionIndex + 1];
+
+  if (nextAction) {
+    return [transformCall.range[0], nextAction.range[0]];
+  }
+
+  const previousAction = parent.arguments[actionIndex - 1];
+
+  if (!previousAction) {
+    return transformCall.range;
+  }
+
+  return [previousAction.range[1], transformCall.range[1]];
+}
 
 function getReturnExpression(
   body: TSESTree.BlockStatement | TSESTree.Expression,
