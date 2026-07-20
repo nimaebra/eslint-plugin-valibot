@@ -1,5 +1,6 @@
 import { ESLint } from 'eslint';
 import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pathToFileURL } from 'node:url';
@@ -28,6 +29,32 @@ const expectedJavaScriptStylisticRuleIds = getRuleIdsForConfig(
 const expectedTypeScriptStrictRuleIds = getRuleIdsForConfig('strict', true);
 
 describe('package integration examples', () => {
+  it('exposes the expanded rule API from both built entrypoints', async () => {
+    const esmModule = (await import(
+      pathToFileURL(path.join(rootDir, 'dist/index.mjs')).href
+    )) as Record<string, unknown> & {
+      default: { rules: Record<string, unknown> };
+    };
+    const require = createRequire(import.meta.url);
+    const cjsModule = require(path.join(rootDir, 'dist/index.cjs')) as Record<
+      string,
+      unknown
+    > & {
+      default: { rules: Record<string, unknown> };
+    };
+    const expectedExports = [
+      ['noEmptyUnion', 'no-empty-union'],
+      ['noSingleMemberUnion', 'no-single-member-union'],
+      ['preferFlattenPipe', 'prefer-flatten-pipe'],
+      ['noConflictingPipeActions', 'no-conflicting-pipe-actions'],
+    ] as const;
+
+    for (const [exportName, ruleName] of expectedExports) {
+      expect(esmModule[exportName]).toBe(esmModule.default.rules[ruleName]);
+      expect(cjsModule[exportName]).toBe(cjsModule.default.rules[ruleName]);
+    }
+  });
+
   it('lints the flat recommended example with the built package', () => {
     const result = runEslint(path.join(rootDir, 'examples/flat'), [
       'src/invalid.js',

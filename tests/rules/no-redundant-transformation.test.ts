@@ -46,9 +46,20 @@ ruleTester.run(
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val['toLowerCase']()));",
       },
-      // Transform with no arguments
+      // Identity transform outside pipe is ignored
       {
-        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val));",
+        code: "import * as v from 'valibot';\nconst Schema = v.transform((val) => val);",
+      },
+      // String.prototype.toWellFormed has no equivalent Valibot action
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toWellFormed()));",
+      },
+      // Async and generator callbacks do not return the input value directly
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform(async (val) => val));",
+      },
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform(function* (val) { return val; }));",
       },
       // Transform with non-call expression body
       {
@@ -220,18 +231,6 @@ ruleTester.run(
           },
         ],
       },
-      // toWellFormed with namespace import
-      {
-        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toWellFormed()));",
-        output:
-          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.toWellFormed());",
-        errors: [
-          {
-            messageId: 'redundantTransform' as const,
-            data: { valibotAction: 'toWellFormed' },
-          },
-        ],
-      },
       // Named import without target action imported (report only, no fix)
       {
         code: "import { pipe, string, transform } from 'valibot';\nconst Schema = pipe(string(), transform((val) => val.toLowerCase()));",
@@ -240,6 +239,38 @@ ruleTester.run(
           {
             messageId: 'redundantTransform' as const,
             data: { valibotAction: 'toLowerCase' },
+          },
+        ],
+      },
+      // Identity transform in pipe
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val));",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string());",
+        errors: [
+          {
+            messageId: 'identityTransform' as const,
+          },
+        ],
+      },
+      // Identity transform with block body
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => { return val; }));",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipe(v.string());",
+        errors: [
+          {
+            messageId: 'identityTransform' as const,
+          },
+        ],
+      },
+      // Preserve comments when removing an identity transform would delete them
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), /* keep */ v.transform((val) => val));",
+        output: null,
+        errors: [
+          {
+            messageId: 'identityTransform' as const,
           },
         ],
       },
