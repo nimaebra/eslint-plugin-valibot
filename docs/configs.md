@@ -6,6 +6,7 @@ This file is generated from `src/rules/registry.ts` by `pnpm docs:build`.
 
 Includes:
 
+- `valibot/no-async-action-in-sync-pipe`: `error`
 - `valibot/no-conflicting-pipe-actions`: `error`
 - `valibot/no-duplicate-pipe-actions`: `warn`
 - `valibot/no-empty-pipe`: `error`
@@ -26,6 +27,7 @@ Includes:
 Includes:
 
 - `valibot/no-any-schema`: `warn`
+- `valibot/no-async-action-in-sync-pipe`: `error`
 - `valibot/no-conflicting-pipe-actions`: `error`
 - `valibot/no-duplicate-pipe-actions`: `warn`
 - `valibot/no-empty-pipe`: `error`

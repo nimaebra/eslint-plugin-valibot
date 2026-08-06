@@ -27,6 +27,7 @@ The plugin ships with both flat-config and legacy-config presets, plus individua
 | [consistent-import](docs/rules/consistent-import.md)                                       | Enforce a consistent Valibot import style using either namespace or named imports.                |      | 🎨   |    |
 | [consistent-schema-convention](docs/rules/consistent-schema-convention.md)                 | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.    |      | 🎨   |    |
 | [no-any-schema](docs/rules/no-any-schema.md)                                               | Disallow Valibot any() schemas.                                                                   |      | 🔒   |    |
+| [no-async-action-in-sync-pipe](docs/rules/no-async-action-in-sync-pipe.md)                 | Disallow async Valibot actions inside a synchronous pipe() call.                                  | ✅ 🔒 |      |    |
 | [no-conflicting-pipe-actions](docs/rules/no-conflicting-pipe-actions.md)                   | Disallow contradictory Valibot pipe actions in the same pipe() call.                              | ✅ 🔒 |      |    |
 | [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)                       | Disallow duplicate Valibot actions inside the same pipe() call.                                   |      | ✅ 🔒 | 🔧 |
 | [no-empty-pipe](docs/rules/no-empty-pipe.md)                                               | Disallow empty pipe() calls or pipe() calls with a single argument.                               | ✅ 🔒 |      | 🔧 |
