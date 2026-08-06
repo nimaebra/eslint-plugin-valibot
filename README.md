@@ -1,5 +1,10 @@
 # eslint-plugin-valibot
 
+[![npm version](https://img.shields.io/npm/v/eslint-plugin-valibot.svg)](https://www.npmjs.com/package/eslint-plugin-valibot)
+[![CI](https://github.com/nimaebra/eslint-plugin-valibot/actions/workflows/ci.yml/badge.svg)](https://github.com/nimaebra/eslint-plugin-valibot/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/nimaebra/eslint-plugin-valibot/branch/main/graph/badge.svg)](https://codecov.io/gh/nimaebra/eslint-plugin-valibot)
+[![license](https://img.shields.io/npm/l/eslint-plugin-valibot.svg)](LICENSE)
+
 [ESLint](https://eslint.org/) rules for safer, more maintainable [Valibot](https://valibot.dev/) usage.
 
 `eslint-plugin-valibot` helps catch common schema mistakes and patterns that make Valibot code harder to maintain.

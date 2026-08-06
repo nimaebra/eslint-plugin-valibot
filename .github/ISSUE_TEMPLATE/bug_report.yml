@@ -1,0 +1,76 @@
+name: Bug report
+description: Report incorrect, missing, or crashing rule behavior.
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in as much detail as you can.
+
+  - type: input
+    id: rule
+    attributes:
+      label: Affected rule
+      description: Which rule is involved, if any (e.g. `valibot/no-unguarded-parse`)?
+      placeholder: valibot/rule-name
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: A minimal code snippet and ESLint config that reproduces the issue.
+      render: ts
+    validations:
+      required: true
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: eslint-plugin-valibot version
+      placeholder: 1.2.0
+    validations:
+      required: true
+
+  - type: input
+    id: eslint-version
+    attributes:
+      label: ESLint version
+      placeholder: 10.4.0
+    validations:
+      required: true
+
+  - type: input
+    id: valibot-version
+    attributes:
+      label: Valibot version
+      placeholder: 1.4.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: config-type
+    attributes:
+      label: Config type
+      options:
+        - Flat config
+        - Legacy config (.eslintrc)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else that might help (logs, screenshots, links).
+    validations:
+      required: false

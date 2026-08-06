@@ -1,0 +1,51 @@
+name: Feature request
+description: Suggest a new rule, config change, or other enhancement.
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. New-rule proposals are especially welcome — see
+        [CONTRIBUTING.md](https://github.com/nimaebra/eslint-plugin-valibot/blob/main/CONTRIBUTING.md)
+        for the rule authoring workflow.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What Valibot mistake, footgun, or inconsistency would this catch or prevent?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: >
+        Describe the new rule or change. For a new rule, include a short example of code it
+        would flag and, if applicable, what the autofix should produce.
+      render: ts
+    validations:
+      required: true
+
+  - type: dropdown
+    id: preset
+    attributes:
+      label: Suggested preset
+      description: Where do you think this belongs, if this is a new rule?
+      options:
+        - Not applicable
+        - recommended
+        - strict
+        - stylistic
+        - Not sure
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternative approaches, or reasons existing rules don't already cover this.
+    validations:
+      required: false
