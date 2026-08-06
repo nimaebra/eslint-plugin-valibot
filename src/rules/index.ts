@@ -21,6 +21,7 @@ import { noEmptyUnion } from './no-empty-union';
 import { noSingleMemberUnion } from './no-single-member-union';
 import { preferFlattenPipe } from './prefer-flatten-pipe';
 import { noConflictingPipeActions } from './no-conflicting-pipe-actions';
+import { noAsyncActionInSyncPipe } from './no-async-action-in-sync-pipe';
 import { requireIssueMessages } from './require-issue-messages';
 import {
   getRuleNamesForConfig,
@@ -44,6 +45,7 @@ export {
   noSingleMemberUnion,
   preferFlattenPipe,
   noConflictingPipeActions,
+  noAsyncActionInSyncPipe,
   noSchemaAsType,
   preferPicklist,
   preferNullableOverUnionNull,

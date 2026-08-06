@@ -44,6 +44,10 @@ const IdentityTransformSchema = v.pipe(
   v.string(),
   v.transform((val) => val),
 );
+const AsyncActionInSyncPipeSchema = v.pipe(
+  v.string(),
+  v.checkAsync(async (value) => value.length > 0),
+);
 
 function validateUser(value) {
   const UserSchema = v.object({
@@ -76,5 +80,6 @@ export {
   NestedPipeSchema,
   ConflictingLengthSchema,
   IdentityTransformSchema,
+  AsyncActionInSyncPipeSchema,
   validateUser,
 };

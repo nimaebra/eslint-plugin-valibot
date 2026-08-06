@@ -31,6 +31,10 @@ const IdentityTransformSchema = v.pipe(
   v.string(),
   v.transform((val) => val),
 );
+const AsyncActionInSyncPipeSchema = v.pipe(
+  v.string(),
+  v.checkAsync(async (value) => value.length > 0),
+);
 
 export {
   WrappedSchema,
@@ -50,4 +54,5 @@ export {
   NestedPipeSchema,
   ConflictingLengthSchema,
   IdentityTransformSchema,
+  AsyncActionInSyncPipeSchema,
 };

@@ -15,6 +15,7 @@ export {
   noSingleMemberUnion,
   preferFlattenPipe,
   noConflictingPipeActions,
+  noAsyncActionInSyncPipe,
   noSchemaAsType,
   noUnguardedParse,
   noRedundantSchemaWrappers,

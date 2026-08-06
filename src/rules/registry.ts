@@ -29,6 +29,7 @@ import { noEmptyUnion } from './no-empty-union';
 import { noSingleMemberUnion } from './no-single-member-union';
 import { preferFlattenPipe } from './prefer-flatten-pipe';
 import { noConflictingPipeActions } from './no-conflicting-pipe-actions';
+import { noAsyncActionInSyncPipe } from './no-async-action-in-sync-pipe';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
   {
@@ -209,6 +210,14 @@ export const ruleRegistry: RuleRegistryEntry[] = [
   {
     name: 'no-transform-in-record-key',
     rule: noTransformInRecordKey,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-async-action-in-sync-pipe',
+    rule: noAsyncActionInSyncPipe,
     configs: {
       recommended: 'error',
       strict: 'error',
