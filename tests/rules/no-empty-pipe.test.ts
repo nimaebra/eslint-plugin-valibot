@@ -40,7 +40,8 @@ ruleTester.run('no-empty-pipe', noEmptyPipe as never, {
     },
     {
       code: "import { pipe, string } from 'valibot';\nconst Schema = pipe(string());",
-      output: "import { pipe, string } from 'valibot';\nconst Schema = string();",
+      output:
+        "import { pipe, string } from 'valibot';\nconst Schema = string();",
       errors: [
         {
           messageId: 'redundantPipe',

@@ -7,4 +7,3 @@ export const legacyConfigs = {
   strict,
   stylistic,
 };
-

@@ -14,13 +14,15 @@ export const noEmptyPipe = createRule<Options, MessageIds>({
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'Disallow empty pipe() calls or pipe() calls with a single argument.',
+      description:
+        'Disallow empty pipe() calls or pipe() calls with a single argument.',
     },
     fixable: 'code',
     schema: [],
     messages: {
       emptyPipe: 'Avoid calling pipe() with no arguments.',
-      redundantPipe: 'Avoid calling pipe() with only a single schema. Remove the pipe() wrapper.',
+      redundantPipe:
+        'Avoid calling pipe() with only a single schema. Remove the pipe() wrapper.',
     },
   },
   defaultOptions: [],

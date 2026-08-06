@@ -53,7 +53,8 @@ ruleTester.run('no-instanceof-builtins', noInstanceofBuiltins as never, {
     },
     {
       code: "import { instance, map as valibotMap } from 'valibot';\nconst Schema = instance(Map);",
-      output: "import { instance, map as valibotMap } from 'valibot';\nconst Schema = valibotMap();",
+      output:
+        "import { instance, map as valibotMap } from 'valibot';\nconst Schema = valibotMap();",
       errors: [
         {
           messageId: 'noInstanceofBuiltins',

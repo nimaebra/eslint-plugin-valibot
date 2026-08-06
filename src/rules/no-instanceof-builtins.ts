@@ -30,7 +30,8 @@ export const noInstanceofBuiltins = createRule<Options, MessageIds>({
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'Prefer primitive schema functions over instance(Constructor) for built-in types.',
+      description:
+        'Prefer primitive schema functions over instance(Constructor) for built-in types.',
     },
     fixable: 'code',
     schema: [],
@@ -52,7 +53,10 @@ export const noInstanceofBuiltins = createRule<Options, MessageIds>({
           return;
         }
 
-        if (!isValibotCall(node, imports, 'instance') || node.arguments.length !== 1) {
+        if (
+          !isValibotCall(node, imports, 'instance') ||
+          node.arguments.length !== 1
+        ) {
           return;
         }
 
@@ -69,7 +73,11 @@ export const noInstanceofBuiltins = createRule<Options, MessageIds>({
           return;
         }
 
-        const preferredCalleeText = getPreferredCalleeText(node, preferredSchema, imports);
+        const preferredCalleeText = getPreferredCalleeText(
+          node,
+          preferredSchema,
+          imports,
+        );
 
         context.report({
           node,
