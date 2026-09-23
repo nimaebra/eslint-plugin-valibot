@@ -36,7 +36,30 @@ const AsyncActionInSyncPipeSchema = v.pipe(
   v.checkAsync(async (value) => value.length > 0),
 );
 
+const ThrowingCheckSchema = v.pipe(
+  v.string(),
+  v.check((value) => {
+    if (!value) throw new Error('Required');
+    return true;
+  }),
+);
+const UntrimmedLengthSchema = v.pipe(v.string(), v.nonEmpty(), v.trim());
+const SafeParseResult = v.safeParse(v.string(), input);
+const UncheckedOutput = SafeParseResult.output;
+const AsyncEmailSchema = v.pipeAsync(
+  v.string(),
+  v.checkAsync(async (value) => value.includes('@')),
+);
+const AsyncChildSchema = v.object({ email: AsyncEmailSchema });
+const PendingResult = v.safeParseAsync(v.string(), input);
+const PendingSuccess = PendingResult.success;
+
 export {
+  ThrowingCheckSchema,
+  UntrimmedLengthSchema,
+  UncheckedOutput,
+  AsyncChildSchema,
+  PendingSuccess,
   WrappedSchema,
   MaybeSchema,
   NullableUnionSchema,

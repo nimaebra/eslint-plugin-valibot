@@ -3,6 +3,9 @@ import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noRecreatedSchemas } from './no-recreated-schemas';
 import { noSchemaAsType } from './no-schema-as-type';
+import { noThrowInCheck } from './no-throw-in-check';
+import { noUnawaitedParseAsync } from './no-unawaited-parse-async';
+import { noUncheckedSafeParse } from './no-unchecked-safe-parse';
 import { preferPicklist } from './prefer-picklist';
 import { preferNullableOverUnionNull } from './prefer-nullable-over-union-null';
 import { preferOptionalOverUnionUndefined } from './prefer-optional-over-union-undefined';
@@ -11,9 +14,11 @@ import { preferNullish } from './prefer-nullish';
 import { noUnguardedParse } from './no-unguarded-parse';
 import { noRedundantSchemaWrappers } from './no-redundant-schema-wrappers';
 import { noAnySchema } from './no-any-schema';
+import { noAsyncSchemaInSyncParent } from './no-async-schema-in-sync-parent';
 import { noLooseObject } from './no-loose-object';
 import { noUnknownSchema } from './no-unknown-schema';
 import { noInstanceofBuiltins } from './no-instanceof-builtins';
+import { noLengthCheckBeforeTrim } from './no-length-check-before-trim';
 import { noEmptyPipe } from './no-empty-pipe';
 import { noRedundantTransformation } from './no-redundant-transformation';
 import { noTransformInRecordKey } from './no-transform-in-record-key';
@@ -47,6 +52,11 @@ export {
   noConflictingPipeActions,
   noAsyncActionInSyncPipe,
   noSchemaAsType,
+  noThrowInCheck,
+  noUnawaitedParseAsync,
+  noAsyncSchemaInSyncParent,
+  noUncheckedSafeParse,
+  noLengthCheckBeforeTrim,
   preferPicklist,
   preferNullableOverUnionNull,
   preferOptionalOverUnionUndefined,
