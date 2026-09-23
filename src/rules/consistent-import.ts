@@ -1,5 +1,6 @@
 import type { TSESTree } from '@typescript-eslint/utils';
 
+import { isValibotModuleSource } from '../utils/collect-valibot-imports';
 import { createRule } from '../utils/create-rule';
 
 const STYLES = ['namespace', 'named'] as const;
@@ -63,7 +64,7 @@ export const consistentImport = createRule<Options, MessageIds>({
 
     return {
       ImportDeclaration(node) {
-        if (node.source.value !== 'valibot') {
+        if (!isValibotModuleSource(node.source.value)) {
           return;
         }
 

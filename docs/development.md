@@ -28,6 +28,7 @@ pnpm pack:dry-run
 - `src/configs`: flat and legacy config builders
 - `src/utils`: shared helpers used by rules
 - `tests/rules`: rule-level tests
+- `tests/utils`: helper tests, including probes that compare the plugin's API tables with the installed Valibot exports
 
 ## Adding a Rule
 

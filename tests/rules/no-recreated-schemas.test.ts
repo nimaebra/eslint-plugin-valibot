@@ -26,6 +26,10 @@ ruleTester.run('no-recreated-schemas', noRecreatedSchemas as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nfunction validate(input) {\n  const CachedSchema = v.cache(v.string());\n  return v.safeParse(CachedSchema, input);\n}",
+      errors: [{ messageId: 'noRecreatedSchema' }],
+    },
+    {
       code: "import * as v from 'valibot';\nfunction validate(input) {\n  const UserSchema = v.object({ name: v.string() });\n  return v.safeParse(UserSchema, input);\n}",
       errors: [{ messageId: 'noRecreatedSchema' }],
     },

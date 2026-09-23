@@ -62,8 +62,8 @@
     "release:publish": "changeset publish",
     "smoke:pack": "tsx scripts/smoke-pack.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run tests/rules tests/configs",
-    "test:coverage": "vitest run tests/rules tests/configs --coverage",
+    "test": "vitest run tests/rules tests/configs tests/utils",
+    "test:coverage": "vitest run tests/rules tests/configs tests/utils --coverage",
     "test:integration": "vitest run tests/integration",
     "test:watch": "vitest",
     "check": "pnpm lint && pnpm typecheck && pnpm knip && pnpm test && pnpm build && pnpm test:integration && pnpm docs:check && pnpm configs:check",
@@ -89,6 +89,7 @@
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.1",
+    "valibot": "^1.5.0",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
   }

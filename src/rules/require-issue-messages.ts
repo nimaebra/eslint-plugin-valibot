@@ -45,7 +45,10 @@ export const requireIssueMessages = createRule<Options, MessageIds>({
           return;
         }
 
-        const messageParameterIndex = getIssueMessageParameterIndex(callName);
+        const messageParameterIndex = getIssueMessageParameterIndex(
+          callName,
+          node.arguments,
+        );
 
         if (messageParameterIndex === null) {
           return;

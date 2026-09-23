@@ -2,12 +2,30 @@ import type { TSESTree } from '@typescript-eslint/utils';
 
 import type { ValibotImports } from './collect-valibot-imports';
 
+// Valibot exports reserved-word APIs twice, e.g. `null` and `null_`. Rules match
+// on the canonical name, so the underscore aliases are normalized here.
+const RESERVED_WORD_ALIASES = new Map([
+  ['enum_', 'enum'],
+  ['function_', 'function'],
+  ['null_', 'null'],
+  ['undefined_', 'undefined'],
+  ['void_', 'void'],
+]);
+
+export function normalizeValibotApiName(name: string): string {
+  return RESERVED_WORD_ALIASES.get(name) ?? name;
+}
+
 export function getValibotCallName(
   node: TSESTree.CallExpression,
   imports: ValibotImports,
 ): string | null {
   if (node.callee.type === 'Identifier') {
-    return imports.importedNames.get(node.callee.name) ?? null;
+    const importedName = imports.importedNames.get(node.callee.name);
+
+    return importedName === undefined
+      ? null
+      : normalizeValibotApiName(importedName);
   }
 
   if (
@@ -17,7 +35,7 @@ export function getValibotCallName(
     node.callee.property.type === 'Identifier' &&
     imports.namespaces.has(node.callee.object.name)
   ) {
-    return node.callee.property.name;
+    return normalizeValibotApiName(node.callee.property.name);
   }
 
   return null;

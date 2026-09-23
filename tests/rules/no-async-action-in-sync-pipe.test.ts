@@ -32,6 +32,17 @@ ruleTester.run(
     ],
     invalid: [
       {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.object({ a: v.string(), b: v.string() }), v.partialCheckAsync([['a'], ['b']], async (input) => input.a !== input.b));",
+        errors: [
+          {
+            messageId: 'asyncActionInSyncPipe',
+            data: {
+              actionName: 'partialCheckAsync',
+            },
+          },
+        ],
+      },
+      {
         code: "import { pipe, string, checkAsync } from 'valibot';\nconst Schema = pipe(string(), checkAsync(async (value) => isUnique(value)));",
         errors: [
           {

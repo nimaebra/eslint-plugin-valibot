@@ -1,6 +1,20 @@
 import type { TSESTree } from '@typescript-eslint/utils';
 
-const VALIBOT_MODULE_NAME = 'valibot';
+// npm publishes `valibot`; JSR publishes `@valibot/valibot`. Deno also allows
+// `npm:` and `jsr:` specifiers with an optional version, e.g.
+// `jsr:@valibot/valibot@^1.5.0`.
+const VALIBOT_PACKAGE_NAMES = new Set(['valibot', '@valibot/valibot']);
+const VALIBOT_SPECIFIER_PATTERN = /^(?:(?:npm|jsr):)?(@?[^@]+)(?:@[^/]*)?$/;
+
+export function isValibotModuleSource(source: unknown): boolean {
+  if (typeof source !== 'string') {
+    return false;
+  }
+
+  const packageName = VALIBOT_SPECIFIER_PATTERN.exec(source)?.[1];
+
+  return packageName !== undefined && VALIBOT_PACKAGE_NAMES.has(packageName);
+}
 
 export interface ValibotImports {
   namespaces: Set<string>;
@@ -26,7 +40,7 @@ export function collectValibotImports(
   for (const statement of program.body) {
     if (
       statement.type === 'ImportDeclaration' &&
-      statement.source.value === VALIBOT_MODULE_NAME
+      isValibotModuleSource(statement.source.value)
     ) {
       for (const specifier of statement.specifiers) {
         if (specifier.type === 'ImportNamespaceSpecifier') {
@@ -96,6 +110,6 @@ function isRequireFromValibot(node: TSESTree.CallExpression): boolean {
     node.callee.name === 'require' &&
     node.arguments.length === 1 &&
     node.arguments[0]?.type === 'Literal' &&
-    node.arguments[0].value === VALIBOT_MODULE_NAME
+    isValibotModuleSource(node.arguments[0].value)
   );
 }

@@ -3,12 +3,14 @@ import type { TSESTree } from '@typescript-eslint/utils';
 import type { ValibotImports } from './collect-valibot-imports';
 import { getValibotCallName } from './is-valibot-call';
 
-const SCHEMA_CALL_NAMES = new Set([
+export const SCHEMA_CALL_NAMES = new Set([
   'any',
   'array',
   'bigint',
   'blob',
   'boolean',
+  'cache',
+  'config',
   'custom',
   'date',
   'enum',
@@ -18,6 +20,7 @@ const SCHEMA_CALL_NAMES = new Set([
   'function',
   'instance',
   'intersect',
+  'keyof',
   'lazy',
   'literal',
   'looseObject',
