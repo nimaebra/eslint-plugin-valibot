@@ -309,13 +309,13 @@ If the README rules table does not refresh after adding or exporting a rule, bui
 
 GitHub Actions currently enforce:
 
-- CI matrix on Node `22` and `24`
+- CI matrix on Node `22`, `24`, and `26`
 - compatibility smoke tests against Valibot `1.0.0` and `latest`
 - lint, typecheck, knip, tests, build, pack dry run, integration tests, docs check, and config check
 
 Release automation on `main` and `workflow_dispatch`:
 
-- installs with pnpm 11.4.0
+- installs pnpm from the `packageManager` field (currently 11.27.1)
 - runs `pnpm check`
 - runs smoke pack against Valibot `1.0.0` and `latest`
 - runs `pnpm pack:dry-run`
