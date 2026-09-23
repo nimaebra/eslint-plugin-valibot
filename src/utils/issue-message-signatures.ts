@@ -1,3 +1,5 @@
+import type { TSESTree } from '@typescript-eslint/utils';
+
 const ISSUE_MESSAGE_PARAMETER_INDEX_ZERO = new Set([
   'base64',
   'bic',
@@ -33,6 +35,7 @@ const ISSUE_MESSAGE_PARAMETER_INDEX_ZERO = new Set([
   'isoWeek',
   'isrc',
   'jwsCompact',
+  'ksuid',
   'mac',
   'mac48',
   'mac64',
@@ -68,6 +71,7 @@ const ISSUE_MESSAGE_PARAMETER_INDEX_ONE = new Set([
   'checkAsync',
   'checkItems',
   'checkItemsAsync',
+  'codePoints',
   'custom',
   'customAsync',
   'endsWith',
@@ -92,6 +96,7 @@ const ISSUE_MESSAGE_PARAMETER_INDEX_ONE = new Set([
   'looseTupleAsync',
   'ltValue',
   'maxBytes',
+  'maxCodePoints',
   'maxEntries',
   'maxGraphemes',
   'maxLength',
@@ -99,6 +104,7 @@ const ISSUE_MESSAGE_PARAMETER_INDEX_ONE = new Set([
   'maxValue',
   'mimeType',
   'minBytes',
+  'minCodePoints',
   'minEntries',
   'minGraphemes',
   'minLength',
@@ -112,6 +118,7 @@ const ISSUE_MESSAGE_PARAMETER_INDEX_ONE = new Set([
   'nonOptional',
   'nonOptionalAsync',
   'notBytes',
+  'notCodePoints',
   'notEntries',
   'notGraphemes',
   'notLength',
@@ -163,7 +170,19 @@ const ISSUE_MESSAGE_PARAMETER_INDEX_TWO = new Set([
   'words',
 ]);
 
-export function getIssueMessageParameterIndex(name: string): 0 | 1 | 2 | null {
+// `required(schema, keys, message)` shifts the message argument when a keys
+// array is passed. Only literal arrays are treated as keys; an identifier stays
+// ambiguous and is assumed to be the message.
+const KEYS_OVERLOAD_NAMES = new Set(['required', 'requiredAsync']);
+
+export function getIssueMessageParameterIndex(
+  name: string,
+  args: readonly TSESTree.CallExpressionArgument[] = [],
+): 0 | 1 | 2 | null {
+  if (KEYS_OVERLOAD_NAMES.has(name) && args[1]?.type === 'ArrayExpression') {
+    return 2;
+  }
+
   if (ISSUE_MESSAGE_PARAMETER_INDEX_ZERO.has(name)) {
     return 0;
   }

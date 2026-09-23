@@ -62,6 +62,8 @@ pnpm add -D eslint-plugin-valibot
 
 It is designed for `eslint@^9 || ^10` and `valibot@^1`.
 
+Rules recognize Valibot imported from npm (`valibot`), from JSR (`@valibot/valibot`), and through Deno `npm:` and `jsr:` specifiers such as `jsr:@valibot/valibot@^1.5.0`.
+
 ## Flat Config
 
 ```js

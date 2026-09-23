@@ -32,6 +32,10 @@ ruleTester.run('consistent-import', consistentImport as never, {
   ],
   invalid: [
     {
+      code: "import { object, string } from '@valibot/valibot';\nconst Schema = object({ name: string() });",
+      errors: [{ messageId: 'preferNamespace', data: { namespaceAlias: 'v' } }],
+    },
+    {
       code: "import { object, string } from 'valibot';\nconst Schema = object({ name: string() });",
       errors: [{ messageId: 'preferNamespace', data: { namespaceAlias: 'v' } }],
     },

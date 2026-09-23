@@ -30,6 +30,7 @@ Important directories in this package:
 - [src/utils](src/utils): shared AST helpers and utilities
 - [tests/rules](tests/rules): rule-level test coverage
 - [tests/configs](tests/configs): config export consistency tests
+- [tests/utils](tests/utils): helper tests and Valibot API drift checks
 - [tests/integration](tests/integration): end-to-end checks against the built package and example projects
 - [docs/rules](docs/rules): per-rule documentation
 - [examples](examples): public usage examples used by integration tests

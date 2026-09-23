@@ -5,7 +5,7 @@ This file is the maintainer-oriented working guide for coding agents operating i
 ## Scope
 
 - Package: `eslint-plugin-valibot`
-- Current package version: `1.1.0`
+- Current package version: `1.3.0`
 - Purpose: ESLint rules for safer and more maintainable Valibot usage.
 - Runtime model: published as a Node ESM/CJS library built from TypeScript.
 - Package manager: `pnpm`
@@ -76,7 +76,7 @@ Common helpers live in `src/utils`.
 Important ones:
 
 - `create-rule.ts`: wraps `ESLintUtils.RuleCreator` and standardizes docs URLs
-- `collect-valibot-imports.ts`: finds Valibot imports for both ESM and CommonJS patterns
+- `collect-valibot-imports.ts`: finds Valibot imports for both ESM and CommonJS patterns, including the JSR (`@valibot/valibot`) and Deno `npm:`/`jsr:` specifiers
 - `is-valibot-call.ts`: resolves whether a call expression maps to a Valibot API name
 - `pipe-analysis.ts`: normalizes `pipe()` action analysis
 - `schema-identifiers.ts`: recognizes schema bindings
@@ -89,6 +89,7 @@ Prefer reusing these helpers over duplicating AST matching logic.
 
 - `tests/rules`: rule-level behavior tests
 - `tests/configs`: flat/legacy config parity tests
+- `tests/utils`: shared-helper tests, including runtime probes of the installed Valibot exports that fail when the plugin's API tables drift
 - `tests/integration`: end-to-end tests against the built package and example apps
 - `examples/flat`, `examples/legacy`, `examples/typescript`: public examples and integration fixtures
 
@@ -107,7 +108,7 @@ Rule docs contain auto-generated markers that must remain intact:
 
 ## Current Rule Inventory
 
-This is the planned registry state for version `1.2.0`.
+This mirrors `src/rules/registry.ts` as of version `1.3.0`.
 
 | Rule                                   | Preset membership                     | Notes                                                                  |
 | :------------------------------------- | :------------------------------------ | :--------------------------------------------------------------------- |
@@ -135,6 +136,7 @@ This is the planned registry state for version `1.2.0`.
 | `no-redundant-transformation`          | `recommended: error`, `strict: error` | Disallows redundant or identity `transform()` usage in pipes           |
 | `no-conflicting-pipe-actions`          | `recommended: error`, `strict: error` | Disallows contradictory pipe actions such as conflicting length limits |
 | `no-transform-in-record-key`           | `recommended: error`, `strict: error` | Disallows transforms in `record()` key schemas                         |
+| `no-async-action-in-sync-pipe`         | `recommended: error`, `strict: error` | Disallows async actions such as `checkAsync()` inside a sync `pipe()`  |
 
 ## File Map
 

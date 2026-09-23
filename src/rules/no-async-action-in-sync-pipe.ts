@@ -10,11 +10,12 @@ import { isValibotCall } from '../utils/is-valibot-call';
 type Options = [];
 type MessageIds = 'asyncActionInSyncPipe';
 
-const ASYNC_PIPE_ACTIONS = new Set([
+export const ASYNC_PIPE_ACTIONS = new Set([
   'argsAsync',
   'awaitAsync',
   'checkAsync',
   'checkItemsAsync',
+  'partialCheckAsync',
   'rawCheckAsync',
   'rawTransformAsync',
   'returnsAsync',

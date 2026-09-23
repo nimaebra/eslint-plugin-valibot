@@ -12,6 +12,12 @@ const ruleTester = new RuleTester({
 ruleTester.run('require-issue-messages', requireIssueMessages as never, {
   valid: [
     {
+      code: "import { object, optional, required, string } from 'valibot';\nconst Schema = required(object({ name: optional(string('Must be text')) }, 'Invalid'), ['name'], 'Name is required');",
+    },
+    {
+      code: "import * as v from 'jsr:@valibot/valibot';\nconst Schema = v.string('Must be text');",
+    },
+    {
       code: "import * as v from 'valibot';\nconst PasswordSchema = v.pipe(v.string('Must be text'), v.minLength(8, 'Password too short'), v.trim());",
     },
     {
@@ -28,6 +34,31 @@ ruleTester.run('require-issue-messages', requireIssueMessages as never, {
     },
   ],
   invalid: [
+    {
+      code: "import { object, optional, required, string } from 'valibot';\nconst Schema = required(object({ name: optional(string('Must be text')) }, 'Invalid'), ['name']);",
+      errors: [
+        { messageId: 'missingIssueMessage', data: { name: 'required' } },
+      ],
+    },
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string('Must be text'), v.ksuid(), v.maxCodePoints(10));",
+      errors: [
+        { messageId: 'missingIssueMessage', data: { name: 'ksuid' } },
+        { messageId: 'missingIssueMessage', data: { name: 'maxCodePoints' } },
+      ],
+    },
+    {
+      code: "import { null_ } from 'valibot';\nconst Schema = null_();",
+      errors: [{ messageId: 'missingIssueMessage', data: { name: 'null' } }],
+    },
+    {
+      code: "import * as v from 'jsr:@valibot/valibot@^1.5.0';\nconst Schema = v.string();",
+      errors: [{ messageId: 'missingIssueMessage', data: { name: 'string' } }],
+    },
+    {
+      code: "const v = require('npm:valibot');\nconst Schema = v.string();",
+      errors: [{ messageId: 'missingIssueMessage', data: { name: 'string' } }],
+    },
     {
       code: "import { string } from 'valibot';\nconst Schema = string();",
       errors: [
