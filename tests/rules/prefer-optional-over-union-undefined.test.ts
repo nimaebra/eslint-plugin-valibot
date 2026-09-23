@@ -32,6 +32,12 @@ ruleTester.run(
     ],
     invalid: [
       {
+        code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.string(), v.undefined()]);",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.optionalAsync(v.string());",
+        errors: [{ messageId: 'preferOptional' }],
+      },
+      {
         code: "import * as v from 'valibot';\nconst Schema = v.union([v.string(), v.undefined()]);",
         output:
           "import * as v from 'valibot';\nconst Schema = v.optional(v.string());",

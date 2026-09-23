@@ -1,7 +1,7 @@
 import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 
 import type { ValibotImports } from './collect-valibot-imports';
-import { getValibotCallName, isValibotCall } from './is-valibot-call';
+import { getValibotCallName, isValibotCallOrAsync } from './is-valibot-call';
 
 export interface PipeActionDescriptor {
   actionIndex: number;
@@ -16,7 +16,7 @@ export function getPipeActionDescriptors(
   sourceCode: Readonly<TSESLint.SourceCode>,
 ): PipeActionDescriptor[] {
   if (
-    !isValibotCall(pipeCall, imports, 'pipe') ||
+    !isValibotCallOrAsync(pipeCall, imports, 'pipe') ||
     pipeCall.arguments.length < 2
   ) {
     return [];

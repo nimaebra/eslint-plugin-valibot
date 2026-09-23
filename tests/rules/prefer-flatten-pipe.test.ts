@@ -12,6 +12,9 @@ const ruleTester = new RuleTester({
 ruleTester.run('prefer-flatten-pipe', preferFlattenPipe as never, {
   valid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.pipeAsync(v.string(), v.trim()), v.minLength(1));",
+    },
+    {
       code: "import { pipe, string, minLength } from 'valibot';\nconst Schema = pipe(string(), minLength(5));",
     },
     {
@@ -22,6 +25,18 @@ ruleTester.run('prefer-flatten-pipe', preferFlattenPipe as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.pipe(v.string(), v.trim()), v.minLength(1));",
+      output:
+        "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.trim(), v.minLength(1));",
+      errors: [{ messageId: 'nestedPipe' }],
+    },
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.pipeAsync(v.string(), v.trim()), v.minLength(1));",
+      output:
+        "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.trim(), v.minLength(1));",
+      errors: [{ messageId: 'nestedPipe' }],
+    },
     {
       code: "import { pipe, string, minLength, trim } from 'valibot';\nconst Schema = pipe(pipe(string(), minLength(5)), trim());",
       output:

@@ -15,6 +15,9 @@ ruleTester.run(
   {
     valid: [
       {
+        code: "import * as v from 'valibot';\nconst Schema = v.optionalAsync(v.optional(v.string()));",
+      },
+      {
         code: "import * as v from 'valibot';\nconst Schema = v.optional(v.string());",
       },
       {
@@ -35,6 +38,12 @@ ruleTester.run(
       },
     ],
     invalid: [
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.optionalAsync(v.optionalAsync(v.string()));",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.optionalAsync(v.string());",
+        errors: [{ messageId: 'redundantWrapper' }],
+      },
       {
         code: "import * as v from 'valibot';\nconst Schema = v.optional(v.optional(v.string()));",
         output:

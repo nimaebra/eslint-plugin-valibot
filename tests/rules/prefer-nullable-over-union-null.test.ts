@@ -32,6 +32,12 @@ ruleTester.run(
     ],
     invalid: [
       {
+        code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.string(), v.null()]);",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.nullableAsync(v.string());",
+        errors: [{ messageId: 'preferNullable' }],
+      },
+      {
         code: "import * as v from 'valibot';\nconst Schema = v.union([v.string(), v.null()]);",
         output:
           "import * as v from 'valibot';\nconst Schema = v.nullable(v.string());",

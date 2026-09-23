@@ -12,6 +12,9 @@ const ruleTester = new RuleTester({
 ruleTester.run('prefer-variant', preferVariant as never, {
   valid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.union([v.objectAsync({ type: v.literal('a') }), v.object({ type: v.literal('b') })]);",
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.variant('type', [v.object({ type: v.literal('a'), id: v.string() }), v.object({ type: v.literal('b'), id: v.string() })]);",
     },
     {
@@ -28,6 +31,12 @@ ruleTester.run('prefer-variant', preferVariant as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.objectAsync({ type: v.literal('a') }), v.object({ type: v.literal('b') })]);",
+      output:
+        "import * as v from 'valibot';\nconst Schema = v.variantAsync('type', [v.objectAsync({ type: v.literal('a') }), v.object({ type: v.literal('b') })]);",
+      errors: [{ messageId: 'preferVariant' }],
+    },
     {
       code: "import * as v from 'valibot';\nconst Schema = v.union([v.object({ type: v.literal('a'), id: v.string() }), v.object({ type: v.literal('b'), id: v.string() })]);",
       output:

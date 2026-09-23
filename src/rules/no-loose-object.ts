@@ -4,7 +4,10 @@ import {
   createEmptyValibotImports,
   hasValibotImports,
 } from '../utils/collect-valibot-imports';
-import { getValibotCallName } from '../utils/is-valibot-call';
+import {
+  getValibotCallName,
+  getValibotCallVariant,
+} from '../utils/is-valibot-call';
 
 const OBJECT_SCHEMA_TYPES = ['object', 'looseObject', 'strictObject'] as const;
 const DEFAULT_ALLOWED_OBJECT_SCHEMA_TYPES = ['object', 'strictObject'] as const;
@@ -67,9 +70,10 @@ export const noLooseObject = createRule<Options, MessageIds>({
           return;
         }
 
-        const callName = getValibotCallName(node, imports);
+        const variant = getValibotCallVariant(node, imports);
+        const schemaType = variant?.name ?? null;
 
-        if (!isObjectSchemaType(callName) || allowedTypes.has(callName)) {
+        if (!isObjectSchemaType(schemaType) || allowedTypes.has(schemaType)) {
           return;
         }
 
@@ -77,7 +81,7 @@ export const noLooseObject = createRule<Options, MessageIds>({
           node,
           messageId: 'disallowedObjectSchemaType',
           data: {
-            disallowedType: callName,
+            disallowedType: getValibotCallName(node, imports),
             allowedTypes: formatAllowedTypes(options.allow),
           },
         });

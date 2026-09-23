@@ -29,6 +29,10 @@ ruleTester.run('no-empty-union', noEmptyUnion as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([]);",
+      errors: [{ messageId: 'emptyUnion' }],
+    },
+    {
       code: "import { union } from 'valibot';\nconst Schema = union([]);",
       errors: [
         {
