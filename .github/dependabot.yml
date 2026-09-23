@@ -6,6 +6,12 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # Keep Node types aligned with the oldest supported Node version
+      # (engines: ^22.13.0 || >=24.0.0) so newer-only APIs fail typecheck.
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
     groups:
       dev-dependencies:
         dependency-type: development
