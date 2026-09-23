@@ -66,6 +66,7 @@ If a rule exists but is missing from the registry, the package is incomplete.
 - `src/configs/flat/*` builds flat config arrays
 - `src/configs/legacy/*` builds legacy config objects
 - both config systems derive their `rules` payload from `getRulesForConfig(...)`
+- the `all` config is derived, not registered: `getRulesForConfig('all')` enables every registry rule as `error`, so new rules join it automatically
 
 This means preset membership should normally be changed in `src/rules/registry.ts`, not by hand-editing multiple config files.
 

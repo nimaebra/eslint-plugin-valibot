@@ -232,7 +232,7 @@ export const rules = Object.fromEntries(
 export function getRulesForConfig(configName: ConfigName): RulesConfig {
   return Object.fromEntries(
     ruleRegistry.flatMap(({ name, configs }) => {
-      const entry = configs[configName];
+      const entry = configName === 'all' ? 'error' : configs[configName];
 
       return entry ? [[`valibot/${name}`, entry]] : [];
     }),
@@ -241,7 +241,7 @@ export function getRulesForConfig(configName: ConfigName): RulesConfig {
 
 export function getRuleNamesForConfig(configName: ConfigName): string[] {
   return ruleRegistry
-    .filter(({ configs }) => configName in configs)
+    .filter(({ configs }) => configName === 'all' || configName in configs)
     .map(({ name }) => name)
     .sort();
 }

@@ -1,11 +1,14 @@
+import type { ConfigName } from '../src/types';
+
 import { getRulesForConfig } from '../src/rules';
 import plugin from '../src/plugin';
 
+assertConfigSync('all');
 assertConfigSync('recommended');
 assertConfigSync('strict');
 assertConfigSync('stylistic');
 
-function assertConfigSync(configName: 'recommended' | 'strict' | 'stylistic') {
+function assertConfigSync(configName: ConfigName) {
   const expectedRules = getRulesForConfig(configName);
   const flatRules = plugin.flatConfigs[configName][0]?.rules ?? {};
   const legacyRules = plugin.configs[configName].rules ?? {};
@@ -15,7 +18,7 @@ function assertConfigSync(configName: 'recommended' | 'strict' | 'stylistic') {
 }
 
 function assertRulesEqual(
-  configName: 'recommended' | 'strict' | 'stylistic',
+  configName: ConfigName,
   sourceName: 'flat' | 'legacy',
   actualRules: Record<string, unknown>,
   expectedRules: Record<string, unknown>,

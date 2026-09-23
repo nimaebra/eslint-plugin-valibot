@@ -35,6 +35,7 @@ export type {
   FlatPluginShape,
   LegacyConfig,
   LegacyConfigMap,
+  PresetName,
   RulesConfig,
   RuleEntry,
   RuleMap,
