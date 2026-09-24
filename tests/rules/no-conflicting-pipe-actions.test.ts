@@ -35,6 +35,10 @@ ruleTester.run(
     ],
     invalid: [
       {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.minLength(10), v.maxLength(5));",
+        errors: [{ messageId: 'conflictingPipeActions' }],
+      },
+      {
         code: "import { pipe, string, minLength, maxLength } from 'valibot';\nconst Schema = pipe(string(), minLength(10), maxLength(5));",
         errors: [
           {

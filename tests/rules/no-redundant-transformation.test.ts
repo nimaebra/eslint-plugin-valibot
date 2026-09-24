@@ -79,6 +79,12 @@ ruleTester.run(
       },
     ],
     invalid: [
+      {
+        code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.transform((value) => value), v.minLength(1));",
+        output:
+          "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.minLength(1));",
+        errors: [{ messageId: 'identityTransform' }],
+      },
       // toLowerCase with namespace import
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.transform((val) => val.toLowerCase()));",

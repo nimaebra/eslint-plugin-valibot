@@ -23,6 +23,12 @@ ruleTester.run('no-duplicate-pipe-actions', noDuplicatePipeActions as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.trim(), v.trim(), v.minLength(1));",
+      output:
+        "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.trim(), v.minLength(1));",
+      errors: [{ messageId: 'duplicatePipeAction' }],
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trim(), v.trim(), v.minLength(1));",
       output:
         "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trim(), v.minLength(1));",

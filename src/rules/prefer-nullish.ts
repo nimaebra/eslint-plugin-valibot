@@ -1,3 +1,6 @@
+import type { TSESTree } from '@typescript-eslint/utils';
+
+import { getValibotCalleeText } from '../utils/callee-text';
 import { createRule } from '../utils/create-rule';
 import {
   collectValibotImports,
@@ -5,7 +8,10 @@ import {
   hasValibotImports,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import {
+  getValibotCallVariant,
+  toAsyncApiName,
+} from '../utils/is-valibot-call';
 
 const WRAPPER_PAIRS = [
   ['optional', 'nullable'],
@@ -59,13 +65,17 @@ export const preferNullish = createRule<Options, MessageIds>({
           return;
         }
 
-        const pair = getWrapperPair(node, innerCall, imports);
+        const isAsync = getWrapperPairAsyncness(node, innerCall, imports);
 
-        if (!pair) {
+        if (isAsync === null) {
           return;
         }
 
-        const preferredCalleeText = getPreferredCalleeText(node, imports);
+        const preferredCalleeText = getValibotCalleeText(
+          node,
+          imports,
+          toAsyncApiName('nullish', isAsync),
+        );
 
         context.report({
           node,
@@ -83,58 +93,27 @@ export const preferNullish = createRule<Options, MessageIds>({
   },
 });
 
-function getWrapperPair(
-  outerCall: Parameters<typeof isValibotCall>[0],
-  innerCall: Parameters<typeof isValibotCall>[0],
+/**
+ * Returns whether a matching optional/nullable wrapper pair is async, or
+ * `null` when the calls are not such a pair. Mixed sync/async pairs are left
+ * alone because they are already a type error.
+ */
+function getWrapperPairAsyncness(
+  outerCall: TSESTree.CallExpression,
+  innerCall: TSESTree.CallExpression,
   imports: ValibotImports,
-): (typeof WRAPPER_PAIRS)[number] | null {
-  for (const pair of WRAPPER_PAIRS) {
-    if (
-      isValibotCall(outerCall, imports, pair[0]) &&
-      isValibotCall(innerCall, imports, pair[1])
-    ) {
-      return pair;
-    }
+): boolean | null {
+  const outer = getValibotCallVariant(outerCall, imports);
+  const inner = getValibotCallVariant(innerCall, imports);
+
+  if (!outer || !inner || outer.isAsync !== inner.isAsync) {
+    return null;
   }
 
-  return null;
-}
+  const isPair = WRAPPER_PAIRS.some(
+    ([outerName, innerName]) =>
+      outer.name === outerName && inner.name === innerName,
+  );
 
-function getPreferredCalleeText(
-  call: Parameters<typeof isValibotCall>[0],
-  imports: ValibotImports,
-): string | null {
-  if (call.callee.type === 'MemberExpression') {
-    return `${sourceTextForMemberNamespace(call)}.nullish`;
-  }
-
-  const localNullishName = getLocalImportName(imports, 'nullish');
-
-  return localNullishName ?? null;
-}
-
-function sourceTextForMemberNamespace(
-  call: Parameters<typeof isValibotCall>[0],
-): string {
-  if (
-    call.callee.type === 'MemberExpression' &&
-    call.callee.object.type === 'Identifier'
-  ) {
-    return call.callee.object.name;
-  }
-
-  return 'v';
-}
-
-function getLocalImportName(
-  imports: ValibotImports,
-  importedName: string,
-): string | undefined {
-  for (const [localName, importedValue] of imports.importedNames) {
-    if (importedValue === importedName) {
-      return localName;
-    }
-  }
-
-  return undefined;
+  return isPair ? outer.isAsync : null;
 }

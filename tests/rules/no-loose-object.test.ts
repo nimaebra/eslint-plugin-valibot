@@ -12,6 +12,9 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-loose-object', noLooseObject as never, {
   valid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.objectAsync({ name: v.string() });",
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.object({ id: v.string() });",
     },
     {
@@ -26,6 +29,18 @@ ruleTester.run('no-loose-object', noLooseObject as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.looseObjectAsync({ name: v.string() });",
+      errors: [
+        {
+          messageId: 'disallowedObjectSchemaType',
+          data: {
+            disallowedType: 'looseObjectAsync',
+            allowedTypes: 'object(), strictObject()',
+          },
+        },
+      ],
+    },
     {
       code: "import * as v from 'valibot';\nconst Schema = v.looseObject({ id: v.string() });",
       errors: [

@@ -7,7 +7,8 @@ import {
   hasValibotImports,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { getValibotCalleeText } from '../utils/callee-text';
+import { isValibotCall, isValibotCallOrAsync } from '../utils/is-valibot-call';
 
 interface RedundantTransformMapping {
   methodName: string;
@@ -149,7 +150,7 @@ export const noRedundantTransformation = createRule<Options, MessageIds>({
           return;
         }
 
-        const preferredCalleeText = getPreferredCalleeText(
+        const preferredCalleeText = getValibotCalleeText(
           node,
           imports,
           valibotAction,
@@ -194,7 +195,7 @@ function getTransformRemovalRange(
 
   if (
     parent?.type !== 'CallExpression' ||
-    !isValibotCall(parent, imports, 'pipe') ||
+    !isValibotCallOrAsync(parent, imports, 'pipe') ||
     !parent.arguments.includes(transformCall)
   ) {
     return null;
@@ -239,45 +240,4 @@ function getReturnExpression(
   }
 
   return null;
-}
-
-function getPreferredCalleeText(
-  call: TSESTree.CallExpression,
-  imports: ValibotImports,
-  valibotAction: string,
-): string | null {
-  if (call.callee.type === 'MemberExpression') {
-    const namespace = getMemberNamespace(call.callee);
-
-    if (!namespace) {
-      return null;
-    }
-
-    return `${namespace}.${valibotAction}`;
-  }
-
-  const localActionName = getLocalImportName(imports, valibotAction);
-
-  return localActionName ?? null;
-}
-
-function getMemberNamespace(callee: TSESTree.MemberExpression): string | null {
-  if (callee.object.type === 'Identifier') {
-    return callee.object.name;
-  }
-
-  return null;
-}
-
-function getLocalImportName(
-  imports: ValibotImports,
-  importedName: string,
-): string | undefined {
-  for (const [localName, importedValue] of imports.importedNames) {
-    if (importedValue === importedName) {
-      return localName;
-    }
-  }
-
-  return undefined;
 }

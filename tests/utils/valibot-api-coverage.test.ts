@@ -48,7 +48,7 @@ const MESSAGE_INDEX_OVERRIDES = new Map([
 ]);
 
 // `forward()` returns the action it wraps, so it only looks like a schema.
-const NON_SCHEMA_NAMES = new Set(['forward']);
+const NON_SCHEMA_NAMES = new Set(['forward', 'forwardAsync']);
 
 const valibotFunctions = Object.entries(v).filter(
   (entry): entry is [string, ValibotFunction] =>
@@ -124,15 +124,13 @@ describe('Valibot API coverage', () => {
     expect(mismatches).toEqual([]);
   });
 
-  it('recognizes every synchronous Valibot schema constructor', () => {
+  it('recognizes every Valibot schema constructor', () => {
     const missing = valibotFunctions
       .filter(
         ([name, fn]) =>
-          !name.endsWith('Async') &&
-          !NON_SCHEMA_NAMES.has(name) &&
-          probeKind(fn)?.kind === 'schema',
+          !NON_SCHEMA_NAMES.has(name) && probeKind(fn)?.kind === 'schema',
       )
-      .map(([name]) => normalizeValibotApiName(name))
+      .map(([name]) => normalizeValibotApiName(name).replace(/Async$/u, ''))
       .filter((name) => !SCHEMA_CALL_NAMES.has(name));
 
     expect(missing).toEqual([]);

@@ -23,6 +23,15 @@ ruleTester.run('no-empty-pipe', noEmptyPipe as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync();",
+      errors: [{ messageId: 'emptyPipe' }],
+    },
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string());",
+      output: "import * as v from 'valibot';\nconst Schema = v.string();",
+      errors: [{ messageId: 'redundantPipe' }],
+    },
+    {
       code: "import { pipe } from 'valibot';\nconst Schema = pipe();",
       errors: [
         {

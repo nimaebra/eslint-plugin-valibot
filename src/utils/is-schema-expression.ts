@@ -1,7 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/utils';
 
 import type { ValibotImports } from './collect-valibot-imports';
-import { getValibotCallName } from './is-valibot-call';
+import { getValibotCallVariant } from './is-valibot-call';
 
 export const SCHEMA_CALL_NAMES = new Set([
   'any',
@@ -75,7 +75,7 @@ function isValibotSchemaCall(
   node: TSESTree.CallExpression,
   imports: ValibotImports,
 ): boolean {
-  const callName = getValibotCallName(node, imports);
+  const variant = getValibotCallVariant(node, imports);
 
-  return callName !== null && SCHEMA_CALL_NAMES.has(callName);
+  return variant !== null && SCHEMA_CALL_NAMES.has(variant.name);
 }

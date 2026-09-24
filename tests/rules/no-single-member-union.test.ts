@@ -23,6 +23,11 @@ ruleTester.run('no-single-member-union', noSingleMemberUnion as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.string()]);",
+      output: "import * as v from 'valibot';\nconst Schema = v.string();",
+      errors: [{ messageId: 'singleMemberUnion' }],
+    },
+    {
       code: "import { union, string } from 'valibot';\nconst Schema = union([string()]);",
       output:
         "import { union, string } from 'valibot';\nconst Schema = string();",

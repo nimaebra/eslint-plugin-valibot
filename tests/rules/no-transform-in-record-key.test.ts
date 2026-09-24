@@ -29,6 +29,15 @@ ruleTester.run('no-transform-in-record-key', noTransformInRecordKey as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.recordAsync(v.pipeAsync(v.string(), v.transformAsync(async (key) => key.toUpperCase())), v.number());",
+      errors: [
+        {
+          messageId: 'transformInRecordKey',
+          data: { actionName: 'transformAsync' },
+        },
+      ],
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.record(v.pipe(v.string(), v.trim()), v.string());",
       errors: [
         {
