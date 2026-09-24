@@ -40,7 +40,7 @@ The plugin ships with both flat-config and legacy-config presets, plus individua
 | [no-schema-as-type](docs/rules/no-schema-as-type.md)                                       | Disallow using a Valibot schema value itself as a TypeScript type.                                | 🔒   |      |    |
 | [no-single-member-union](docs/rules/no-single-member-union.md)                             | Disallow Valibot union() calls with only one schema option.                                       | ✅ 🔒 |      | 🔧 |
 | [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)                     | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions. | ✅ 🔒 |      |    |
-| [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                                     | Require Valibot parse() and assert() calls to be wrapped in try/catch.                            | ✅ 🔒 |      |    |
+| [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                                     | Require Valibot parse(), assert() and parseAsync() calls to be guarded against validation errors. | ✅ 🔒 |      |    |
 | [no-unknown-schema](docs/rules/no-unknown-schema.md)                                       | Disallow Valibot unknown() schemas.                                                               |      | 🔒   |    |
 | [prefer-flatten-pipe](docs/rules/prefer-flatten-pipe.md)                                   | Prefer a single flattened pipe() call over nested pipe() calls.                                   |      | ✅ 🔒 | 🔧 |
 | [prefer-nullable-over-union-null](docs/rules/prefer-nullable-over-union-null.md)           | Prefer nullable() over union([schema, null()]) when they are equivalent.                          |      | ✅ 🔒 | 🔧 |
@@ -114,6 +114,7 @@ export default tseslint.config(
 | `recommended` | Good default for most codebases                        | Focuses on common correctness and safety issues.                           |
 | `strict`      | Tighter policy for teams that want broader enforcement | Includes everything in `recommended` plus stricter schema usage checks.    |
 | `stylistic`   | Naming consistency                                     | Adds naming-convention rules without changing the problem-focused presets. |
+| `all`         | Evaluating every rule, or opting into new rules early  | Enables every rule as an error. New rules join it in minor releases.       |
 
 See [docs/configs.md](docs/configs.md) for the exact rule list in each preset.
 

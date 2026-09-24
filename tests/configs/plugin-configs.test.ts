@@ -25,6 +25,18 @@ describe('plugin config exports', () => {
     expect(flatStylisticRules).toEqual(legacyStylisticRules);
   });
 
+  it('keeps all flat and legacy rules in sync', () => {
+    expect(plugin.flatConfigs.all[0]?.rules).toEqual(plugin.configs.all.rules);
+  });
+
+  it('enables every rule as an error in the all config', () => {
+    expect(plugin.configs.all.rules).toEqual(
+      Object.fromEntries(
+        ruleRegistry.map(({ name }) => [`valibot/${name}`, 'error']),
+      ),
+    );
+  });
+
   it('exposes all implemented rules', () => {
     expect(Object.keys(plugin.rules).sort()).toEqual(
       ruleRegistry.map(({ name }) => name).sort(),

@@ -2,7 +2,11 @@ import type { ConfigName, RuleEntry } from '../src/types';
 
 import { getRulesForConfig } from '../src/rules';
 
-const configNames: ConfigName[] = ['recommended', 'strict', 'stylistic'];
+const configNames: ConfigName[] = ['recommended', 'strict', 'stylistic', 'all'];
+
+const CONFIG_INTROS: Partial<Record<ConfigName, string>> = {
+  all: 'Enables every rule as an error. New rules join this config in minor releases, so expect new reports when upgrading.',
+};
 
 export function generateConfigsDoc(): string {
   const sections = configNames.map((configName) =>
@@ -33,7 +37,9 @@ function buildConfigSection(configName: ConfigName): string {
     )
     .join('\n');
 
-  return `## ${configName}\n\nIncludes:\n\n${ruleLines}`;
+  const intro = CONFIG_INTROS[configName];
+
+  return `## ${configName}\n\n${intro ? `${intro}\n\n` : ''}Includes:\n\n${ruleLines}`;
 }
 
 function formatRuleEntry(ruleEntry: RuleEntry): string {
