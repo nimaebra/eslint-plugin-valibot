@@ -20,35 +20,41 @@ The plugin ships with both flat-config and legacy-config presets, plus individua
 ✅ Set in the `recommended` configuration.\
 🔒 Set in the `strict` configuration.\
 🎨 Set in the `stylistic` configuration.\
-🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
+💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                                                                                       | Description                                                                                       | 💼   | ⚠️   | 🔧 |
-| :----------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :--- | :--- | :- |
-| [consistent-import](docs/rules/consistent-import.md)                                       | Enforce a consistent Valibot import style using either namespace or named imports.                |      | 🎨   |    |
-| [consistent-schema-convention](docs/rules/consistent-schema-convention.md)                 | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.    |      | 🎨   |    |
-| [no-any-schema](docs/rules/no-any-schema.md)                                               | Disallow Valibot any() schemas.                                                                   |      | 🔒   |    |
-| [no-async-action-in-sync-pipe](docs/rules/no-async-action-in-sync-pipe.md)                 | Disallow async Valibot actions inside a synchronous pipe() call.                                  | ✅ 🔒 |      |    |
-| [no-conflicting-pipe-actions](docs/rules/no-conflicting-pipe-actions.md)                   | Disallow contradictory Valibot pipe actions in the same pipe() call.                              | ✅ 🔒 |      |    |
-| [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)                       | Disallow duplicate Valibot actions inside the same pipe() call.                                   |      | ✅ 🔒 | 🔧 |
-| [no-empty-pipe](docs/rules/no-empty-pipe.md)                                               | Disallow empty pipe() calls or pipe() calls with a single argument.                               | ✅ 🔒 |      | 🔧 |
-| [no-empty-union](docs/rules/no-empty-union.md)                                             | Disallow Valibot union() calls without schema options.                                            | ✅ 🔒 |      |    |
-| [no-instanceof-builtins](docs/rules/no-instanceof-builtins.md)                             | Prefer primitive schema functions over instance(Constructor) for built-in types.                  | ✅ 🔒 |      | 🔧 |
-| [no-loose-object](docs/rules/no-loose-object.md)                                           | Disallow disallowed Valibot object schema constructors such as looseObject().                     |      | 🔒   |    |
-| [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                                 | Disallow recreating static Valibot schemas inside function scope.                                 |      | 🔒   |    |
-| [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)                 | Disallow redundant nested Valibot schema wrappers.                                                | ✅ 🔒 |      | 🔧 |
-| [no-redundant-transformation](docs/rules/no-redundant-transformation.md)                   | Disallow redundant Valibot transform() actions.                                                   | ✅ 🔒 |      | 🔧 |
-| [no-schema-as-type](docs/rules/no-schema-as-type.md)                                       | Disallow using a Valibot schema value itself as a TypeScript type.                                | 🔒   |      |    |
-| [no-single-member-union](docs/rules/no-single-member-union.md)                             | Disallow Valibot union() calls with only one schema option.                                       | ✅ 🔒 |      | 🔧 |
-| [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)                     | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions. | ✅ 🔒 |      |    |
-| [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                                     | Require Valibot parse() and assert() calls to be wrapped in try/catch.                            | ✅ 🔒 |      |    |
-| [no-unknown-schema](docs/rules/no-unknown-schema.md)                                       | Disallow Valibot unknown() schemas.                                                               |      | 🔒   |    |
-| [prefer-flatten-pipe](docs/rules/prefer-flatten-pipe.md)                                   | Prefer a single flattened pipe() call over nested pipe() calls.                                   |      | ✅ 🔒 | 🔧 |
-| [prefer-nullable-over-union-null](docs/rules/prefer-nullable-over-union-null.md)           | Prefer nullable() over union([schema, null()]) when they are equivalent.                          |      | ✅ 🔒 | 🔧 |
-| [prefer-nullish](docs/rules/prefer-nullish.md)                                             | Prefer nullish() over nested optional() and nullable() wrappers.                                  |      | ✅ 🔒 | 🔧 |
-| [prefer-optional-over-union-undefined](docs/rules/prefer-optional-over-union-undefined.md) | Prefer optional() over union([schema, undefined()]) when they are equivalent.                     |      | ✅ 🔒 | 🔧 |
-| [prefer-picklist](docs/rules/prefer-picklist.md)                                           | Prefer picklist() over union() when the union only contains literal string schemas.               |      | 🎨   | 🔧 |
-| [prefer-variant](docs/rules/prefer-variant.md)                                             | Prefer variant() over union() when object schemas share an obvious discriminant key.              |      | 🎨   | 🔧 |
-| [require-issue-messages](docs/rules/require-issue-messages.md)                             | Require explicit custom issue messages on Valibot schemas and issue-producing actions.            |      | 🔒   |    |
+| Name                                                                                       | Description                                                                                                     | 💼   | ⚠️   | 🔧 | 💡 |
+| :----------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------- | :--- | :--- | :- | :- |
+| [consistent-import](docs/rules/consistent-import.md)                                       | Enforce a consistent Valibot import style using either namespace or named imports.                              |      | 🎨   |    |    |
+| [consistent-schema-convention](docs/rules/consistent-schema-convention.md)                 | Enforce a consistent Valibot schema naming convention for exported schemas and inferred types.                  |      | 🎨   |    |    |
+| [no-any-schema](docs/rules/no-any-schema.md)                                               | Disallow Valibot any() schemas.                                                                                 |      | 🔒   |    |    |
+| [no-async-action-in-sync-pipe](docs/rules/no-async-action-in-sync-pipe.md)                 | Disallow async Valibot actions inside a synchronous pipe() call.                                                | ✅ 🔒 |      |    |    |
+| [no-async-schema-in-sync-parent](docs/rules/no-async-schema-in-sync-parent.md)             | Disallow passing async Valibot schemas to sync schemas and parse functions, which skip their validation.        | ✅ 🔒 |      |    |    |
+| [no-conflicting-pipe-actions](docs/rules/no-conflicting-pipe-actions.md)                   | Disallow contradictory Valibot pipe actions in the same pipe() call.                                            | ✅ 🔒 |      |    |    |
+| [no-duplicate-pipe-actions](docs/rules/no-duplicate-pipe-actions.md)                       | Disallow duplicate Valibot actions inside the same pipe() call.                                                 |      | ✅ 🔒 | 🔧 |    |
+| [no-empty-pipe](docs/rules/no-empty-pipe.md)                                               | Disallow empty pipe() calls or pipe() calls with a single argument.                                             | ✅ 🔒 |      | 🔧 |    |
+| [no-empty-union](docs/rules/no-empty-union.md)                                             | Disallow Valibot union() calls without schema options.                                                          | ✅ 🔒 |      |    |    |
+| [no-instanceof-builtins](docs/rules/no-instanceof-builtins.md)                             | Prefer primitive schema functions over instance(Constructor) for built-in types.                                | ✅ 🔒 |      | 🔧 |    |
+| [no-length-check-before-trim](docs/rules/no-length-check-before-trim.md)                   | Disallow minimum length and emptiness checks before trim() in the same pipe, where whitespace can satisfy them. | ✅ 🔒 |      |    | 💡 |
+| [no-loose-object](docs/rules/no-loose-object.md)                                           | Disallow disallowed Valibot object schema constructors such as looseObject().                                   |      | 🔒   |    |    |
+| [no-recreated-schemas](docs/rules/no-recreated-schemas.md)                                 | Disallow recreating static Valibot schemas inside function scope.                                               |      | 🔒   |    |    |
+| [no-redundant-schema-wrappers](docs/rules/no-redundant-schema-wrappers.md)                 | Disallow redundant nested Valibot schema wrappers.                                                              | ✅ 🔒 |      | 🔧 |    |
+| [no-redundant-transformation](docs/rules/no-redundant-transformation.md)                   | Disallow redundant Valibot transform() actions.                                                                 | ✅ 🔒 |      | 🔧 |    |
+| [no-schema-as-type](docs/rules/no-schema-as-type.md)                                       | Disallow using a Valibot schema value itself as a TypeScript type.                                              | 🔒   |      |    |    |
+| [no-single-member-union](docs/rules/no-single-member-union.md)                             | Disallow Valibot union() calls with only one schema option.                                                     | ✅ 🔒 |      | 🔧 |    |
+| [no-throw-in-check](docs/rules/no-throw-in-check.md)                                       | Disallow throwing inside Valibot check and transform callbacks, which escapes safeParse().                      | ✅ 🔒 |      |    |    |
+| [no-transform-in-record-key](docs/rules/no-transform-in-record-key.md)                     | Disallow transforms in record() key schemas, which can silently mutate keys and cause collisions.               | ✅ 🔒 |      |    |    |
+| [no-unawaited-parse-async](docs/rules/no-unawaited-parse-async.md)                         | Disallow using the result of Valibot parseAsync() or safeParseAsync() without awaiting it.                      | ✅ 🔒 |      |    | 💡 |
+| [no-unchecked-safe-parse](docs/rules/no-unchecked-safe-parse.md)                           | Require checking the success of a Valibot safeParse() result before reading its output.                         | ✅ 🔒 |      |    |    |
+| [no-unguarded-parse](docs/rules/no-unguarded-parse.md)                                     | Require Valibot parse() and assert() calls to be wrapped in try/catch.                                          | ✅ 🔒 |      |    |    |
+| [no-unknown-schema](docs/rules/no-unknown-schema.md)                                       | Disallow Valibot unknown() schemas.                                                                             |      | 🔒   |    |    |
+| [prefer-flatten-pipe](docs/rules/prefer-flatten-pipe.md)                                   | Prefer a single flattened pipe() call over nested pipe() calls.                                                 |      | ✅ 🔒 | 🔧 |    |
+| [prefer-nullable-over-union-null](docs/rules/prefer-nullable-over-union-null.md)           | Prefer nullable() over union([schema, null()]) when they are equivalent.                                        |      | ✅ 🔒 | 🔧 |    |
+| [prefer-nullish](docs/rules/prefer-nullish.md)                                             | Prefer nullish() over nested optional() and nullable() wrappers.                                                |      | ✅ 🔒 | 🔧 |    |
+| [prefer-optional-over-union-undefined](docs/rules/prefer-optional-over-union-undefined.md) | Prefer optional() over union([schema, undefined()]) when they are equivalent.                                   |      | ✅ 🔒 | 🔧 |    |
+| [prefer-picklist](docs/rules/prefer-picklist.md)                                           | Prefer picklist() over union() when the union only contains literal string schemas.                             |      | 🎨   | 🔧 |    |
+| [prefer-variant](docs/rules/prefer-variant.md)                                             | Prefer variant() over union() when object schemas share an obvious discriminant key.                            |      | 🎨   | 🔧 |    |
+| [require-issue-messages](docs/rules/require-issue-messages.md)                             | Require explicit custom issue messages on Valibot schemas and issue-producing actions.                          |      | 🔒   |    |    |
 
 <!-- end auto-generated rules list -->
 
