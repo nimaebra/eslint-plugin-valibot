@@ -40,6 +40,20 @@ Dynamic schema factories that genuinely depend on runtime inputs can stay inside
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+Static async schemas such as `objectAsync()` and `pipeAsync()` are recognized too. Hoist them when their definition does not depend on function inputs:
+
+```ts
+import * as v from 'valibot';
+
+const UserSchema = v.objectAsync({ name: v.string() });
+
+function validate(input: unknown) {
+  return v.safeParseAsync(UserSchema, input);
+}
+```
+
 ## Autofix
 
 No. This rule does not provide autofix because safely hoisting or memoizing a schema can change closures, initialization order, or runtime dependencies.

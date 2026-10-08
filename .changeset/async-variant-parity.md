@@ -9,4 +9,4 @@ Apply rules to Valibot's async APIs. Previously most rules only matched the sync
 - `no-redundant-schema-wrappers` and `prefer-nullish` now check `optionalAsync()`, `nullableAsync()` and the other async wrappers.
 - `no-loose-object` now checks `looseObjectAsync()`.
 - `no-transform-in-record-key` now checks `recordAsync()`, `pipeAsync()`, `transformAsync()` and `rawTransformAsync()`.
-- `no-recreated-schemas` and the schema-aware naming rules now recognize async schema constructors such as `objectAsync()`.
+- `no-recreated-schemas`, `no-schema-as-type` and the schema naming rules now recognize async schema constructors such as `objectAsync()`.

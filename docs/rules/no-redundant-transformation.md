@@ -67,6 +67,21 @@ const IdentitySchema = v.string();
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+Identity and redundant synchronous `transform()` actions are also checked inside `pipeAsync()`. The outer async pipe is preserved when an action is replaced or removed:
+
+```ts
+import * as v from 'valibot';
+
+const RedundantSchema = v.pipeAsync(
+  v.string(),
+  v.trim(),
+  v.transform((value) => value),
+);
+const Schema = v.pipeAsync(v.string(), v.trim());
+```
+
 ## Autofix
 
 The rule replaces a `transform()` call when a safe equivalent exists. Identity transforms are reported without a fix when removing them would also remove a comment.

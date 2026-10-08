@@ -30,6 +30,17 @@ const StatusSchema = v.union([v.literal('active'), v.literal('inactive')]);
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+An empty options array is also invalid in `unionAsync()`. Supply the schemas the input may match:
+
+```ts
+import * as v from 'valibot';
+
+const EmptySchema = v.unionAsync([]);
+const Schema = v.unionAsync([v.string(), v.number()]);
+```
+
 ## Further Reading
 
 - [Valibot union() API](https://valibot.dev/api/union/)

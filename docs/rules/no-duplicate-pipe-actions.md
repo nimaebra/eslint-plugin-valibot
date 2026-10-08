@@ -32,6 +32,17 @@ const Schema = v.pipe(v.string(), v.trim(), v.minLength(1));
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+The rule also checks `pipeAsync()`. Keep one copy of each equivalent action:
+
+```ts
+import * as v from 'valibot';
+
+const DuplicateSchema = v.pipeAsync(v.string(), v.minLength(3), v.minLength(3));
+const Schema = v.pipeAsync(v.string(), v.minLength(3));
+```
+
 ## Autofix
 
 Yes, when the duplicated action is an exact repeated call and removing the later call does not cross nearby comments.

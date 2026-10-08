@@ -34,6 +34,17 @@ const Schema = v.nullable(v.string());
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+The same conservative matching applies to `unionAsync()`. Its fix uses `nullableAsync()` when that callee is available in the current import style:
+
+```ts
+import * as v from 'valibot';
+
+const UnionSchema = v.unionAsync([v.string(), v.null()]);
+const Schema = v.nullableAsync(v.string());
+```
+
 ## Autofix
 
 Yes, when the existing import style already provides a `nullable` callee and the union form is behaviorally equivalent.

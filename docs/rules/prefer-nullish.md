@@ -32,6 +32,17 @@ const Schema = v.nullish(v.string());
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+Nested `optionalAsync()` and `nullableAsync()` wrappers are reported too. Their fix uses `nullishAsync()` when it is available. Mixed sync/async wrappers are left unchanged:
+
+```ts
+import * as v from 'valibot';
+
+const NestedSchema = v.optionalAsync(v.nullableAsync(v.string()));
+const Schema = v.nullishAsync(v.string());
+```
+
 ## Autofix
 
 Yes, when the nested wrappers are simple and a usable `nullish` callee is already available in the current import style.

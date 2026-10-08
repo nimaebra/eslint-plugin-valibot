@@ -17,6 +17,9 @@ ruleTester.run(
   {
     valid: [
       {
+        code: "import * as v from 'valibot';\nexport const UserSchema = v.objectAsync({ id: v.string() });\nexport type UserOutput = v.InferOutput<typeof UserSchema>;",
+      },
+      {
         code: "import * as v from 'valibot';\nexport const ImageSchema = v.object({ id: v.string() });\nexport type ImageInput = v.InferInput<typeof ImageSchema>;\nexport type ImageOutput = v.InferOutput<typeof ImageSchema>;",
       },
       {
@@ -38,6 +41,15 @@ ruleTester.run(
       },
     ],
     invalid: [
+      {
+        code: "import * as v from 'valibot';\nexport const User = v.objectAsync({ id: v.string() });",
+        errors: [
+          {
+            messageId: 'schemaNameConvention',
+            data: { convention: 'suffix', expectedName: 'UserSchema' },
+          },
+        ],
+      },
       {
         code: "import * as v from 'valibot';\nconst User = v.object({ id: v.string() });\nexport { User };",
         errors: [
