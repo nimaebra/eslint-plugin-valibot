@@ -5,12 +5,15 @@ export type RuleMap = Record<string, RuleModule>;
 export type RuleSeverity = 'off' | 'warn' | 'error' | 0 | 1 | 2;
 export type RuleEntry = RuleSeverity | readonly [RuleSeverity, ...unknown[]];
 export type RulesConfig = Record<string, RuleEntry>;
-export type ConfigName = 'recommended' | 'strict' | 'stylistic';
+/** Presets that rules opt into through their registry entry. */
+export type PresetName = 'recommended' | 'strict' | 'stylistic';
+/** All exported configs. `all` is derived and enables every rule. */
+export type ConfigName = PresetName | 'all';
 
 export interface RuleRegistryEntry {
   name: string;
   rule: RuleModule;
-  configs: Partial<Record<ConfigName, RuleEntry>>;
+  configs: Partial<Record<PresetName, RuleEntry>>;
   typeScriptOnly?: boolean;
 }
 
