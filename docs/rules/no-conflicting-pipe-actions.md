@@ -38,6 +38,16 @@ const LengthSchema = v.pipe(v.string(), v.minLength(2), v.maxLength(10));
 
 The initial version reports adjacent `minLength()` and `maxLength()` actions when the minimum is greater than the maximum and both limits are numeric literals. It does not report across intervening actions because a transformation could change the value's length.
 
+## Async APIs
+
+The same conflict checks apply to `pipeAsync()`. These length limits cannot both pass:
+
+```ts
+import * as v from 'valibot';
+
+const Schema = v.pipeAsync(v.string(), v.minLength(10), v.maxLength(5));
+```
+
 ## Further Reading
 
 - [Valibot pipe() API](https://valibot.dev/api/pipe/)

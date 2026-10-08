@@ -7,7 +7,7 @@ import {
   hasValibotImports,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { getValibotCallVariant } from '../utils/is-valibot-call';
 
 type Options = [];
 type MessageIds = 'nestedPipe';
@@ -37,20 +37,31 @@ export const preferFlattenPipe = createRule<Options, MessageIds>({
         imports = collectValibotImports(node);
       },
       CallExpression(node) {
-        if (
-          !hasValibotImports(imports) ||
-          !isValibotCall(node, imports, 'pipe')
-        ) {
+        if (!hasValibotImports(imports)) {
           return;
         }
 
-        const nestedPipe = getNestedPipeArgument(node, imports);
+        const variant = getValibotCallVariant(node, imports);
+
+        if (variant?.name !== 'pipe') {
+          return;
+        }
+
+        const nestedPipe = getNestedPipeArgument(
+          node,
+          imports,
+          variant.isAsync,
+        );
 
         if (!nestedPipe) {
           return;
         }
 
-        const flattenedArguments = flattenPipeArguments(node, imports);
+        const flattenedArguments = flattenPipeArguments(
+          node,
+          imports,
+          variant.isAsync,
+        );
 
         if (
           !flattenedArguments ||
@@ -84,13 +95,11 @@ export const preferFlattenPipe = createRule<Options, MessageIds>({
 function getNestedPipeArgument(
   pipeCall: TSESTree.CallExpression,
   imports: ValibotImports,
+  isOuterAsync: boolean,
 ): TSESTree.CallExpression | null {
   const firstArgument = pipeCall.arguments[0];
 
-  if (
-    firstArgument?.type === 'CallExpression' &&
-    isValibotCall(firstArgument, imports, 'pipe')
-  ) {
+  if (isFlattenablePipe(firstArgument, imports, isOuterAsync)) {
     return firstArgument;
   }
 
@@ -100,6 +109,7 @@ function getNestedPipeArgument(
 function flattenPipeArguments(
   pipeCall: TSESTree.CallExpression,
   imports: ValibotImports,
+  isOuterAsync: boolean,
 ): TSESTree.Expression[] | null {
   const flattened: TSESTree.Expression[] = [];
 
@@ -108,11 +118,12 @@ function flattenPipeArguments(
       return null;
     }
 
-    if (
-      argument.type === 'CallExpression' &&
-      isValibotCall(argument, imports, 'pipe')
-    ) {
-      const nestedArguments = flattenPipeArguments(argument, imports);
+    if (isFlattenablePipe(argument, imports, isOuterAsync)) {
+      const nestedArguments = flattenPipeArguments(
+        argument,
+        imports,
+        isOuterAsync,
+      );
 
       if (!nestedArguments) {
         return null;
@@ -135,4 +146,22 @@ function hasCommentInRange(
   return comments.some(
     (comment) => comment.range[0] < range[1] && comment.range[1] > range[0],
   );
+}
+
+/**
+ * A sync pipe can only absorb sync pipes, while `pipeAsync()` can absorb both
+ * because sync actions are valid inside an async pipe.
+ */
+function isFlattenablePipe(
+  node: TSESTree.Node | undefined,
+  imports: ValibotImports,
+  isOuterAsync: boolean,
+): node is TSESTree.CallExpression {
+  if (node?.type !== 'CallExpression') {
+    return false;
+  }
+
+  const variant = getValibotCallVariant(node, imports);
+
+  return variant?.name === 'pipe' && (isOuterAsync || !variant.isAsync);
 }

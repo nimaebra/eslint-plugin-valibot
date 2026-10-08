@@ -34,6 +34,17 @@ const Schema = v.optional(v.string());
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+The same conservative matching applies to `unionAsync()`. Its fix uses `optionalAsync()` when that callee is available in the current import style:
+
+```ts
+import * as v from 'valibot';
+
+const UnionSchema = v.unionAsync([v.string(), v.undefined()]);
+const Schema = v.optionalAsync(v.string());
+```
+
 ## Autofix
 
 Yes, when the existing import style already provides an `optional` callee and the union form is behaviorally equivalent.

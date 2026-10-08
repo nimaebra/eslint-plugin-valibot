@@ -43,6 +43,17 @@ const PipedSchema = v.pipe(v.string(), v.email(), v.trim());
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+`pipeAsync()` is checked too. A single-argument call is simplified to its inner schema:
+
+```ts
+import * as v from 'valibot';
+
+const RedundantSchema = v.pipeAsync(v.string());
+const Schema = v.string();
+```
+
 ## Autofix
 
 Yes, this rule automatically rewrites single-argument pipes to extract the inner schema (e.g., `pipe(string())` becomes `string()`).

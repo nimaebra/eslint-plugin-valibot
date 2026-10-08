@@ -120,6 +120,17 @@ export type PublicUser = v.InferOutput<typeof PublicUser>;
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+Async constructors such as `objectAsync()` and `pipeAsync()` are recognized as schemas and follow the same naming options. With the default suffix convention:
+
+```ts
+import * as v from 'valibot';
+
+export const UserSchema = v.objectAsync({ name: v.string() });
+export type UserOutput = v.InferOutput<typeof UserSchema>;
+```
+
 ## Autofix
 
 No. This rule does not provide autofix because renaming schema and inferred type identifiers requires coordinated symbol renames across the project.

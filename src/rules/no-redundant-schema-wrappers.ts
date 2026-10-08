@@ -1,10 +1,13 @@
+import type { TSESTree } from '@typescript-eslint/utils';
+
 import { createRule } from '../utils/create-rule';
 import {
   collectValibotImports,
   createEmptyValibotImports,
   hasValibotImports,
+  type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { getValibotCallVariant } from '../utils/is-valibot-call';
 
 const DUPLICATE_WRAPPER_NAMES = new Set([
   'optional',
@@ -82,18 +85,22 @@ export const noRedundantSchemaWrappers = createRule<Options, MessageIds>({
 });
 
 function getDuplicatedWrapperName(
-  outerCall: Parameters<typeof isValibotCall>[0],
-  innerCall: Parameters<typeof isValibotCall>[0],
-  imports: Parameters<typeof isValibotCall>[1],
+  outerCall: TSESTree.CallExpression,
+  innerCall: TSESTree.CallExpression,
+  imports: ValibotImports,
 ): string | null {
-  for (const wrapperName of DUPLICATE_WRAPPER_NAMES) {
-    if (
-      isValibotCall(outerCall, imports, wrapperName) &&
-      isValibotCall(innerCall, imports, wrapperName)
-    ) {
-      return wrapperName;
-    }
+  const outer = getValibotCallVariant(outerCall, imports);
+  const inner = getValibotCallVariant(innerCall, imports);
+
+  if (
+    !outer ||
+    !inner ||
+    !DUPLICATE_WRAPPER_NAMES.has(outer.name) ||
+    outer.name !== inner.name ||
+    outer.isAsync !== inner.isAsync
+  ) {
+    return null;
   }
 
-  return null;
+  return outer.name;
 }

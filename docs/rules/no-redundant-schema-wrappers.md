@@ -41,6 +41,17 @@ const Schema = v.optional(v.string());
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+Duplicate async wrappers are also removed when both calls use the same async API. Mixed nesting such as `optionalAsync(optional(...))` is left unchanged:
+
+```ts
+import * as v from 'valibot';
+
+const RedundantSchema = v.optionalAsync(v.optionalAsync(v.string()));
+const Schema = v.optionalAsync(v.string());
+```
+
 ## Autofix
 
 Yes, when both wrappers are identical and neither wrapper uses a default argument.

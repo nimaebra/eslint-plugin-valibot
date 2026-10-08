@@ -40,6 +40,23 @@ const PayloadSchema = v.variant('type', [
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+For `unionAsync()`, the rule accepts sync and async object options and fixes to `variantAsync()` when that callee is available. A sync `union()` containing async object options is left unchanged:
+
+```ts
+import * as v from 'valibot';
+
+const UnionSchema = v.unionAsync([
+  v.objectAsync({ type: v.literal('user'), name: v.string() }),
+  v.object({ type: v.literal('admin'), role: v.string() }),
+]);
+const Schema = v.variantAsync('type', [
+  v.objectAsync({ type: v.literal('user'), name: v.string() }),
+  v.object({ type: v.literal('admin'), role: v.string() }),
+]);
+```
+
 ## Autofix
 
 Yes, when the rule can determine an obvious shared discriminant key and a usable `variant` callee in the current import style.

@@ -38,6 +38,17 @@ const StatusSchema = v.picklist(['active', 'inactive', 'archived']);
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+String-literal unions are also recognized in `unionAsync()`. The replacement is the synchronous `picklist()`, which can also be used by async parents and parsing APIs:
+
+```ts
+import * as v from 'valibot';
+
+const UnionSchema = v.unionAsync([v.literal('admin'), v.literal('user')]);
+const Schema = v.picklist(['admin', 'user']);
+```
+
 ## Autofix
 
 Yes, when the union options are all literal string schemas and a usable `picklist` callee is available in the current import style.

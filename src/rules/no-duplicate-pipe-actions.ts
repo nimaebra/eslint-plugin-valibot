@@ -7,7 +7,7 @@ import {
   hasValibotImports,
 } from '../utils/collect-valibot-imports';
 import { getPipeActionDescriptors } from '../utils/pipe-analysis';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { isValibotCallOrAsync } from '../utils/is-valibot-call';
 
 type Options = [];
 type MessageIds = 'duplicatePipeAction';
@@ -39,7 +39,7 @@ export const noDuplicatePipeActions = createRule<Options, MessageIds>({
       CallExpression(node) {
         if (
           !hasValibotImports(imports) ||
-          !isValibotCall(node, imports, 'pipe')
+          !isValibotCallOrAsync(node, imports, 'pipe')
         ) {
           return;
         }

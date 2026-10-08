@@ -48,3 +48,39 @@ export function isValibotCall(
 ): boolean {
   return getValibotCallName(node, imports) === functionName;
 }
+
+const ASYNC_SUFFIX = 'Async';
+
+export interface ValibotCallVariant {
+  /** The sync API name, e.g. `pipe` for both `pipe()` and `pipeAsync()`. */
+  name: string;
+  isAsync: boolean;
+}
+
+export function getValibotCallVariant(
+  node: TSESTree.CallExpression,
+  imports: ValibotImports,
+): ValibotCallVariant | null {
+  const name = getValibotCallName(node, imports);
+
+  if (name === null) {
+    return null;
+  }
+
+  return name.endsWith(ASYNC_SUFFIX)
+    ? { name: name.slice(0, -ASYNC_SUFFIX.length), isAsync: true }
+    : { name, isAsync: false };
+}
+
+/** Matches `functionName()` and its `functionNameAsync()` variant. */
+export function isValibotCallOrAsync(
+  node: TSESTree.CallExpression,
+  imports: ValibotImports,
+  functionName: string,
+): boolean {
+  return getValibotCallVariant(node, imports)?.name === functionName;
+}
+
+export function toAsyncApiName(name: string, isAsync: boolean): string {
+  return isAsync ? `${name}${ASYNC_SUFFIX}` : name;
+}

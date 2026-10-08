@@ -4,7 +4,7 @@ import {
   createEmptyValibotImports,
   hasValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { isValibotCallOrAsync } from '../utils/is-valibot-call';
 
 type Options = [];
 type MessageIds = 'emptyPipe' | 'redundantPipe';
@@ -39,7 +39,7 @@ export const noEmptyPipe = createRule<Options, MessageIds>({
           return;
         }
 
-        if (!isValibotCall(node, imports, 'pipe')) {
+        if (!isValibotCallOrAsync(node, imports, 'pipe')) {
           return;
         }
 

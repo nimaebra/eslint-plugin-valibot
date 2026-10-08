@@ -7,14 +7,19 @@ import {
   hasValibotImports,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { getValibotCalleeText } from '../utils/callee-text';
+import {
+  getValibotCallVariant,
+  isValibotCall,
+  toAsyncApiName,
+} from '../utils/is-valibot-call';
 
-const OBJECT_SCHEMA_NAMES = [
+const OBJECT_SCHEMA_NAMES = new Set([
   'object',
   'strictObject',
   'looseObject',
   'objectWithRest',
-] as const;
+]);
 
 type Options = [];
 type MessageIds = 'preferVariant';
@@ -44,10 +49,13 @@ export const preferVariant = createRule<Options, MessageIds>({
         imports = collectValibotImports(node);
       },
       CallExpression(node) {
-        if (
-          !hasValibotImports(imports) ||
-          !isValibotCall(node, imports, 'union')
-        ) {
+        if (!hasValibotImports(imports)) {
+          return;
+        }
+
+        const variant = getValibotCallVariant(node, imports);
+
+        if (variant?.name !== 'union') {
           return;
         }
 
@@ -57,7 +65,11 @@ export const preferVariant = createRule<Options, MessageIds>({
           return;
         }
 
-        const optionCalls = getOptionObjectSchemaCalls(optionsArray, imports);
+        const optionCalls = getOptionObjectSchemaCalls(
+          optionsArray,
+          imports,
+          variant.isAsync,
+        );
 
         if (!optionCalls) {
           return;
@@ -69,7 +81,11 @@ export const preferVariant = createRule<Options, MessageIds>({
           return;
         }
 
-        const preferredCalleeText = getPreferredCalleeText(node, imports);
+        const preferredCalleeText = getValibotCalleeText(
+          node,
+          imports,
+          toAsyncApiName('variant', variant.isAsync),
+        );
 
         context.report({
           node,
@@ -94,6 +110,7 @@ export const preferVariant = createRule<Options, MessageIds>({
 function getOptionObjectSchemaCalls(
   optionsArray: TSESTree.ArrayExpression,
   imports: ValibotImports,
+  isUnionAsync: boolean,
 ): TSESTree.CallExpression[] | null {
   if (optionsArray.elements.length < 2) {
     return null;
@@ -110,8 +127,14 @@ function getOptionObjectSchemaCalls(
       return null;
     }
 
+    const optionVariant = getValibotCallVariant(element, imports);
+
+    // A sync union cannot hold async object schemas, so only unionAsync()
+    // options may be async.
     if (
-      !OBJECT_SCHEMA_NAMES.some((name) => isValibotCall(element, imports, name))
+      !optionVariant ||
+      !OBJECT_SCHEMA_NAMES.has(optionVariant.name) ||
+      (optionVariant.isAsync && !isUnionAsync)
     ) {
       return null;
     }
@@ -228,43 +251,6 @@ function getLiteralSchemaValue(
   }
 
   return String(literalArg.value);
-}
-
-function getPreferredCalleeText(
-  call: TSESTree.CallExpression,
-  imports: ValibotImports,
-): string | null {
-  if (call.callee.type === 'MemberExpression') {
-    return `${sourceTextForMemberNamespace(call)}.variant`;
-  }
-
-  const localVariantName = getLocalImportName(imports, 'variant');
-
-  return localVariantName ?? null;
-}
-
-function sourceTextForMemberNamespace(call: TSESTree.CallExpression): string {
-  if (
-    call.callee.type === 'MemberExpression' &&
-    call.callee.object.type === 'Identifier'
-  ) {
-    return call.callee.object.name;
-  }
-
-  return 'v';
-}
-
-function getLocalImportName(
-  imports: ValibotImports,
-  importedName: string,
-): string | undefined {
-  for (const [localName, importedValue] of imports.importedNames) {
-    if (importedValue === importedName) {
-      return localName;
-    }
-  }
-
-  return undefined;
 }
 
 function toSingleQuotedString(value: string): string {

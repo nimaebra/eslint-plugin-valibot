@@ -32,6 +32,17 @@ const FlattenedPipeSchema = v.pipe(v.string(), v.trim(), v.minLength(1));
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+An outer `pipeAsync()` can absorb nested sync or async pipes. A sync `pipe()` cannot absorb an async pipe, so that mixed form is left unchanged:
+
+```ts
+import * as v from 'valibot';
+
+const NestedSchema = v.pipeAsync(v.pipe(v.string(), v.trim()), v.minLength(1));
+const Schema = v.pipeAsync(v.string(), v.trim(), v.minLength(1));
+```
+
 ## Autofix
 
 Yes, unless a nested `pipe()` contains a spread argument or the expression contains comments. The rule still reports those cases, but avoids autofixing when it cannot preserve source text safely.

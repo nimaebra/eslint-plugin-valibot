@@ -12,6 +12,9 @@ const ruleTester = new RuleTester({
 ruleTester.run('prefer-nullish', preferNullish as never, {
   valid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.optionalAsync(v.nullable(v.string()));",
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.nullish(v.string());",
     },
     {
@@ -22,6 +25,17 @@ ruleTester.run('prefer-nullish', preferNullish as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot';\nconst Schema = v.optionalAsync(v.nullableAsync(v.string()));",
+      output:
+        "import * as v from 'valibot';\nconst Schema = v.nullishAsync(v.string());",
+      errors: [{ messageId: 'preferNullish' }],
+    },
+    {
+      code: "import { nullableAsync, optionalAsync, string } from 'valibot';\nconst Schema = optionalAsync(nullableAsync(string()));",
+      output: null,
+      errors: [{ messageId: 'preferNullish' }],
+    },
     {
       code: "import * as v from 'valibot';\nconst Schema = v.optional(v.nullable(v.string()));",
       output:

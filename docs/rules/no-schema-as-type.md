@@ -32,6 +32,17 @@ type User = v.InferOutput<typeof UserSchema>;
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+Async schema bindings are recognized too. Use `InferInput` or `InferOutput` for their data types:
+
+```ts
+import * as v from 'valibot';
+
+const UserSchema = v.objectAsync({ name: v.string() });
+type User = v.InferOutput<typeof UserSchema>;
+```
+
 ## Autofix
 
 No. This rule does not provide autofix because choosing between `InferInput` and `InferOutput` depends on whether the type represents accepted input or parsed output.

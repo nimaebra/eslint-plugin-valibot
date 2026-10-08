@@ -53,6 +53,22 @@ const TransformedValues = v.record(v.string(), v.pipe(v.string(), v.trim()));
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+The rule also checks `recordAsync()` and key actions inside `pipeAsync()`, including `transformAsync()` and `rawTransformAsync()`. This async key transformation is reported:
+
+```ts
+import * as v from 'valibot';
+
+const Schema = v.recordAsync(
+  v.pipeAsync(
+    v.string(),
+    v.transformAsync(async (value) => value.toLowerCase()),
+  ),
+  v.number(),
+);
+```
+
 ## Autofix
 
 No. This rule does not provide autofix because moving key transforms out of `record()` requires domain-specific collision handling that cannot be inferred automatically.

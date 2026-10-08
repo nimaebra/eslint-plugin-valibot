@@ -32,6 +32,17 @@ const StringSchema = v.string();
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+The rule also simplifies a single-member `unionAsync()` to the inner schema:
+
+```ts
+import * as v from 'valibot';
+
+const RedundantSchema = v.unionAsync([v.string()]);
+const Schema = v.string();
+```
+
 ## Autofix
 
 Yes, when the union has no extra arguments. If the union has a custom issue message, the rule still reports it but leaves the fix to you so the message is not accidentally discarded.

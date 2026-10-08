@@ -7,7 +7,7 @@ import {
   hasValibotImports,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { isValibotCallOrAsync } from '../utils/is-valibot-call';
 import {
   getPipeActionDescriptors,
   type PipeActionDescriptor,
@@ -16,7 +16,9 @@ import {
 const EXPLICIT_KEY_MUTATION_ACTION_NAMES = new Set([
   'normalize',
   'rawTransform',
+  'rawTransformAsync',
   'transform',
+  'transformAsync',
   'trim',
   'trimEnd',
   'trimStart',
@@ -55,7 +57,7 @@ export const noTransformInRecordKey = createRule<Options, MessageIds>({
       CallExpression(node) {
         if (
           !hasValibotImports(imports) ||
-          !isValibotCall(node, imports, 'record')
+          !isValibotCallOrAsync(node, imports, 'record')
         ) {
           return;
         }
@@ -122,7 +124,7 @@ function getTransformingKeyActions(
     return [];
   }
 
-  const transformingActions = isValibotCall(node, imports, 'pipe')
+  const transformingActions = isValibotCallOrAsync(node, imports, 'pipe')
     ? getPipeActionDescriptors(node, imports, sourceCode).filter((action) =>
         isTransformingKeyActionName(action.name),
       )

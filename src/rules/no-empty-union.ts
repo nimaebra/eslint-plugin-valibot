@@ -4,7 +4,7 @@ import {
   createEmptyValibotImports,
   hasValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { isValibotCallOrAsync } from '../utils/is-valibot-call';
 
 type Options = [];
 type MessageIds = 'emptyUnion';
@@ -33,7 +33,7 @@ export const noEmptyUnion = createRule<Options, MessageIds>({
       CallExpression(node) {
         if (
           !hasValibotImports(imports) ||
-          !isValibotCall(node, imports, 'union')
+          !isValibotCallOrAsync(node, imports, 'union')
         ) {
           return;
         }

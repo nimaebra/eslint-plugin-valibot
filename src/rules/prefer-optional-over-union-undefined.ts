@@ -7,7 +7,12 @@ import {
   hasValibotImports,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
-import { isValibotCall } from '../utils/is-valibot-call';
+import { getValibotCalleeText } from '../utils/callee-text';
+import {
+  getValibotCallVariant,
+  isValibotCall,
+  toAsyncApiName,
+} from '../utils/is-valibot-call';
 
 const OBJECT_SCHEMA_NAMES = [
   'object',
@@ -49,10 +54,13 @@ export const preferOptionalOverUnionUndefined = createRule<Options, MessageIds>(
           imports = collectValibotImports(node);
         },
         CallExpression(node) {
-          if (
-            !hasValibotImports(imports) ||
-            !isValibotCall(node, imports, 'union')
-          ) {
+          if (!hasValibotImports(imports)) {
+            return;
+          }
+
+          const variant = getValibotCallVariant(node, imports);
+
+          if (variant?.name !== 'union') {
             return;
           }
 
@@ -62,7 +70,11 @@ export const preferOptionalOverUnionUndefined = createRule<Options, MessageIds>(
             return;
           }
 
-          const preferredCalleeText = getPreferredCalleeText(node, imports);
+          const preferredCalleeText = getValibotCalleeText(
+            node,
+            imports,
+            toAsyncApiName('optional', variant.isAsync),
+          );
 
           context.report({
             node,
@@ -164,41 +176,4 @@ function isWithinObjectSchemaEntry(
   }
 
   return false;
-}
-
-function getPreferredCalleeText(
-  call: TSESTree.CallExpression,
-  imports: ValibotImports,
-): string | null {
-  if (call.callee.type === 'MemberExpression') {
-    return `${sourceTextForMemberNamespace(call)}.optional`;
-  }
-
-  const localOptionalName = getLocalImportName(imports, 'optional');
-
-  return localOptionalName ?? null;
-}
-
-function sourceTextForMemberNamespace(call: TSESTree.CallExpression): string {
-  if (
-    call.callee.type === 'MemberExpression' &&
-    call.callee.object.type === 'Identifier'
-  ) {
-    return call.callee.object.name;
-  }
-
-  return 'v';
-}
-
-function getLocalImportName(
-  imports: ValibotImports,
-  importedName: string,
-): string | undefined {
-  for (const [localName, importedValue] of imports.importedNames) {
-    if (importedValue === importedName) {
-      return localName;
-    }
-  }
-
-  return undefined;
 }

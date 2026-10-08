@@ -64,6 +64,17 @@ With that configuration, `strictObject()` becomes invalid as well.
 
 <!-- end auto-generated rule options -->
 
+## Async APIs
+
+The `allow` option applies to sync and async forms of each object constructor. With the defaults, `looseObjectAsync()` is reported and `objectAsync()` is allowed:
+
+```ts
+import * as v from 'valibot';
+
+const LooseSchema = v.looseObjectAsync({ name: v.string() });
+const UserSchema = v.objectAsync({ name: v.string() });
+```
+
 ## Autofix
 
 No. This rule does not provide autofix because swapping object constructor semantics (`object`, `strictObject`, `looseObject`) can change runtime behavior for unknown keys.

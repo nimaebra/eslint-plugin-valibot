@@ -14,6 +14,9 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-schema-as-type', noSchemaAsType as never, {
   valid: [
     {
+      code: "import * as v from 'valibot';\nconst UserSchema = v.objectAsync({ id: v.string() });\ntype User = v.InferOutput<typeof UserSchema>;",
+    },
+    {
       code: "import * as v from 'valibot';\nconst UserSchema = v.object({ id: v.string() });\ntype User = v.InferOutput<typeof UserSchema>;",
     },
     {
@@ -24,6 +27,12 @@ ruleTester.run('no-schema-as-type', noSchemaAsType as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot';\nconst UserSchema = v.objectAsync({ id: v.string() });\ntype User = typeof UserSchema;",
+      errors: [
+        { messageId: 'noSchemaAsType', data: { schemaName: 'UserSchema' } },
+      ],
+    },
     {
       code: "import * as v from 'valibot';\nconst UserSchema = v.object({ id: v.string() });\ntype User = typeof UserSchema;",
       errors: [

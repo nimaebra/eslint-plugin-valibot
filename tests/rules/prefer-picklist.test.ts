@@ -29,6 +29,12 @@ ruleTester.run('prefer-picklist', preferPicklist as never, {
   ],
   invalid: [
     {
+      code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.literal('a'), v.literal('b')]);",
+      output:
+        "import * as v from 'valibot';\nconst Schema = v.picklist(['a', 'b']);",
+      errors: [{ messageId: 'preferPicklist' }],
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.union([v.literal('A'), v.literal('B')]);",
       output:
         "import * as v from 'valibot';\nconst Schema = v.picklist(['A', 'B']);",
