@@ -1,5 +1,41 @@
 # eslint-plugin-valibot
 
+## 1.4.0
+
+### Minor Changes
+
+- 1f90774: Apply rules to Valibot's async APIs. Previously most rules only matched the sync names, so async schemas were silently skipped.
+
+  - `no-empty-pipe`, `no-duplicate-pipe-actions`, `no-conflicting-pipe-actions`, `prefer-flatten-pipe` and `no-redundant-transformation` now check `pipeAsync()`. `prefer-flatten-pipe` flattens sync and async inner pipes into an outer `pipeAsync()`.
+  - `no-empty-union`, `no-single-member-union`, `prefer-picklist`, `prefer-variant`, `prefer-nullable-over-union-null` and `prefer-optional-over-union-undefined` now check `unionAsync()`. Autofixes keep the async API, e.g. `unionAsync([schema, null()])` becomes `nullableAsync(schema)`.
+  - `no-redundant-schema-wrappers` and `prefer-nullish` now check `optionalAsync()`, `nullableAsync()` and the other async wrappers.
+  - `no-loose-object` now checks `looseObjectAsync()`.
+  - `no-transform-in-record-key` now checks `recordAsync()`, `pipeAsync()`, `transformAsync()` and `rawTransformAsync()`.
+  - `no-recreated-schemas`, `no-schema-as-type` and the schema naming rules now recognize async schema constructors such as `objectAsync()`.
+
+- ced9aa4: Add five correctness rules, enabled as errors in `recommended` and `strict`:
+
+  - `no-throw-in-check`: disallows `throw` inside `check()`, `transform()`, `rawCheck()` and similar callbacks, because Valibot does not catch it and it escapes `safeParse()`.
+  - `no-length-check-before-trim`: disallows `nonEmpty()`, `minLength()` and similar lower-bound checks before `trim()` in the same pipe, where whitespace-only input can pass them. Offers a suggestion to move the trim.
+  - `no-unchecked-safe-parse`: requires checking `success` before reading `output` from `safeParse()`, since `output` holds the unvalidated input on failure.
+  - `no-async-schema-in-sync-parent`: disallows async schemas inside sync schemas or sync parse calls. In that case Valibot skips the async child's validation and reports success.
+  - `no-unawaited-parse-async`: disallows reading `.success`, `.output` or other result properties from an un-awaited `parseAsync()` or `safeParseAsync()` promise, and disallows discarding the promise. Offers an `await` suggestion.
+
+- d11dcac: Add an `all` config (`flatConfigs.all` and `plugin:valibot/all`) that enables every rule as an error. New rules join it in minor releases.
+
+  `no-unguarded-parse` changes:
+
+  - Now checks `parseAsync()`. A `.catch(handler)` or `.then(onFulfilled, onRejected)` rejection handler anywhere in its promise chain counts as a guard. Missing handlers and known non-function values such as `undefined` and `null` do not count.
+  - A `parseAsync()` promise must be awaited inside `try/catch` to count as guarded. Returning it without `await` still lets its rejection escape. Guards do not cross function boundaries.
+  - No longer treats `try/finally` without a `catch` clause as a guard, because the error still escapes.
+  - New options:
+    - `allowAtModuleScope`: allow fail-fast validation at the top level.
+    - `allowInFunctions`: allow calls inside named functions whose errors a framework handles, such as `loader` or `action`.
+    - `functions`: choose which of `parse`, `assert` and `parseAsync` to check.
+  - The report message now suggests the matching non-throwing alternative: `safeParse()`, `is()` or `safeParseAsync()`.
+
+  Also exports a new `PresetName` type.
+
 ## 1.3.1
 
 ### Patch Changes
