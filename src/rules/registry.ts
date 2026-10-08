@@ -30,6 +30,11 @@ import { noSingleMemberUnion } from './no-single-member-union';
 import { preferFlattenPipe } from './prefer-flatten-pipe';
 import { noConflictingPipeActions } from './no-conflicting-pipe-actions';
 import { noAsyncActionInSyncPipe } from './no-async-action-in-sync-pipe';
+import { noThrowInCheck } from './no-throw-in-check';
+import { noLengthCheckBeforeTrim } from './no-length-check-before-trim';
+import { noUncheckedSafeParse } from './no-unchecked-safe-parse';
+import { noAsyncSchemaInSyncParent } from './no-async-schema-in-sync-parent';
+import { noUnawaitedParseAsync } from './no-unawaited-parse-async';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
   {
@@ -218,6 +223,46 @@ export const ruleRegistry: RuleRegistryEntry[] = [
   {
     name: 'no-async-action-in-sync-pipe',
     rule: noAsyncActionInSyncPipe,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-throw-in-check',
+    rule: noThrowInCheck,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-length-check-before-trim',
+    rule: noLengthCheckBeforeTrim,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-unchecked-safe-parse',
+    rule: noUncheckedSafeParse,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-async-schema-in-sync-parent',
+    rule: noAsyncSchemaInSyncParent,
+    configs: {
+      recommended: 'error',
+      strict: 'error',
+    },
+  },
+  {
+    name: 'no-unawaited-parse-async',
+    rule: noUnawaitedParseAsync,
     configs: {
       recommended: 'error',
       strict: 'error',
