@@ -6,7 +6,8 @@ Add an `all` config (`flatConfigs.all` and `plugin:valibot/all`) that enables ev
 
 `no-unguarded-parse` changes:
 
-- Now checks `parseAsync()`. A `.catch(handler)` or `.then(onFulfilled, onRejected)` rejection handler counts as a guard.
+- Now checks `parseAsync()`. A `.catch(handler)` or `.then(onFulfilled, onRejected)` rejection handler anywhere in its promise chain counts as a guard. Missing handlers and known non-function values such as `undefined` and `null` do not count.
+- A `parseAsync()` promise must be awaited inside `try/catch` to count as guarded. Returning it without `await` still lets its rejection escape. Guards do not cross function boundaries.
 - No longer treats `try/finally` without a `catch` clause as a guard, because the error still escapes.
 - New options:
   - `allowAtModuleScope`: allow fail-fast validation at the top level.

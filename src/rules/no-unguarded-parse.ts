@@ -1,4 +1,8 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import {
+  ASTUtils,
+  type TSESLint,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 
 import { createRule } from '../utils/create-rule';
 import {
@@ -77,6 +81,7 @@ export const noUnguardedParse = createRule<Options, MessageIds>({
   ],
   create(context, [options]) {
     let imports = createEmptyValibotImports();
+    const sourceCode = context.sourceCode;
     const checkedFunctions = new Set<string>(
       options.functions ?? GUARDED_FUNCTIONS,
     );
@@ -97,10 +102,23 @@ export const noUnguardedParse = createRule<Options, MessageIds>({
           checkedFunctions,
         );
 
+        if (!functionName) {
+          return;
+        }
+
+        const promiseChain =
+          functionName === 'parseAsync'
+            ? getPromiseChain(node, sourceCode)
+            : null;
+        const guardedNode = promiseChain
+          ? promiseChain.end.parent.type === 'AwaitExpression'
+            ? promiseChain.end.parent
+            : null
+          : node;
+
         if (
-          !functionName ||
-          isInsideTryWithCatch(node) ||
-          (functionName === 'parseAsync' && hasRejectionHandler(node))
+          promiseChain?.hasRejectionHandler ||
+          isInsideTryWithCatch(guardedNode)
         ) {
           return;
         }
@@ -143,11 +161,19 @@ function getGuardedFunctionName(
 }
 
 // A `try` without `catch` still lets the validation error escape.
-function isInsideTryWithCatch(node: TSESTree.Node): boolean {
-  let current: TSESTree.Node | undefined = node;
+function isInsideTryWithCatch(node: TSESTree.Node | null): boolean {
+  let current = node;
 
   while (current?.parent) {
     const parent: TSESTree.Node = current.parent;
+
+    if (
+      parent.type === 'FunctionDeclaration' ||
+      parent.type === 'FunctionExpression' ||
+      parent.type === 'ArrowFunctionExpression'
+    ) {
+      return false;
+    }
 
     if (
       parent.type === 'TryStatement' &&
@@ -163,29 +189,56 @@ function isInsideTryWithCatch(node: TSESTree.Node): boolean {
   return false;
 }
 
-// Matches `parseAsync(...).catch(handler)` and `.then(onFulfilled, onRejected)`.
-function hasRejectionHandler(call: TSESTree.CallExpression): boolean {
-  const member = call.parent;
+// Follow promise methods so a later rejection handler or await can guard the call.
+function getPromiseChain(
+  call: TSESTree.CallExpression,
+  sourceCode: TSESLint.SourceCode,
+): { end: TSESTree.CallExpression; hasRejectionHandler: boolean } {
+  let end = call;
+  let hasRejectionHandler = false;
 
-  if (
-    member?.type !== 'MemberExpression' ||
-    member.object !== call ||
-    member.computed ||
-    member.property.type !== 'Identifier'
-  ) {
-    return false;
+  while (end.parent.type === 'MemberExpression') {
+    const member = end.parent;
+    const chainedCall = member.parent;
+    const method = ASTUtils.getPropertyName(
+      member,
+      sourceCode.getScope(member),
+    );
+
+    if (
+      member.object !== end ||
+      member.optional ||
+      chainedCall.type !== 'CallExpression' ||
+      chainedCall.callee !== member ||
+      chainedCall.optional ||
+      (method !== 'catch' && method !== 'then' && method !== 'finally')
+    ) {
+      break;
+    }
+
+    const handler =
+      method === 'catch'
+        ? chainedCall.arguments[0]
+        : method === 'then'
+          ? chainedCall.arguments[1]
+          : undefined;
+
+    if (handler && handler.type !== 'SpreadElement') {
+      const value = ASTUtils.getStaticValue(
+        handler,
+        sourceCode.getScope(handler),
+      );
+
+      // Named handlers may be unknown without type information. Known values
+      // such as undefined, null and false cannot handle a rejection.
+      hasRejectionHandler ||=
+        value === null || typeof value.value === 'function';
+    }
+
+    end = chainedCall;
   }
 
-  const chainedCall = member.parent;
-
-  if (chainedCall?.type !== 'CallExpression' || chainedCall.callee !== member) {
-    return false;
-  }
-
-  return (
-    (member.property.name === 'catch' && chainedCall.arguments.length > 0) ||
-    (member.property.name === 'then' && chainedCall.arguments.length > 1)
-  );
+  return { end, hasRejectionHandler };
 }
 
 /**

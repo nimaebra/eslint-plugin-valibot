@@ -12,6 +12,30 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-unguarded-parse', noUnguardedParse as never, {
   valid: [
     {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).then(value => value).catch(() => null);",
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).finally(cleanup).then(value => value).catch(handleError);",
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).then(value => value).then(undefined, handleError);",
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input)['catch'](handleError);",
+    },
+    {
+      code: "import * as v from 'valibot'; const handler = () => null; const p = v.parseAsync(Schema, input).catch(handler);",
+    },
+    {
+      code: "import * as v from 'valibot'; function run(undefined) { return v.parseAsync(Schema, input).catch(undefined); }",
+    },
+    {
+      code: "import * as v from 'valibot'; async function run() { try { return await v.parseAsync(Schema, input).then(value => value).finally(cleanup); } catch { return null; } }",
+    },
+    {
+      code: "import * as v from 'valibot'; try { function run() { try { return v.parse(Schema, input); } catch { return null; } } } catch { handleError(); }",
+    },
+    {
       code: "import * as v from 'valibot';\nasync function load(input) {\n  try {\n    return await v.parseAsync(Schema, input);\n  } catch (error) {\n    return null;\n  }\n}",
     },
     {
@@ -55,6 +79,62 @@ ruleTester.run('no-unguarded-parse', noUnguardedParse as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot'; async function run() { try { return v.parseAsync(Schema, input); } catch { return null; } }",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; try { const p = v.parseAsync(Schema, input); } catch { handleError(); }",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; async function run() { try { return v.parseAsync(Schema, input).then(value => value); } catch { return null; } }",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).catch();",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).catch(undefined);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).catch(null);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).catch(false);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const handler = undefined; const p = v.parseAsync(Schema, input).catch(handler);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).then(value => value, undefined);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).then(value => value, null);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).then(value => value).catch(undefined);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; const p = v.parseAsync(Schema, input).finally(handleError);",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; try { async function run() { return await v.parseAsync(Schema, input); } } catch { handleError(); }",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
+    {
+      code: "import * as v from 'valibot'; try { const run = () => v.parse(Schema, input); } catch { handleError(); }",
+      errors: [{ messageId: 'unguardedParserCall' }],
+    },
     {
       code: "import * as v from 'valibot';\nconst promise = v.parseAsync(Schema, input);",
       errors: [

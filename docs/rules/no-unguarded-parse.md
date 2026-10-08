@@ -8,7 +8,9 @@
 
 Require `parse()`, `assert()` and `parseAsync()` calls to be guarded against validation errors.
 
-A call counts as guarded when it sits inside the `try` block of a `try/catch`. A `try/finally` without `catch` does not count, because the error still escapes. A `parseAsync()` call also counts as guarded when its promise has a rejection handler through `.catch(handler)` or `.then(onFulfilled, onRejected)`.
+A `parse()` or `assert()` call counts as guarded when it sits inside the `try` block of a `try/catch` in the same function. For `parseAsync()`, the promise must also be awaited inside that block. Returning the promise without `await` lets its rejection escape the local `catch`. A `try/finally` without `catch` does not count as a guard.
+
+A `parseAsync()` call also counts as guarded when its promise chain has a rejection handler through `.catch(handler)` or `.then(onFulfilled, onRejected)`, including after earlier `.then()` or `.finally()` calls. Missing handlers and known non-function values such as `undefined` or `null` do not count. `.finally()` alone does not handle rejections. Named handlers are accepted when their value cannot be determined without type information.
 
 ## Why
 
@@ -22,6 +24,16 @@ import * as v from 'valibot';
 const value = v.parse(v.string(), input);
 
 const user = v.parseAsync(UserSchema, input);
+
+async function loadUser(input) {
+  try {
+    return v.parseAsync(UserSchema, input); // Missing await
+  } catch {
+    return null;
+  }
+}
+
+const promise = v.parseAsync(UserSchema, input).catch(undefined);
 ```
 
 ## Correct
@@ -39,6 +51,19 @@ try {
 const result = v.safeParse(v.string(), input);
 
 const user = v.parseAsync(UserSchema, input).catch(() => null);
+
+const savedUser = v
+  .parseAsync(UserSchema, input)
+  .then(saveUser)
+  .catch(handleError);
+
+async function loadUser(input) {
+  try {
+    return await v.parseAsync(UserSchema, input);
+  } catch {
+    return null;
+  }
+}
 ```
 
 ## Options
