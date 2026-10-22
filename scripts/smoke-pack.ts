@@ -1,11 +1,22 @@
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import {
+  mkdtemp,
+  mkdir,
+  readFile,
+  readdir,
+  rm,
+  writeFile,
+} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
+const packageJson = JSON.parse(
+  await readFile(path.join(rootDir, 'package.json'), 'utf8'),
+) as { version: string; devDependencies: { typescript: string } };
+const eslintVersion = getFlagValue('--eslint-version') ?? '10';
 const valibotVersion =
   getFlagValue('--valibot-version') ?? process.env.VALIBOT_VERSION ?? 'latest';
 const tempDir = await mkdtemp(
@@ -35,11 +46,19 @@ try {
     [
       'add',
       '-D',
-      'eslint@10',
+      `eslint@${eslintVersion}`,
       'typescript-eslint@8',
+      `typescript@${packageJson.devDependencies.typescript}`,
       `valibot@${valibotVersion}`,
       path.join(tempDir, tarballName),
     ],
+    fixtureDir,
+  );
+
+  runCommand('node', ['exports.mjs'], fixtureDir);
+  runCommand(
+    'pnpm',
+    ['exec', 'tsc', '-p', 'tsconfig.consumer.json'],
     fixtureDir,
   );
 
@@ -120,6 +139,69 @@ function writeFixtureFiles(fixtureDir: string) {
         null,
         2,
       ),
+      'utf8',
+    ),
+    writeFile(
+      path.join(fixtureDir, 'tsconfig.consumer.json'),
+      JSON.stringify(
+        {
+          extends: './tsconfig.json',
+          include: ['consumer.ts'],
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    ),
+    writeFile(
+      path.join(fixtureDir, 'consumer.ts'),
+      [
+        'import plugin, {',
+        '  flatConfigs,',
+        '  getRulesForConfig,',
+        '  noUnguardedParse,',
+        '  type ConfigName,',
+        '  type FlatConfigArray,',
+        '  type RuleModule,',
+        '  type ValibotPlugin,',
+        "} from 'eslint-plugin-valibot';",
+        '',
+        'export const typedPlugin: ValibotPlugin = plugin;',
+        "export const preset: ConfigName = 'all';",
+        'export const config: FlatConfigArray = flatConfigs[preset];',
+        'export const rule: RuleModule = noUnguardedParse;',
+        "export const rules = getRulesForConfig('recommended');",
+      ].join('\n'),
+      'utf8',
+    ),
+    writeFile(
+      path.join(fixtureDir, 'exports.mjs'),
+      [
+        "import assert from 'node:assert/strict';",
+        "import { createRequire } from 'node:module';",
+        "import * as esm from 'eslint-plugin-valibot';",
+        "import manifest from 'eslint-plugin-valibot/package.json' with { type: 'json' };",
+        '',
+        'const require = createRequire(import.meta.url);',
+        "const cjs = require('eslint-plugin-valibot');",
+        'assert.deepEqual(Object.keys(esm).sort(), Object.keys(cjs).sort());',
+        `assert.equal(manifest.version, ${JSON.stringify(packageJson.version)});`,
+        'for (const api of [esm, cjs]) {',
+        '  assert.equal(api.default.meta.name, manifest.name);',
+        '  assert.equal(api.default.meta.version, manifest.version);',
+        '  assert.equal(api.default.rules, api.rules);',
+        '  assert.equal(api.default.configs, api.configs);',
+        '  assert.equal(api.default.flatConfigs, api.flatConfigs);',
+        "  assert.ok(api.rules['no-unguarded-parse']);",
+        '  assert.ok(api.flatConfigs.all.length > 0);',
+        '}',
+        "assert.deepEqual(Object.keys(manifest.exports).sort(), ['.', './package.json']);",
+        "assert.deepEqual(manifest.exports['.'], {",
+        "  types: './dist/index.d.ts',",
+        "  import: './dist/index.mjs',",
+        "  require: './dist/index.cjs',",
+        '});',
+      ].join('\n'),
       'utf8',
     ),
     writeFile(

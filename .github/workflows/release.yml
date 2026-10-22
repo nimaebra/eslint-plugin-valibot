@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
@@ -36,7 +36,10 @@ jobs:
 
       - name: Build and verify
         run: |
+          pnpm security:audit
           pnpm check
+          pnpm smoke:pack -- --eslint-version 9 --valibot-version 1.0.0
+          pnpm smoke:pack -- --eslint-version 9 --valibot-version latest
           pnpm smoke:pack -- --valibot-version 1.0.0
           pnpm smoke:pack -- --valibot-version latest
           pnpm pack:dry-run
