@@ -4,12 +4,18 @@ This document covers local setup, contributor checks, and the workflow for addin
 
 ## Quick Start
 
-This package targets the Node versions declared in [package.json](package.json) and uses `pnpm` for development.
+This package targets the Node versions declared in [package.json](package.json) and uses `pnpm` for development. Contributors and the release workflow use the patched Node.js version in [`.nvmrc`](.nvmrc). With nvm installed:
 
 ```sh
+nvm install
+nvm use
+corepack enable
 pnpm install
+pnpm security:audit
 pnpm check
 ```
+
+Use the pnpm version pinned in `package.json`. Updating this repository does not update consumers' Node.js installations; consumers should install current security patches for their Node.js release line.
 
 `pnpm check` runs the main verification pipeline for the package:
 
@@ -55,7 +61,10 @@ Run these from the package root.
 | `pnpm docs:check`                             | Verify generated docs are up to date                        |
 | `pnpm configs:check`                          | Verify documented config output stays in sync               |
 | `pnpm knip`                                   | Check for unused files, exports, and dependencies           |
+| `pnpm security:audit`                         | Audit all dependencies, including development tools         |
 | `pnpm smoke:pack -- --valibot-version latest` | Validate the published package shape in a temporary install |
+
+The package smoke test checks ESM imports, CommonJS loading, type declarations, and lint behavior. Pass `--eslint-version 9` or `--eslint-version 10` (the default) to test either supported ESLint major; `--valibot-version` defaults to `latest`. CI tests both ESLint majors against Valibot `1.0.0` and `latest`.
 
 ## Rule Workflow
 
@@ -124,7 +133,10 @@ Before merging a release PR or publishing manually:
 2. Run the full verification pipeline:
 
    ```sh
+   pnpm security:audit
    pnpm check
+   pnpm smoke:pack -- --eslint-version 9 --valibot-version 1.0.0
+   pnpm smoke:pack -- --eslint-version 9 --valibot-version latest
    pnpm smoke:pack -- --valibot-version 1.0.0
    pnpm smoke:pack -- --valibot-version latest
    pnpm pack:dry-run

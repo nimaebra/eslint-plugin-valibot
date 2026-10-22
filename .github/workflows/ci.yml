@@ -25,10 +25,15 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
+          check-latest: true
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        if: matrix.node-version == 24
+        run: pnpm security:audit
 
       - name: Lint
         run: pnpm lint
@@ -74,6 +79,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        eslint-version: [9, 10]
         valibot-version: ['1.0.0', 'latest']
 
     steps:
@@ -87,10 +93,11 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 22
+          check-latest: true
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Pack and install smoke test
-        run: pnpm smoke:pack -- --valibot-version ${{ matrix.valibot-version }}
+        run: pnpm smoke:pack -- --eslint-version ${{ matrix.eslint-version }} --valibot-version ${{ matrix.valibot-version }}
