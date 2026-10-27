@@ -1,5 +1,14 @@
 # eslint-plugin-valibot
 
+## 1.4.2
+
+### Patch Changes
+
+- 6e7ba06: Replace `no-instanceof-builtins` autofixes with explicit editor suggestions where valid. Avoid unbound replacement imports and invalid collection schemas, and ignore locally defined constructors with built-in names.
+- 1118e20: Restrict `no-duplicate-pipe-actions` to consecutive known idempotent actions with literal arguments. Preserve repeated transforms, stateful callbacks, and validations separated by transformations, and retain comments during fixes.
+- 24781e4: Declare `@typescript-eslint/utils` as a runtime dependency so JavaScript consumers can load both plugin entry points without installing `typescript-eslint`. Exercise a minimal packaged consumer before adding TypeScript tooling.
+- 7c65371: Make the Valibot peer dependency optional while retaining its supported version range, so shared ESLint config packages do not need to install Valibot. Verify both packaged entry points can lint source without Valibot available at runtime.
+
 ## 1.4.1
 
 ### Patch Changes
