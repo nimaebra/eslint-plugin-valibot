@@ -66,7 +66,7 @@ Every rule has its own documentation page under [docs/rules](docs/rules).
 pnpm add -D eslint-plugin-valibot
 ```
 
-It is designed for `eslint@^9 || ^10` and `valibot@^1`.
+It is designed for `eslint@^9 || ^10` and `valibot@^1`. Valibot is an optional peer dependency: shared ESLint config packages do not need to install it. The rules inspect source code without loading Valibot at runtime.
 
 Rules recognize Valibot imported from npm (`valibot`), from JSR (`@valibot/valibot`), and through Deno `npm:` and `jsr:` specifiers such as `jsr:@valibot/valibot@^1.5.0`.
 
