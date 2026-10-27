@@ -101,6 +101,8 @@ Available legacy presets are:
 
 ## TypeScript Projects
 
+JavaScript consumers do not need to install `typescript-eslint`; the plugin declares its runtime utilities as dependencies.
+
 If you lint TypeScript, compose this plugin with `typescript-eslint`. The `strict` preset includes `valibot/no-schema-as-type`, which only applies to TypeScript syntax.
 
 ```js

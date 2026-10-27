@@ -15,7 +15,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const packageJson = JSON.parse(
   await readFile(path.join(rootDir, 'package.json'), 'utf8'),
-) as { version: string; devDependencies: { typescript: string } };
+) as {
+  version: string;
+  devDependencies: { typescript: string };
+  peerDependenciesMeta?: { valibot?: { optional?: boolean } };
+};
 const eslintVersion = getFlagValue('--eslint-version') ?? '10';
 const valibotVersion =
   getFlagValue('--valibot-version') ?? process.env.VALIBOT_VERSION ?? 'latest';
@@ -41,6 +45,40 @@ try {
   await mkdir(fixtureSrcDir, { recursive: true });
   await writeFixtureFiles(fixtureDir);
 
+  // Test the declared runtime dependencies before TypeScript tooling can
+  // supply an undeclared dependency through the consumer's dependency graph.
+  // Install required peers, and leave optional peers absent.
+  runCommand(
+    'pnpm',
+    [
+      'add',
+      '-D',
+      `eslint@${eslintVersion}`,
+      ...(packageJson.peerDependenciesMeta?.valibot?.optional
+        ? []
+        : [`valibot@${valibotVersion}`]),
+      path.join(tempDir, tarballName),
+    ],
+    fixtureDir,
+  );
+  runCommand('node', ['exports.mjs', '--minimal'], fixtureDir);
+
+  const recommendedResult = runCommand(
+    'pnpm',
+    [
+      'exec',
+      'eslint',
+      'src/recommended-invalid.js',
+      '--config',
+      'eslint.recommended.config.mjs',
+      '--format',
+      'json',
+    ],
+    fixtureDir,
+    true,
+  );
+  assertLintFailure(recommendedResult, 'valibot/no-unguarded-parse');
+
   runCommand(
     'pnpm',
     [
@@ -62,20 +100,6 @@ try {
     fixtureDir,
   );
 
-  const recommendedResult = runCommand(
-    'pnpm',
-    [
-      'exec',
-      'eslint',
-      'src/recommended-invalid.js',
-      '--config',
-      'eslint.recommended.config.mjs',
-      '--format',
-      'json',
-    ],
-    fixtureDir,
-    true,
-  );
   const strictResult = runCommand(
     'pnpm',
     [
@@ -91,7 +115,6 @@ try {
     true,
   );
 
-  assertLintFailure(recommendedResult, 'valibot/no-unguarded-parse');
   assertLintFailure(strictResult, 'valibot/no-schema-as-type');
 } finally {
   await rm(tempDir, { force: true, recursive: true });
@@ -184,6 +207,12 @@ function writeFixtureFiles(fixtureDir: string) {
         '',
         'const require = createRequire(import.meta.url);',
         "const cjs = require('eslint-plugin-valibot');",
+        "if (process.argv.includes('--minimal')) {",
+        "  assert.throws(() => require.resolve('typescript-eslint'), { code: 'MODULE_NOT_FOUND' });",
+        '  if (manifest.peerDependenciesMeta?.valibot?.optional) {',
+        "    assert.throws(() => require.resolve('valibot'), { code: 'MODULE_NOT_FOUND' });",
+        '  }',
+        '}',
         'assert.deepEqual(Object.keys(esm).sort(), Object.keys(cjs).sort());',
         `assert.equal(manifest.version, ${JSON.stringify(packageJson.version)});`,
         'for (const api of [esm, cjs]) {',
