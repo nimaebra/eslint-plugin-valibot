@@ -74,6 +74,11 @@
     "eslint": "^9.0.0 || ^10.0.0",
     "valibot": "^1.0.0"
   },
+  "peerDependenciesMeta": {
+    "valibot": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
     "@eslint/js": "^10.0.1",
