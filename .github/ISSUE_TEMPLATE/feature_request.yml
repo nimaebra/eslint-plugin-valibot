@@ -24,7 +24,7 @@ body:
       description: >
         Describe the new rule or change. For a new rule, include a short example of code it
         would flag and, if applicable, what the autofix should produce.
-      render: ts
+        Markdown is supported; use fenced code blocks for code examples.
     validations:
       required: true
 
