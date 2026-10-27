@@ -70,6 +70,9 @@
     "check": "pnpm lint && pnpm typecheck && pnpm knip && pnpm test && pnpm build && pnpm test:integration && pnpm docs:check && pnpm configs:check",
     "version-packages": "changeset version"
   },
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.72.0"
+  },
   "peerDependencies": {
     "eslint": "^9.0.0 || ^10.0.0",
     "valibot": "^1.0.0"
@@ -78,7 +81,6 @@
     "@changesets/cli": "^3.0.3",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.19.2",
-    "@typescript-eslint/utils": "^8.72.0",
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^10.13.0",
     "eslint-doc-generator": "^3.7.1",
