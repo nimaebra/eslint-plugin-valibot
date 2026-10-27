@@ -1,41 +1,41 @@
 # valibot/no-instanceof-builtins
 
-📝 Prefer primitive schema functions over instance(Constructor) for built-in types.
+📝 Prefer native Valibot schemas over instance(Constructor) for built-in types.
 
 💼 This rule is enabled in the following configs: ✅ `recommended`, 🔒 `strict`.
 
-🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+💡 This rule is manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
 <!-- end auto-generated rule header -->
 
-This rule encourages the use of highly optimized, native Valibot primitive schemas (like `date()`, `map()`, etc.) instead of checking built-in types via the general `instance(Constructor)` schema.
+This rule encourages reviewing `instance(Constructor)` checks for built-in types and choosing a native Valibot schema when it matches the intended accepted values. Locally declared or imported constructors with built-in names are ignored.
 
 ## Why
 
-Valibot provides dedicated, lightweight, and highly optimized schema functions for standard JavaScript and TypeScript built-in objects.
+Valibot provides dedicated schemas for standard JavaScript and TypeScript types. Their behavior is not always equivalent to `instance()`:
 
-- Using `instance(Date)` is less optimized and less specific than using the native `date()` schema.
-- Using `instance(Array)` is slower and less versatile than the standard `array()` schema.
+- `instance(Date)` accepts invalid dates; `date()` rejects them.
+- `array()`, `map()`, and `set()` require schemas for their items, keys, or values. Calling them without those schemas can throw during validation.
 - Using `instance(String)` checks if a value is an instance of the `String` object wrapper class (e.g. `new String()`), which is highly uncommon and usually a bug when the developer simply intended to validate standard primitive strings using `string()`.
 
-By utilizing Valibot's dedicated primitive schemas, you gain better performance, smaller bundle sizes, and clearer validation code.
+Keep `instance()` and disable this rule where validating the built-in object instance is intentional.
 
 ### Supported Constructor Mappings
 
-| Constructor | Preferred Valibot Schema |
-| :---------- | :----------------------- |
-| `Date`      | `date()`                 |
-| `Array`     | `array()`                |
-| `Function`  | `function()`             |
-| `Promise`   | `promise()`              |
-| `Map`       | `map()`                  |
-| `Set`       | `set()`                  |
-| `String`    | `string()`               |
-| `Number`    | `number()`               |
-| `Boolean`   | `boolean()`              |
-| `Symbol`    | `symbol()`               |
-| `BigInt`    | `bigint()`               |
-| `Blob`      | `blob()`                 |
+| Constructor | Preferred Valibot Schema      |
+| :---------- | :---------------------------- |
+| `Date`      | `date()`                      |
+| `Array`     | `array(itemSchema)`           |
+| `Function`  | `function()`                  |
+| `Promise`   | `promise()`                   |
+| `Map`       | `map(keySchema, valueSchema)` |
+| `Set`       | `set(valueSchema)`            |
+| `String`    | `string()`                    |
+| `Number`    | `number()`                    |
+| `Boolean`   | `boolean()`                   |
+| `Symbol`    | `symbol()`                    |
+| `BigInt`    | `bigint()`                    |
+| `Blob`      | `blob()`                      |
 
 ## Incorrect
 
@@ -54,8 +54,8 @@ const StringSchema = v.instance(String);
 import * as v from 'valibot';
 
 const DateSchema = v.date();
-const MapSchema = v.map();
-const SetSchema = v.set();
+const MapSchema = v.map(v.string(), v.number());
+const SetSchema = v.set(v.string());
 const StringSchema = v.string();
 ```
 
@@ -63,7 +63,9 @@ const StringSchema = v.string();
 
 ## Autofix
 
-Yes, this rule is fully autofixable.
+This rule does not autofix because native schemas can accept different values. For zero-argument native schemas, it offers an editor suggestion only when the replacement is accessible through the existing namespace or a named import, and no comments would be removed. Applying the suggestion is an explicit choice to change validation behavior.
+
+For `Array`, `Map`, and `Set`, choose the item/key/value schemas manually. The rule never suggests invalid zero-argument calls or inserts unbound named identifiers.
 
 ## Further Reading
 
