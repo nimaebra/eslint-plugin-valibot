@@ -1,11 +1,13 @@
+import { ASTUtils } from '@typescript-eslint/utils';
+
 import { createRule } from '../utils/create-rule';
 import {
   collectValibotImports,
   createEmptyValibotImports,
   hasValibotImports,
-  type ValibotImports,
 } from '../utils/collect-valibot-imports';
 import { isValibotCall } from '../utils/is-valibot-call';
+import { getValibotCalleeText } from '../utils/callee-text';
 
 const BUILTIN_CONSTRUCTORS = new Map<string, string>([
   ['Date', 'date'],
@@ -23,7 +25,10 @@ const BUILTIN_CONSTRUCTORS = new Map<string, string>([
 ]);
 
 type Options = [];
-type MessageIds = 'noInstanceofBuiltins';
+type MessageIds = 'noInstanceofBuiltins' | 'replaceWithNativeSchema';
+
+// These schemas need element/key/value schemas that the rule cannot infer.
+const COLLECTION_CONSTRUCTORS = new Set(['Array', 'Map', 'Set']);
 
 export const noInstanceofBuiltins = createRule<Options, MessageIds>({
   name: 'no-instanceof-builtins',
@@ -31,13 +36,15 @@ export const noInstanceofBuiltins = createRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description:
-        'Prefer primitive schema functions over instance(Constructor) for built-in types.',
+        'Prefer native Valibot schemas over instance(Constructor) for built-in types.',
     },
-    fixable: 'code',
+    hasSuggestions: true,
     schema: [],
     messages: {
       noInstanceofBuiltins:
-        'Prefer the native Valibot schema {{preferred}}() instead of instance({{constructor}}).',
+        'Consider the native Valibot {{preferred}} schema instead of instance({{constructor}}); its accepted values may differ.',
+      replaceWithNativeSchema:
+        'Replace with {{preferred}}() (changes which values are accepted).',
     },
   },
   defaultOptions: [],
@@ -69,15 +76,30 @@ export const noInstanceofBuiltins = createRule<Options, MessageIds>({
         const constructorName = arg.name;
         const preferredSchema = BUILTIN_CONSTRUCTORS.get(constructorName);
 
-        if (!preferredSchema) {
+        if (
+          !preferredSchema ||
+          ASTUtils.findVariable(context.sourceCode.getScope(arg), arg)?.defs
+            .length
+        ) {
           return;
         }
 
-        const preferredCalleeText = getPreferredCalleeText(
+        const preferredCalleeText = getValibotCalleeText(
           node,
-          preferredSchema,
           imports,
+          preferredSchema,
         );
+        const preferredBinding =
+          node.callee.type === 'Identifier' && preferredCalleeText
+            ? ASTUtils.findVariable(
+                context.sourceCode.getScope(node),
+                preferredCalleeText,
+              )
+            : null;
+        const replacementIsShadowed =
+          preferredBinding !== null &&
+          preferredBinding.scope.type !== 'module' &&
+          preferredBinding.scope.type !== 'global';
 
         context.report({
           node,
@@ -86,50 +108,26 @@ export const noInstanceofBuiltins = createRule<Options, MessageIds>({
             preferred: preferredSchema,
             constructor: constructorName,
           },
-          fix(fixer) {
-            return fixer.replaceText(node, `${preferredCalleeText}()`);
-          },
+          suggest:
+            preferredCalleeText &&
+            !replacementIsShadowed &&
+            !COLLECTION_CONSTRUCTORS.has(constructorName) &&
+            context.sourceCode.getCommentsInside(node).length === 0
+              ? [
+                  {
+                    messageId: 'replaceWithNativeSchema',
+                    data: { preferred: preferredSchema },
+                    fix(fixer) {
+                      return fixer.replaceText(
+                        node,
+                        `${preferredCalleeText}()`,
+                      );
+                    },
+                  },
+                ]
+              : [],
         });
       },
     };
   },
 });
-
-function getPreferredCalleeText(
-  call: Parameters<typeof isValibotCall>[0],
-  targetName: string,
-  imports: ValibotImports,
-): string {
-  if (call.callee.type === 'MemberExpression') {
-    return `${sourceTextForMemberNamespace(call)}.${targetName}`;
-  }
-
-  const localName = getLocalImportName(imports, targetName);
-  return localName ?? targetName;
-}
-
-function sourceTextForMemberNamespace(
-  call: Parameters<typeof isValibotCall>[0],
-): string {
-  if (
-    call.callee.type === 'MemberExpression' &&
-    call.callee.object.type === 'Identifier'
-  ) {
-    return call.callee.object.name;
-  }
-
-  return 'v';
-}
-
-function getLocalImportName(
-  imports: ValibotImports,
-  importedName: string,
-): string | undefined {
-  for (const [localName, importedValue] of imports.importedNames) {
-    if (importedValue === importedName) {
-      return localName;
-    }
-  }
-
-  return undefined;
-}
