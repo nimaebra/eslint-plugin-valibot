@@ -12,13 +12,38 @@ import { isValibotCallOrAsync } from '../utils/is-valibot-call';
 type Options = [];
 type MessageIds = 'duplicatePipeAction';
 
+// Only deduplicate actions whose built-in behavior is idempotent. Callbacks,
+// regular expressions and arbitrary transformations can depend on state.
+const IDEMPOTENT_ACTION_NAMES = new Set([
+  'trim',
+  'trimStart',
+  'trimEnd',
+  'toLowerCase',
+  'toUpperCase',
+  'normalize',
+  'length',
+  'minLength',
+  'maxLength',
+  'nonEmpty',
+  'size',
+  'minSize',
+  'maxSize',
+  'value',
+  'minValue',
+  'maxValue',
+  'multipleOf',
+  'integer',
+  'safeInteger',
+  'finite',
+]);
+
 export const noDuplicatePipeActions = createRule<Options, MessageIds>({
   name: 'no-duplicate-pipe-actions',
   meta: {
     type: 'suggestion',
     docs: {
       description:
-        'Disallow duplicate Valibot actions inside the same pipe() call.',
+        'Disallow consecutive duplicate idempotent Valibot actions inside pipe() calls.',
     },
     fixable: 'code',
     schema: [],
@@ -44,17 +69,22 @@ export const noDuplicatePipeActions = createRule<Options, MessageIds>({
           return;
         }
 
-        const seenActions = new Map<string, TSESTree.CallExpression>();
-
         for (const action of getPipeActionDescriptors(
           node,
           imports,
           sourceCode,
         )) {
-          const firstAction = seenActions.get(action.fingerprint);
+          const previousAction = node.arguments[action.actionIndex - 1];
 
-          if (!firstAction) {
-            seenActions.set(action.fingerprint, action.node);
+          if (
+            action.actionIndex < 2 ||
+            !IDEMPOTENT_ACTION_NAMES.has(action.name) ||
+            !action.node.arguments.every(
+              (argument) =>
+                argument.type === 'Literal' && !('regex' in argument),
+            ) ||
+            sourceCode.getText(previousAction) !== action.fingerprint
+          ) {
             continue;
           }
 
@@ -91,6 +121,7 @@ function canSafelyRemoveDuplicateAction(
   sourceCode: Readonly<{
     getCommentsBefore(node: TSESTree.Node): unknown[];
     getCommentsAfter(node: TSESTree.Node): unknown[];
+    getCommentsInside(node: TSESTree.Node): unknown[];
   }>,
 ): boolean {
   const currentAction = pipeCall.arguments[actionIndex];
@@ -101,7 +132,8 @@ function canSafelyRemoveDuplicateAction(
 
   if (
     sourceCode.getCommentsBefore(currentAction).length > 0 ||
-    sourceCode.getCommentsAfter(currentAction).length > 0
+    sourceCode.getCommentsAfter(currentAction).length > 0 ||
+    sourceCode.getCommentsInside(currentAction).length > 0
   ) {
     return false;
   }
