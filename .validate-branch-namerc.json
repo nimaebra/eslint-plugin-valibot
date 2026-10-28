@@ -1,0 +1,4 @@
+{
+  "pattern": "^(main|changeset-release/main|dependabot/[^\\s]+|(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)/[a-z0-9]+(-[a-z0-9]+)*)$",
+  "errorMsg": "Use <type>/<kebab-case-description>, for example feat/no-empty-pipe or chore/repository-conventions. See CONTRIBUTING.md#git-conventions."
+}
