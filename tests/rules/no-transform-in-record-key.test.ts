@@ -12,6 +12,21 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-transform-in-record-key', noTransformInRecordKey as never, {
   valid: [
     {
+      code: "import * as v from 'valibot'; const KeySchema = v.pipe(v.string(), v.trim()); function createSchema(KeySchema) { return v.record(KeySchema, v.string()); }",
+    },
+    {
+      code: "import * as v from 'valibot'; const First = Second; const Second = First; const Schema = v.record(First, v.string());",
+    },
+    {
+      code: "import * as v from 'valibot'; const Schema = v.record(ExternalSchema, v.string());",
+    },
+    {
+      code: "import * as v from 'valibot'; const Schema = v.record();",
+    },
+    {
+      code: "import * as v from 'valibot'; const Schema = v.record(v.pipe(v.string(), externalAction()), v.string());",
+    },
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.record(v.string(), v.string());",
     },
     {
@@ -28,6 +43,12 @@ ruleTester.run('no-transform-in-record-key', noTransformInRecordKey as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot'; const KeySchema = v.pipe(v.string(), v.trim()); const Alias = KeySchema; function createSchema() { return v.record(Alias, v.string()); }",
+      errors: [
+        { messageId: 'transformInRecordKey', data: { actionName: 'trim' } },
+      ],
+    },
     {
       code: "import * as v from 'valibot';\nconst Schema = v.recordAsync(v.pipeAsync(v.string(), v.transformAsync(async (key) => key.toUpperCase())), v.number());",
       errors: [

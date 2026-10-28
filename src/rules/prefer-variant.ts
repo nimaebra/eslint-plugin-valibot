@@ -254,5 +254,5 @@ function getLiteralSchemaValue(
 }
 
 function toSingleQuotedString(value: string): string {
-  return `'${value.replaceAll("'", "\\'")}'`;
+  return `'${JSON.stringify(value).slice(1, -1).replaceAll("'", "\\'")}'`;
 }

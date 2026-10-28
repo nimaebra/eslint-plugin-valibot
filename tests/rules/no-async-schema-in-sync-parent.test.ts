@@ -32,6 +32,27 @@ ruleTester.run(
   {
     valid: [
       {
+        code: 'const Schema = other.object({ email: other.objectAsync({}) });',
+      },
+      {
+        code: `${NS}const First = Second; const Second = First; const Schema = v.array(First);`,
+      },
+      {
+        code: `${NS}const Schema = v.object(ExternalEntries);`,
+      },
+      {
+        code: `${NS}const Schema = v.object({ ...entries, id: v.string() });`,
+      },
+      {
+        code: `${NS}const Schema = v.union([, ...options, v.string()]);`,
+      },
+      {
+        code: `${NS}const Schema = v.lazy(() => { return v.objectAsync({}); });`,
+      },
+      {
+        code: `${NS}const Email = v.objectAsync({}); function createSchema(Email) { return v.array(Email); }`,
+      },
+      {
         code: `${NS}const Schema = v.objectAsync({ email: ${ASYNC_EMAIL} });`,
       },
       {
@@ -51,6 +72,24 @@ ruleTester.run(
       },
     ],
     invalid: [
+      {
+        code: `${NS}const Email = ${ASYNC_EMAIL}; const Alias = Email; function createSchema() { return v.array(Alias); }`,
+        errors: [
+          {
+            messageId: 'asyncSchemaInSyncParent',
+            data: { parent: 'array', child: 'Alias (pipeAsync())' },
+          },
+        ],
+      },
+      {
+        code: `${NS}v.assert(v.objectAsync({}), input);`,
+        errors: [
+          {
+            messageId: 'asyncSchemaWithoutAsyncTwin',
+            data: { parent: 'assert', child: 'objectAsync()' },
+          },
+        ],
+      },
       {
         code: `${NS}const Schema = v.object({ email: ${ASYNC_EMAIL} });`,
         errors: [

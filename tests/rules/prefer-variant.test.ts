@@ -12,6 +12,26 @@ const ruleTester = new RuleTester({
 ruleTester.run('prefer-variant', preferVariant as never, {
   valid: [
     {
+      code: 'const Schema = other.union([other.object({ type: other.literal("a") }), other.object({ type: other.literal("b") })]);',
+    },
+    ...[
+      'v.union(options)',
+      'v.union([])',
+      "v.union([v.object({ type: v.literal('a') })])",
+      "v.union([, v.object({ type: v.literal('b') })])",
+      "v.union([...options, v.object({ type: v.literal('b') })])",
+      "v.union([FirstSchema, v.object({ type: v.literal('b') })])",
+      "v.union([other.object({ type: v.literal('a') }), v.object({ type: v.literal('b') })])",
+      "v.union([v.object(entries), v.object({ type: v.literal('b') })])",
+      "v.union([v.object({ [key]: v.literal('a') }), v.object({ type: v.literal('b') })])",
+      "v.union([v.object({ 0: v.literal('a') }), v.object({ type: v.literal('b') })])",
+      "v.union([v.object({ type: literalSchema }), v.object({ type: v.literal('b') })])",
+      "v.union([v.object({ type: v.literal('a', 'message') }), v.object({ type: v.literal('b') })])",
+      "v.union([v.object({ type: v.literal(value) }), v.object({ type: v.literal('b') })])",
+    ].map((expression) => ({
+      code: `import * as v from 'valibot'; const Schema = ${expression};`,
+    })),
+    {
       code: "import * as v from 'valibot';\nconst Schema = v.union([v.objectAsync({ type: v.literal('a') }), v.object({ type: v.literal('b') })]);",
     },
     {
@@ -31,6 +51,18 @@ ruleTester.run('prefer-variant', preferVariant as never, {
     },
   ],
   invalid: [
+    {
+      code: "import * as v from 'valibot'; const Schema = v.union([v.strictObject({ ...entries, category: v.literal('shared'), kind: v.literal('a') }), v.looseObject({ category: v.literal('shared'), kind: v.literal('b') })]);",
+      output:
+        "import * as v from 'valibot'; const Schema = v.variant('kind', [v.strictObject({ ...entries, category: v.literal('shared'), kind: v.literal('a') }), v.looseObject({ category: v.literal('shared'), kind: v.literal('b') })]);",
+      errors: [{ messageId: 'preferVariant', data: { key: 'kind' } }],
+    },
+    {
+      code: "import { union as either, variant as tagged, object, literal } from 'valibot'; const Schema = either([object({ kind: literal('a') }), object({ kind: literal('b') })]);",
+      output:
+        "import { union as either, variant as tagged, object, literal } from 'valibot'; const Schema = tagged('kind', [object({ kind: literal('a') }), object({ kind: literal('b') })]);",
+      errors: [{ messageId: 'preferVariant', data: { key: 'kind' } }],
+    },
     {
       code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.objectAsync({ type: v.literal('a') }), v.object({ type: v.literal('b') })]);",
       output:

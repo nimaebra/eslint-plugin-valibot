@@ -61,6 +61,8 @@ const Schema = v.variantAsync('type', [
 
 Yes, when the rule can determine an obvious shared discriminant key and a usable `variant` callee in the current import style.
 
+The fix preserves quoted discriminator keys, including keys containing quotes, backslashes, or line breaks.
+
 ## Further Reading
 
 - [Valibot variant() API](https://valibot.dev/api/variant/)

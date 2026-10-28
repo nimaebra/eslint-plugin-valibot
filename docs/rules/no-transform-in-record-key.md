@@ -51,6 +51,8 @@ const ValidatedKeys = v.record(v.pipe(v.string(), v.minLength(1)), v.string());
 const TransformedValues = v.record(v.string(), v.pipe(v.string(), v.trim()));
 ```
 
+Schema aliases are resolved in their lexical scope. A function parameter that shadows an outer schema is treated as a separate binding.
+
 <!-- end auto-generated rule options -->
 
 ## Async APIs

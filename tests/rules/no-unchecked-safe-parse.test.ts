@@ -17,6 +17,39 @@ const error = (name = 'safeParse') => ({
 
 ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
   valid: [
+    // Unawaited promises belong to no-unawaited-parse-async.
+    {
+      code: `${NS}const promise = v.safeParseAsync(Schema, input); save(promise.output);`,
+    },
+    {
+      code: `${NS}save(v.safeParse(Schema, input));`,
+    },
+    // Rest bindings can retain success, so destructuring alone is inconclusive.
+    {
+      code: `${NS}const { output, ...rest } = v.safeParse(Schema, input);`,
+    },
+    {
+      code: `${NS}const { ['success']: ok, output: value } = v.safeParse(Schema, input);`,
+    },
+    {
+      code: `${NS}const { [key]: value } = v.safeParse(Schema, input);`,
+    },
+    // Mutable and non-object bindings are intentionally not tracked.
+    {
+      code: `${NS}let result = v.safeParse(Schema, input); result = other; save(result.output);`,
+    },
+    {
+      code: `${NS}const [first] = v.safeParse(Schema, input);`,
+    },
+    {
+      code: `${NS}switch (mode) { case 'save': { const result = v.safeParse(Schema, input); if (!result.success) break; save(result.output); } }`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); switch (mode) { case 'save': if (!result.success) break; save(result.output); }`,
+    },
+    {
+      code: `${NS}class Cache { static { const result = v.safeParse(Schema, input); if (!result.success) throw new Error('invalid'); save(result.output); } }`,
+    },
     {
       code: `${NS}const result = v.safeParse(Schema, input);\nif (result.success) {\n  save(result.output);\n}`,
     },
@@ -55,6 +88,35 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
     },
   ],
   invalid: [
+    {
+      code: `${NS}const { ['output']: value } = v.safeParse(Schema, input);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}async function handle() { return (await v.safeParseAsync(Schema, input)).output; }`,
+      errors: [error('safeParseAsync')],
+    },
+    // A guard for a different result cannot validate this result.
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (other.success) save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success === enabled) save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success > false) save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (enabled) {} else save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (!result.success) {} save(result.output);`,
+      errors: [error()],
+    },
     {
       code: `${NS}const result = v.safeParse(Schema, input);\nsave(result.output);`,
       errors: [error()],
