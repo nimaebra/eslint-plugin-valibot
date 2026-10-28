@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  deepmerge@4.3.1: fb3c69c0c43abdf492ed7ab7ebe553ccd5bf0064ce2f8e510090cbae63bd53b0
+
 importers:
 
   .:
@@ -2900,7 +2903,7 @@ snapshots:
 
   deep-is@0.1.4: {}
 
-  deepmerge@4.3.1: {}
+  deepmerge@4.3.1(patch_hash=fb3c69c0c43abdf492ed7ab7ebe553ccd5bf0064ce2f8e510090cbae63bd53b0): {}
 
   detect-libc@2.1.2: {}
 
@@ -2965,7 +2968,7 @@ snapshots:
       change-case: 5.4.4
       commander: 14.0.3
       cosmiconfig: 9.0.2(typescript@6.0.3)
-      deepmerge: 4.3.1
+      deepmerge: 4.3.1(patch_hash=fb3c69c0c43abdf492ed7ab7ebe553ccd5bf0064ce2f8e510090cbae63bd53b0)
       dot-prop: 10.2.0
       editorconfig: 3.0.2
       eslint: 10.13.0(jiti@2.7.0)(supports-color@7.2.0)
