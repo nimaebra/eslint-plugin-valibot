@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-valibot",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "ESLint rules for safer, more maintainable Valibot usage.",
   "license": "MIT",
   "repository": {
