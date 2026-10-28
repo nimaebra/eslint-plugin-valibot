@@ -157,4 +157,4 @@ The default flat and legacy examples use the `recommended` preset. The flat exam
 
 ## Contributing
 
-Contributor setup, checks, and rule authoring workflow live in [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributor setup, checks, and rule authoring workflow live in [CONTRIBUTING.md](CONTRIBUTING.md). See [Git conventions](CONTRIBUTING.md#git-conventions) for branch names, Conventional Commit subjects, PR titles, and release operations.

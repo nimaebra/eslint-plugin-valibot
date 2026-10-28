@@ -339,6 +339,19 @@ Release automation on `main` and `workflow_dispatch`:
 
 ## Agent Working Rules For This Repo
 
+### Git And Release Conventions
+
+- Follow [CONTRIBUTING.md](CONTRIBUTING.md#git-conventions) for branches, commits, pull requests, and release operations.
+- Create branches as `<type>/<kebab-case-description>` from the intended base. Use the change type instead of an agent prefix such as `codex/`.
+- Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+- Commit subjects and PR titles use `<type>[optional scope][!]: <description>`, for example `fix(no-empty-pipe): handle comments`.
+- Use lowercase scopes and the standard `@commitlint/config-conventional` rules (including a 100-character header limit). Bodies and footers follow a blank line; document breaking changes and preserve them when squashing.
+- The reserved branch names are `main`, `changeset-release/main`, and `dependabot/**`. Automation commits and PR titles still follow the same subject convention.
+- Use Commitlint, validate-branch-name, and Husky rather than custom validation scripts. Before pushing, run `pnpm conventions:check`; for a different target, run `pnpm branch:check` and `pnpm commitlint --from <ref> --to HEAD --verbose`. Do not rewrite merged history to adopt these conventions.
+- Use Changesets for version bumps and release notes. This package does not derive release versions from commit types.
+
+### Implementation Workflow
+
 1. Start from the owning rule, registry entry, config builder, or validation script rather than broad repo exploration.
 2. If behavior differs between presets, inspect `src/rules/registry.ts` before editing config files.
 3. If tests fail only in integration, inspect the built-package path plus `examples/*` fixtures before changing rule logic.

@@ -49,7 +49,7 @@ jobs:
         with:
           version-script: pnpm version-packages
           publish-script: pnpm release:publish
-          commit-message: 'chore: release packages'
-          pr-title: 'chore: release packages'
+          commit-message: 'chore(release): release packages'
+          pr-title: 'chore(release): release packages'
         env:
           NPM_CONFIG_PROVENANCE: true
