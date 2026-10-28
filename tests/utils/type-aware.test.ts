@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import { Linter } from 'eslint';
 import tseslint from 'typescript-eslint';
 import { describe, expect, it } from 'vitest';
@@ -81,16 +83,22 @@ describe('type-aware parser service helpers', () => {
   });
 
   it('returns usable node maps and a real type checker with project services', () => {
+    // Avoid loading the repository's dependency graph under coverage.
+    const fixtureDirectory = fileURLToPath(
+      new URL('../fixtures/type-aware/', import.meta.url),
+    );
     const messages = lint(
-      'const answer: number = 42;',
+      'export const answer: number = 42;',
       {
         parser: tseslint.parser,
         parserOptions: {
-          tsconfigRootDir: process.cwd(),
-          projectService: { allowDefaultProject: ['typed.ts'] },
+          tsconfigRootDir: fixtureDirectory,
+          projectService: true,
         },
       },
-      'typed.ts',
+      fileURLToPath(
+        new URL('../fixtures/type-aware/typed.ts', import.meta.url),
+      ),
     );
 
     expect(
