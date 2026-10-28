@@ -60,7 +60,7 @@
     "pack:dry-run": "pnpm pack --dry-run",
     "prepublishOnly": "pnpm security:audit && pnpm check",
     "release:publish": "changeset publish",
-    "security:audit": "pnpm audit --audit-level=low",
+    "security:audit": "pnpm audit --audit-level=moderate",
     "smoke:pack": "tsx scripts/smoke-pack.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run tests/rules tests/configs tests/utils",

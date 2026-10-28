@@ -149,10 +149,14 @@ function resolveIdentifierExpression(
   let scope: ScopeLike | null = sourceCode.getScope(node);
 
   while (scope) {
-    const definition = scope.set.get(node.name)?.defs[0];
+    const variable = scope.set.get(node.name);
 
-    if (definition?.node.type === 'VariableDeclarator') {
-      return definition.node.init ?? null;
+    if (variable) {
+      const definition = variable.defs[0];
+
+      return definition?.node.type === 'VariableDeclarator'
+        ? (definition.node.init ?? null)
+        : null;
     }
 
     scope = scope.upper;

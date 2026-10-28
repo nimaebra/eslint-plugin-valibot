@@ -1,9 +1,22 @@
 import { describe, expect, it } from 'vitest';
 
 import plugin from '../../src/plugin';
-import { ruleRegistry } from '../../src/rules';
+import { getRuleNamesForConfig, ruleRegistry } from '../../src/rules';
 
 describe('plugin config exports', () => {
+  it.each(['all', 'recommended', 'strict', 'stylistic'] as const)(
+    'lists the enabled %s rules through the public registry helper',
+    (preset) => {
+      const names = getRuleNamesForConfig(preset);
+      const enabledNames = Object.keys(plugin.configs[preset].rules ?? {})
+        .map((name) => name.replace('valibot/', ''))
+        .sort();
+
+      expect(names).toEqual(enabledNames);
+      expect(new Set(names).size).toBe(names.length);
+    },
+  );
+
   it('keeps recommended flat and legacy rules in sync', () => {
     const flatRecommendedRules = plugin.flatConfigs.recommended[0]?.rules;
     const legacyRecommendedRules = plugin.configs.recommended.rules;
