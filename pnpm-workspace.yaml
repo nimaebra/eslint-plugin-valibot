@@ -1,10 +1,2 @@
 allowBuilds:
   esbuild: true
-patchedDependencies:
-  deepmerge@4.3.1: patches/deepmerge@4.3.1.patch
-
-# The installed deepmerge is patched and tested; the registry audit only checks
-# its version. See patches/README.md before changing this exception.
-auditConfig:
-  ignoreGhsas:
-    - GHSA-gcqx-w48m-w2h4

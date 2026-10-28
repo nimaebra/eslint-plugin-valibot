@@ -1,2 +1,0 @@
-# pnpm patches preserve upstream whitespace in unified-diff context lines.
-patches/*.patch -whitespace

@@ -35,9 +35,3 @@ prefer to remain anonymous.
 Out of scope: vulnerabilities in Valibot itself (report those to the
 [Valibot project](https://github.com/fabian-hiller/valibot)), or in ESLint
 core.
-
-## Development dependency patches
-
-Temporary dependency patches and any associated advisory exceptions are
-documented in [patches/README.md](patches/README.md), with regression tests and
-instructions for removing them when an upstream fix is available.
