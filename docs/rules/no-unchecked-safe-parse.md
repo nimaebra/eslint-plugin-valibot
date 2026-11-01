@@ -22,7 +22,7 @@ The rule recognizes these guards:
 
 Results are tracked through bindings that are not reassigned, including stable `let` bindings and aliases. Static bracket properties such as `result['output']` and `result['success']` work like dot properties. Destructuring `output` without `success` is reported; when both are destructured, reads of the output binding must be guarded by the corresponding success binding.
 
-Guards are matched by variable identity and do not cross function boundaries. Put a guard inside a callback that reads output. Direct mutations of a tracked result invalidate guard assumptions. Reassigned bindings and dynamic computed keys are not tracked.
+Guards are matched by variable identity, including closures over a stable result. A guard on a shadowing parameter does not validate an outer result. Direct mutations of a tracked result invalidate guard assumptions. Reassigned bindings and dynamic computed keys are not tracked.
 
 ## Incorrect
 

@@ -258,11 +258,6 @@ function isGuardedBySuccessCheck(
         }
         break;
 
-      case 'ArrowFunctionExpression':
-      case 'FunctionExpression':
-      case 'FunctionDeclaration':
-        return false;
-
       case 'SwitchCase':
         if (hasPrecedingExitOnFailure(current.consequent, child, isSuccess)) {
           return true;

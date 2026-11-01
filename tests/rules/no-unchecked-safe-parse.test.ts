@@ -18,6 +18,10 @@ const error = (name = 'safeParse') => ({
 ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
   valid: [
     {
+      code: `${NS}function test() { const result = v.safeParse(Schema, input); if (!result.success) return; return () => result.output; }`,
+    },
+
+    {
       code: `${NS}const result = v.safeParse(Schema, input); if (result.success) { const { output } = result; save(output); }`,
     },
     {
@@ -142,10 +146,6 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
     },
     {
       code: `${NS}const result = v.safeParse(Schema, input); result.success = true; if (result.success) save(result.output);`,
-      errors: [error()],
-    },
-    {
-      code: `${NS}function test() { const result = v.safeParse(Schema, input); if (!result.success) return; return () => result.output; }`,
       errors: [error()],
     },
     {
