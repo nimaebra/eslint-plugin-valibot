@@ -15,6 +15,15 @@ ruleTester.run(
   {
     valid: [
       {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.nonEmpty(), v.transform(() => ' value '), v.trim());",
+      },
+      {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.nonEmpty(), ...actions, v.trim());",
+      },
+      {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.nonEmpty(), customAction, v.trim());",
+      },
+      {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.trim(), v.nonEmpty(), v.minLength(3));",
       },
       {
@@ -31,6 +40,33 @@ ruleTester.run(
       },
     ],
     invalid: [
+      {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.nonEmpty(), v.trimStart(), v.minLength(2), v.trimEnd());",
+        errors: [
+          {
+            messageId: 'lengthCheckBeforeTrim',
+            data: { check: 'nonEmpty', trim: 'trimStart' },
+            suggestions: [
+              {
+                messageId: 'moveTrimBeforeCheck',
+                output:
+                  "import * as v from 'valibot'; v.pipe(v.string(), v.trimStart(), v.nonEmpty(), v.minLength(2), v.trimEnd());",
+              },
+            ],
+          },
+          {
+            messageId: 'lengthCheckBeforeTrim',
+            data: { check: 'minLength', trim: 'trimEnd' },
+            suggestions: [
+              {
+                messageId: 'moveTrimBeforeCheck',
+                output:
+                  "import * as v from 'valibot'; v.pipe(v.string(), v.nonEmpty(), v.trimStart(), v.trimEnd(), v.minLength(2));",
+              },
+            ],
+          },
+        ],
+      },
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipe(v.string(), v.nonEmpty(), v.trim());",
         errors: [

@@ -52,3 +52,5 @@ Yes, when the nested wrappers are simple and a usable `nullish` callee is alread
 - [Valibot nullish() API](https://valibot.dev/api/nullish/)
 - [Valibot optional() API](https://valibot.dev/api/optional/)
 - [Valibot nullable() API](https://valibot.dev/api/nullable/)
+
+Unions or wrappers containing comments are reported without an autofix to preserve those comments.

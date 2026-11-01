@@ -1,4 +1,8 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import {
+  ASTUtils,
+  type TSESLint,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 
 import { createRule } from '../utils/create-rule';
 import {
@@ -34,7 +38,7 @@ export const noUncheckedSafeParse = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       CallExpression(node) {
         if (!hasValibotImports(imports)) {
@@ -74,38 +78,118 @@ export const noUncheckedSafeParse = createRule<Options, MessageIds>({
           return;
         }
 
-        if (parent.id.type === 'ObjectPattern') {
-          const outputProperty = getDestructuredOutputWithoutSuccess(parent.id);
+        const results = new Set<TSESLint.Scope.Variable>();
+        const successes = new Set<TSESLint.Scope.Variable>();
+        const reads: TSESTree.Node[] = [];
+        const pending = [parent];
+        const visited = new Set<TSESTree.VariableDeclarator>();
+        const stable = (variable: TSESLint.Scope.Variable) =>
+          !variable.references.some(
+            (reference) => reference.isWrite() && !reference.init,
+          );
 
-          if (outputProperty) {
-            report(outputProperty);
+        while (pending.length) {
+          const declaration = pending.pop()!;
+          if (visited.has(declaration)) continue;
+          visited.add(declaration);
+          const variables = sourceCode.getDeclaredVariables(declaration);
+          if (declaration.id.type === 'ObjectPattern') {
+            const properties = declaration.id.properties;
+            const output = properties.find(
+              (property) =>
+                property.type === 'Property' &&
+                getStaticKeyName(property) === 'output',
+            );
+            const success = properties.find(
+              (property) =>
+                property.type === 'Property' &&
+                getStaticKeyName(property) === 'success',
+            );
+            const rest = properties.find(
+              (property) => property.type === 'RestElement',
+            );
+            if (output && !success && !rest) {
+              reads.push(output);
+              continue;
+            }
+            for (const variable of variables) {
+              if (!stable(variable)) continue;
+              if (
+                success?.type === 'Property' &&
+                success.value === variable.identifiers[0]
+              )
+                successes.add(variable);
+              if (rest?.argument === variable.identifiers[0])
+                results.add(variable);
+              if (
+                output?.type === 'Property' &&
+                output.value === variable.identifiers[0]
+              ) {
+                reads.push(
+                  ...variable.references
+                    .filter((reference) => reference.isRead())
+                    .map((reference) => reference.identifier),
+                );
+              }
+            }
+            continue;
           }
-
-          return;
-        }
-
-        if (
-          parent.id.type !== 'Identifier' ||
-          parent.parent.type !== 'VariableDeclaration' ||
-          parent.parent.kind !== 'const'
-        ) {
-          return;
-        }
-
-        const resultName = parent.id.name;
-
-        for (const variable of sourceCode.getDeclaredVariables(parent)) {
+          if (declaration.id.type !== 'Identifier') continue;
+          const variable = variables[0];
+          if (!variable || !stable(variable)) continue;
+          results.add(variable);
           for (const reference of variable.references) {
             const identifier = reference.identifier;
             const member = identifier.parent;
-
+            if (isOutputAccess(member, identifier)) reads.push(member);
             if (
-              isOutputAccess(member, identifier) &&
-              !isGuardedBySuccessCheck(member, resultName)
-            ) {
-              report(member);
-            }
+              member.type === 'VariableDeclarator' &&
+              member.init === identifier
+            )
+              pending.push(member);
           }
+        }
+
+        const findVariable = (identifier: TSESTree.Identifier) =>
+          ASTUtils.findVariable(
+            sourceCode.getScope(identifier),
+            identifier.name,
+          );
+        const isSuccess: SuccessCheck = (expression) => {
+          if (expression.type === 'Identifier') {
+            const variable = findVariable(expression);
+            return Boolean(variable && successes.has(variable));
+          }
+          if (
+            expression.type !== 'MemberExpression' ||
+            getMemberName(expression) !== 'success' ||
+            expression.object.type !== 'Identifier'
+          )
+            return false;
+          const variable = findVariable(expression.object);
+          return Boolean(variable && results.has(variable));
+        };
+        const mutated = [...results].some((variable) =>
+          variable.references.some((reference) => {
+            const member = reference.identifier.parent;
+            if (
+              member.type !== 'MemberExpression' ||
+              member.object !== reference.identifier
+            )
+              return false;
+            const operation = member.parent;
+            return (
+              (operation.type === 'AssignmentExpression' &&
+                operation.left === member) ||
+              operation.type === 'UpdateExpression' ||
+              (operation.type === 'UnaryExpression' &&
+                operation.operator === 'delete')
+            );
+          }),
+        );
+        for (const read of reads) {
+          if (mutated || !isGuardedBySuccessCheck(read, isSuccess))
+            report(read);
         }
       },
     };
@@ -119,34 +203,8 @@ function isOutputAccess(
   return (
     node?.type === 'MemberExpression' &&
     node.object === object &&
-    !node.computed &&
-    node.property.type === 'Identifier' &&
-    node.property.name === 'output'
+    getMemberName(node) === 'output'
   );
-}
-
-function getDestructuredOutputWithoutSuccess(
-  pattern: TSESTree.ObjectPattern,
-): TSESTree.Property | null {
-  let outputProperty: TSESTree.Property | null = null;
-
-  for (const property of pattern.properties) {
-    if (property.type === 'RestElement') {
-      return null;
-    }
-
-    const key = getStaticKeyName(property);
-
-    if (key === 'success') {
-      return null;
-    }
-
-    if (key === 'output') {
-      outputProperty = property;
-    }
-  }
-
-  return outputProperty;
 }
 
 function getStaticKeyName(property: TSESTree.Property): string | null {
@@ -162,12 +220,11 @@ function getStaticKeyName(property: TSESTree.Property): string | null {
 
 function isGuardedBySuccessCheck(
   node: TSESTree.Node,
-  resultName: string,
+  isSuccess: SuccessCheck,
 ): boolean {
   const ifTruthy = (test: TSESTree.Node) =>
-    truthyImpliesSuccess(test, resultName);
-  const ifFalsy = (test: TSESTree.Node) =>
-    falsyImpliesSuccess(test, resultName);
+    truthyImpliesSuccess(test, isSuccess);
+  const ifFalsy = (test: TSESTree.Node) => falsyImpliesSuccess(test, isSuccess);
 
   let child: TSESTree.Node = node;
 
@@ -196,13 +253,18 @@ function isGuardedBySuccessCheck(
       case 'BlockStatement':
       case 'Program':
       case 'StaticBlock':
-        if (hasPrecedingExitOnFailure(current.body, child, resultName)) {
+        if (hasPrecedingExitOnFailure(current.body, child, isSuccess)) {
           return true;
         }
         break;
 
+      case 'ArrowFunctionExpression':
+      case 'FunctionExpression':
+      case 'FunctionDeclaration':
+        return false;
+
       case 'SwitchCase':
-        if (hasPrecedingExitOnFailure(current.consequent, child, resultName)) {
+        if (hasPrecedingExitOnFailure(current.consequent, child, isSuccess)) {
           return true;
         }
         break;
@@ -219,7 +281,7 @@ function isGuardedBySuccessCheck(
 function hasPrecedingExitOnFailure(
   statements: TSESTree.Node[],
   child: TSESTree.Node,
-  resultName: string,
+  isSuccess: SuccessCheck,
 ): boolean {
   const index = statements.indexOf(child);
 
@@ -229,10 +291,10 @@ function hasPrecedingExitOnFailure(
       (statement) =>
         statement.type === 'IfStatement' &&
         ((alwaysExits(statement.consequent) &&
-          falsyImpliesSuccess(statement.test, resultName)) ||
+          falsyImpliesSuccess(statement.test, isSuccess)) ||
           (statement.alternate !== null &&
             alwaysExits(statement.alternate) &&
-            truthyImpliesSuccess(statement.test, resultName))),
+            truthyImpliesSuccess(statement.test, isSuccess))),
     );
 }
 
@@ -256,45 +318,49 @@ function alwaysExits(statement: TSESTree.Statement): boolean {
 // Whether `test` being truthy guarantees `result.success`.
 function truthyImpliesSuccess(
   test: TSESTree.Node,
-  resultName: string,
+  isSuccess: SuccessCheck,
 ): boolean {
   switch (test.type) {
+    case 'Identifier':
     case 'MemberExpression':
-      return isSuccessAccess(test, resultName);
+      return isSuccess(test);
     case 'UnaryExpression':
       return (
-        test.operator === '!' && falsyImpliesSuccess(test.argument, resultName)
+        test.operator === '!' && falsyImpliesSuccess(test.argument, isSuccess)
       );
     case 'BinaryExpression':
-      return getSuccessComparison(test, resultName) === true;
+      return getSuccessComparison(test, isSuccess) === true;
     case 'LogicalExpression':
       return test.operator === '&&'
-        ? truthyImpliesSuccess(test.left, resultName) ||
-            truthyImpliesSuccess(test.right, resultName)
+        ? truthyImpliesSuccess(test.left, isSuccess) ||
+            truthyImpliesSuccess(test.right, isSuccess)
         : test.operator === '||' &&
-            truthyImpliesSuccess(test.left, resultName) &&
-            truthyImpliesSuccess(test.right, resultName);
+            truthyImpliesSuccess(test.left, isSuccess) &&
+            truthyImpliesSuccess(test.right, isSuccess);
     default:
       return false;
   }
 }
 
 // Whether `test` being falsy guarantees `result.success`.
-function falsyImpliesSuccess(test: TSESTree.Node, resultName: string): boolean {
+function falsyImpliesSuccess(
+  test: TSESTree.Node,
+  isSuccess: SuccessCheck,
+): boolean {
   switch (test.type) {
     case 'UnaryExpression':
       return (
-        test.operator === '!' && truthyImpliesSuccess(test.argument, resultName)
+        test.operator === '!' && truthyImpliesSuccess(test.argument, isSuccess)
       );
     case 'BinaryExpression':
-      return getSuccessComparison(test, resultName) === false;
+      return getSuccessComparison(test, isSuccess) === false;
     case 'LogicalExpression':
       return test.operator === '||'
-        ? falsyImpliesSuccess(test.left, resultName) ||
-            falsyImpliesSuccess(test.right, resultName)
+        ? falsyImpliesSuccess(test.left, isSuccess) ||
+            falsyImpliesSuccess(test.right, isSuccess)
         : test.operator === '&&' &&
-            falsyImpliesSuccess(test.left, resultName) &&
-            falsyImpliesSuccess(test.right, resultName);
+            falsyImpliesSuccess(test.left, isSuccess) &&
+            falsyImpliesSuccess(test.right, isSuccess);
     default:
       return false;
   }
@@ -307,14 +373,14 @@ function falsyImpliesSuccess(test: TSESTree.Node, resultName: string): boolean {
  */
 function getSuccessComparison(
   test: TSESTree.BinaryExpression,
-  resultName: string,
+  isSuccess: SuccessCheck,
 ): boolean | null {
-  const [access, literal] = isSuccessAccess(test.left, resultName)
+  const [access, literal] = isSuccess(test.left)
     ? [test.left, test.right]
     : [test.right, test.left];
 
   if (
-    !isSuccessAccess(access, resultName) ||
+    !isSuccess(access) ||
     literal.type !== 'Literal' ||
     typeof literal.value !== 'boolean'
   ) {
@@ -333,13 +399,14 @@ function getSuccessComparison(
   }
 }
 
-function isSuccessAccess(node: TSESTree.Node, resultName: string): boolean {
-  return (
-    node.type === 'MemberExpression' &&
-    !node.computed &&
-    node.object.type === 'Identifier' &&
-    node.object.name === resultName &&
-    node.property.type === 'Identifier' &&
-    node.property.name === 'success'
-  );
+type SuccessCheck = (node: TSESTree.Node) => boolean;
+
+function getMemberName(node: TSESTree.MemberExpression): string | null {
+  if (!node.computed && node.property.type === 'Identifier')
+    return node.property.name;
+  return node.computed &&
+    node.property.type === 'Literal' &&
+    typeof node.property.value === 'string'
+    ? node.property.value
+    : null;
 }

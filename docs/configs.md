@@ -79,6 +79,7 @@ Includes:
 - `valibot/no-async-action-in-sync-pipe`: `error`
 - `valibot/no-async-schema-in-sync-parent`: `error`
 - `valibot/no-conflicting-pipe-actions`: `error`
+- `valibot/no-discarded-safe-parse`: `error`
 - `valibot/no-duplicate-pipe-actions`: `error`
 - `valibot/no-empty-pipe`: `error`
 - `valibot/no-empty-union`: `error`
@@ -89,6 +90,7 @@ Includes:
 - `valibot/no-redundant-schema-wrappers`: `error`
 - `valibot/no-redundant-transformation`: `error`
 - `valibot/no-schema-as-type`: `error`
+- `valibot/no-shared-mutable-default`: `error`
 - `valibot/no-single-member-union`: `error`
 - `valibot/no-throw-in-check`: `error`
 - `valibot/no-transform-in-record-key`: `error`

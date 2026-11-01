@@ -53,6 +53,8 @@ const Schema = v.picklist(['admin', 'user']);
 
 Yes, when the union options are all literal string schemas and a usable `picklist` callee is available in the current import style.
 
+Unions containing comments are reported without an autofix, so `--fix` preserves those comments. Convert these unions manually while keeping any explanations attached to the options or message.
+
 ## Further Reading
 
 - [Valibot picklist() API](https://valibot.dev/api/picklist/)

@@ -67,7 +67,7 @@ export const noThrowInCheck = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       ThrowStatement(node) {
         if (!hasValibotImports(imports) || isCaughtLocally(node)) {

@@ -15,6 +15,15 @@ ruleTester.run(
   {
     valid: [
       {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.minLength(8), ...actions, v.maxLength(3));",
+      },
+      {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.minLength(8), v.trim(), v.maxLength(3));",
+      },
+      {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.minLength(8), v.customAction(), v.maxLength(3));",
+      },
+      {
         code: "import { pipe, string, minLength, maxLength } from 'valibot';\nconst Schema = pipe(string(), minLength(2), maxLength(10));",
       },
       {
@@ -34,6 +43,14 @@ ruleTester.run(
       },
     ],
     invalid: [
+      {
+        code: "import * as v from 'valibot'; v.pipe(v.string(), v.minLength(8), v.email(), v.maxLength(3));",
+        errors: [{ messageId: 'conflictingPipeActions' }],
+      },
+      {
+        code: "import * as v from 'valibot'; v.pipeAsync(v.string(), v.minLength(8), v.regex(/x/), v.maxLength(3), v.maxLength(2));",
+        errors: [{ messageId: 'conflictingPipeActions' }],
+      },
       {
         code: "import * as v from 'valibot';\nconst Schema = v.pipeAsync(v.string(), v.minLength(10), v.maxLength(5));",
         errors: [{ messageId: 'conflictingPipeActions' }],

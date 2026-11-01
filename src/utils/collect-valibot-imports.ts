@@ -1,4 +1,8 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import {
+  ASTUtils,
+  type TSESLint,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 
 // npm publishes `valibot`; JSR publishes `@valibot/valibot`. Deno also allows
 // `npm:` and `jsr:` specifiers with an optional version, e.g.
@@ -19,12 +23,22 @@ export function isValibotModuleSource(source: unknown): boolean {
 export interface ValibotImports {
   namespaces: Set<string>;
   importedNames: Map<string, string>;
+  bindings: Map<string, { identifier: TSESTree.Identifier; typeOnly: boolean }>;
+  sourceCode?: Readonly<TSESLint.SourceCode>;
+  resolvedBindings: WeakMap<object, Map<string, boolean>>;
 }
+
+const importsCache = new WeakMap<
+  Readonly<TSESLint.SourceCode>,
+  ValibotImports
+>();
 
 export function createEmptyValibotImports(): ValibotImports {
   return {
     namespaces: new Set<string>(),
     importedNames: new Map<string, string>(),
+    bindings: new Map(),
+    resolvedBindings: new WeakMap(),
   };
 }
 
@@ -34,8 +48,13 @@ export function hasValibotImports(imports: ValibotImports): boolean {
 
 export function collectValibotImports(
   program: TSESTree.Program,
+  sourceCode?: Readonly<TSESLint.SourceCode>,
 ): ValibotImports {
+  const cached = sourceCode && importsCache.get(sourceCode);
+  if (cached) return cached;
   const imports = createEmptyValibotImports();
+  imports.sourceCode = sourceCode;
+  if (sourceCode) importsCache.set(sourceCode, imports);
 
   for (const statement of program.body) {
     if (
@@ -43,6 +62,14 @@ export function collectValibotImports(
       isValibotModuleSource(statement.source.value)
     ) {
       for (const specifier of statement.specifiers) {
+        if (specifier.type === 'ImportDefaultSpecifier') continue;
+        imports.bindings.set(specifier.local.name, {
+          identifier: specifier.local,
+          typeOnly:
+            statement.importKind === 'type' ||
+            (specifier.type === 'ImportSpecifier' &&
+              specifier.importKind === 'type'),
+        });
         if (specifier.type === 'ImportNamespaceSpecifier') {
           imports.namespaces.add(specifier.local.name);
           continue;
@@ -74,8 +101,20 @@ export function collectValibotImports(
         continue;
       }
 
+      if (sourceCode) {
+        const requireVariable = ASTUtils.findVariable(
+          sourceCode.getScope(declaration.init),
+          'require',
+        );
+        if (requireVariable?.defs.length) continue;
+      }
+
       if (declaration.id.type === 'Identifier') {
         imports.namespaces.add(declaration.id.name);
+        imports.bindings.set(declaration.id.name, {
+          identifier: declaration.id,
+          typeOnly: false,
+        });
         continue;
       }
 
@@ -97,11 +136,46 @@ export function collectValibotImports(
         }
 
         imports.importedNames.set(property.value.name, property.key.name);
+        imports.bindings.set(property.value.name, {
+          identifier: property.value,
+          typeOnly: false,
+        });
       }
     }
   }
 
   return imports;
+}
+
+/** Check the actual reference, including replacement names used by fixers. */
+export function isValibotBinding(
+  node: TSESTree.Node,
+  imports: ValibotImports,
+  name: string,
+  allowTypeOnly = false,
+): boolean {
+  const binding = imports.bindings.get(name);
+  if (!binding || (!allowTypeOnly && binding.typeOnly)) return false;
+  const { sourceCode } = imports;
+  // AST-only consumers can collect names without a scope manager.
+  if (!sourceCode) return true;
+  const scope = sourceCode.getScope(node);
+  let cached = imports.resolvedBindings.get(scope);
+  if (!cached) {
+    cached = new Map();
+    imports.resolvedBindings.set(scope, cached);
+  }
+  const known = cached.get(name);
+  if (known !== undefined) return known;
+  const variable = ASTUtils.findVariable(scope, name);
+  const matches = Boolean(
+    variable?.identifiers.includes(binding.identifier) &&
+    !variable.references.some(
+      (reference) => reference.isWrite() && !reference.init,
+    ),
+  );
+  cached.set(name, matches);
+  return matches;
 }
 
 function isRequireFromValibot(node: TSESTree.CallExpression): boolean {

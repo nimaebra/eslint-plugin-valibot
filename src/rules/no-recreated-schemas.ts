@@ -5,6 +5,7 @@ import {
   collectValibotImports,
   createEmptyValibotImports,
   hasValibotImports,
+  isValibotBinding,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
 import { isValibotSchemaExpression } from '../utils/is-schema-expression';
@@ -32,7 +33,7 @@ export const noRecreatedSchemas = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       VariableDeclarator(node) {
         if (
@@ -124,8 +125,9 @@ function hasDynamicSchemaInputs(
     }
 
     if (
-      imports.importedNames.has(childNode.name) ||
-      imports.namespaces.has(childNode.name)
+      (imports.importedNames.has(childNode.name) ||
+        imports.namespaces.has(childNode.name)) &&
+      isValibotBinding(childNode, imports, childNode.name)
     ) {
       return false;
     }

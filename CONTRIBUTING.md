@@ -160,9 +160,12 @@ When adding a new rule:
    pnpm create:rule my-new-rule
    ```
 
+   Use a lowercase kebab-case name starting with a letter. The generator checks all three target files before writing and refuses to overwrite existing source, tests, or docs.
+
 2. Implement the rule in [src/rules](src/rules).
 3. Export it from [src/rules/index.ts](src/rules/index.ts).
 4. Register it in [src/rules/registry.ts](src/rules/registry.ts) and decide which presets should include it.
+   Root named exports are maintained separately in [src/index.ts](src/index.ts); add one there if the rule should be importable directly from the package.
 5. Add or update the rule documentation in [docs/rules](docs/rules).
 6. Add rule tests in [tests/rules](tests/rules).
 

@@ -1,4 +1,6 @@
 import { consistentImport } from './consistent-import';
+import { noDiscardedSafeParse } from './no-discarded-safe-parse';
+import { noSharedMutableDefault } from './no-shared-mutable-default';
 import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noRecreatedSchemas } from './no-recreated-schemas';
@@ -36,6 +38,8 @@ import {
 } from './registry';
 
 export {
+  noDiscardedSafeParse,
+  noSharedMutableDefault,
   consistentImport,
   consistentSchemaConvention,
   getRuleNamesForConfig,

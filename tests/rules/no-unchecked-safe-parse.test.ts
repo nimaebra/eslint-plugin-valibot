@@ -17,6 +17,30 @@ const error = (name = 'safeParse') => ({
 
 ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
   valid: [
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) { const { output } = result; save(output); }`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result['success']) save(result['output']);`,
+    },
+    {
+      code: `${NS}let result = v.safeParse(Schema, input); if (!result['success']) throw Error(); save(result.output);`,
+    },
+    {
+      code: `${NS}const { success: ok, output: value } = v.safeParse(Schema, input); if (ok) save(value);`,
+    },
+    {
+      code: `${NS}const { output, ...rest } = v.safeParse(Schema, input); rest.success && save(output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; if (alias.success) save(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; if (result.success) save(alias['output']);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const callback = () => { if (result.success) return result.output; };`,
+    },
     // Unawaited promises belong to no-unawaited-parse-async.
     {
       code: `${NS}const promise = v.safeParseAsync(Schema, input); save(promise.output);`,
@@ -88,6 +112,42 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
     },
   ],
   invalid: [
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); save(result['output']);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}save(v.safeParse(Schema, input)['output']);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const { success, output } = v.safeParse(Schema, input); save(output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const { success: ok, output: value } = v.safeParse(Schema, input); if (!ok) save(value);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; save(alias.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) { function test(result) { save(result.output); } save(result.output); } function other() { save(result.output); }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); function test(result) { if (result.success) save(outer.output); } const outer = result;`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); result.success = true; if (result.success) save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}function test() { const result = v.safeParse(Schema, input); if (!result.success) return; return () => result.output; }`,
+      errors: [error()],
+    },
     {
       code: `${NS}const { ['output']: value } = v.safeParse(Schema, input);`,
       errors: [error()],

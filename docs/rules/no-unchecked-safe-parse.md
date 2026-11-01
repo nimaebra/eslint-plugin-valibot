@@ -20,7 +20,9 @@ The rule recognizes these guards:
 - `result.success && result.output`
 - comparisons such as `result.success === true` or `result.success === false`
 
-Results are tracked through `const` bindings and direct property access. Destructuring `output` without `success` is reported. Destructuring both is assumed to be checked.
+Results are tracked through bindings that are not reassigned, including stable `let` bindings and aliases. Static bracket properties such as `result['output']` and `result['success']` work like dot properties. Destructuring `output` without `success` is reported; when both are destructured, reads of the output binding must be guarded by the corresponding success binding.
+
+Guards are matched by variable identity and do not cross function boundaries. Put a guard inside a callback that reads output. Direct mutations of a tracked result invalidate guard assumptions. Reassigned bindings and dynamic computed keys are not tracked.
 
 ## Incorrect
 

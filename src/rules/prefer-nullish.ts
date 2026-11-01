@@ -43,7 +43,7 @@ export const preferNullish = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       CallExpression(node) {
         if (!hasValibotImports(imports) || node.arguments.length !== 1) {
@@ -80,13 +80,15 @@ export const preferNullish = createRule<Options, MessageIds>({
         context.report({
           node,
           messageId: 'preferNullish',
-          fix: preferredCalleeText
-            ? (fixer) =>
-                fixer.replaceText(
-                  node,
-                  `${preferredCalleeText}(${sourceCode.getText(innerSchema)})`,
-                )
-            : null,
+          fix:
+            preferredCalleeText &&
+            sourceCode.getCommentsInside(node).length === 0
+              ? (fixer) =>
+                  fixer.replaceText(
+                    node,
+                    `${preferredCalleeText}(${sourceCode.getText(innerSchema)})`,
+                  )
+              : null,
         });
       },
     };

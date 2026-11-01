@@ -1,10 +1,15 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import {
+  ASTUtils,
+  type TSESLint,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 
 import { createRule } from '../utils/create-rule';
 import {
   collectValibotImports,
   createEmptyValibotImports,
   hasValibotImports,
+  isValibotBinding,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
 import { getSchemaBindingName } from '../utils/schema-identifiers';
@@ -31,11 +36,11 @@ export const noSchemaAsType = createRule<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     let imports = createEmptyValibotImports();
-    const schemaBindings = new Set<string>();
+    const schemaBindings = new Set<TSESLint.Scope.Variable>();
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       VariableDeclarator(node) {
         if (!hasValibotImports(imports)) {
@@ -45,7 +50,11 @@ export const noSchemaAsType = createRule<Options, MessageIds>({
         const schemaBindingName = getSchemaBindingName(node, imports);
 
         if (schemaBindingName) {
-          schemaBindings.add(schemaBindingName);
+          for (const variable of context.sourceCode.getDeclaredVariables(
+            node,
+          )) {
+            schemaBindings.add(variable);
+          }
         }
       },
       TSTypeQuery(node) {
@@ -58,7 +67,10 @@ export const noSchemaAsType = createRule<Options, MessageIds>({
 
         const schemaName = getSchemaTypeQueryName(node);
 
-        if (!schemaName || !schemaBindings.has(schemaName)) {
+        const variable =
+          schemaName &&
+          ASTUtils.findVariable(context.sourceCode.getScope(node), schemaName);
+        if (!schemaName || !variable || !schemaBindings.has(variable)) {
           return;
         }
 
@@ -102,8 +114,11 @@ function isAllowedInferReference(
   imports: ValibotImports,
 ): boolean {
   if (typeName.type === 'Identifier') {
-    return ALLOWED_INFER_TYPE_NAMES.has(
-      imports.importedNames.get(typeName.name) ?? '',
+    return (
+      isValibotBinding(typeName, imports, typeName.name, true) &&
+      ALLOWED_INFER_TYPE_NAMES.has(
+        imports.importedNames.get(typeName.name) ?? '',
+      )
     );
   }
 
@@ -114,6 +129,7 @@ function isAllowedInferReference(
   return (
     typeName.left.type === 'Identifier' &&
     imports.namespaces.has(typeName.left.name) &&
+    isValibotBinding(typeName, imports, typeName.left.name, true) &&
     ALLOWED_INFER_TYPE_NAMES.has(typeName.right.name)
   );
 }

@@ -1,6 +1,9 @@
 import type { TSESTree } from '@typescript-eslint/utils';
 
-import type { ValibotImports } from './collect-valibot-imports';
+import {
+  isValibotBinding,
+  type ValibotImports,
+} from './collect-valibot-imports';
 
 /**
  * Builds the callee text for `apiName` in the same import style as `call`:
@@ -14,13 +17,17 @@ export function getValibotCalleeText(
   apiName: string,
 ): string | null {
   if (call.callee.type === 'MemberExpression') {
-    return call.callee.object.type === 'Identifier'
+    return call.callee.object.type === 'Identifier' &&
+      isValibotBinding(call, imports, call.callee.object.name)
       ? `${call.callee.object.name}.${apiName}`
       : null;
   }
 
   for (const [localName, importedName] of imports.importedNames) {
-    if (importedName === apiName) {
+    if (
+      importedName === apiName &&
+      isValibotBinding(call, imports, localName)
+    ) {
       return localName;
     }
   }

@@ -35,8 +35,16 @@ import { noLengthCheckBeforeTrim } from './no-length-check-before-trim';
 import { noUncheckedSafeParse } from './no-unchecked-safe-parse';
 import { noAsyncSchemaInSyncParent } from './no-async-schema-in-sync-parent';
 import { noUnawaitedParseAsync } from './no-unawaited-parse-async';
+import { noDiscardedSafeParse } from './no-discarded-safe-parse';
+import { noSharedMutableDefault } from './no-shared-mutable-default';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
+  { name: 'no-discarded-safe-parse', rule: noDiscardedSafeParse, configs: {} },
+  {
+    name: 'no-shared-mutable-default',
+    rule: noSharedMutableDefault,
+    configs: {},
+  },
   {
     name: 'no-any-schema',
     rule: noAnySchema,

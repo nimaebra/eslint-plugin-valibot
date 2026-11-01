@@ -1,5 +1,10 @@
 export { configs, flatConfigs } from './plugin';
 export {
+  noDiscardedSafeParse,
+  noSharedMutableDefault,
+  noEmptyPipe,
+  noInstanceofBuiltins,
+  requireIssueMessages,
   consistentImport,
   consistentSchemaConvention,
   getRuleNamesForConfig,

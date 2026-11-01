@@ -35,7 +35,7 @@ export const preferPicklist = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       CallExpression(node) {
         if (
@@ -72,6 +72,7 @@ export const preferPicklist = createRule<Options, MessageIds>({
           messageId: 'preferPicklist',
           fix:
             preferredCalleeText &&
+            sourceCode.getCommentsInside(node).length === 0 &&
             (node.arguments.length === 1 || node.arguments.length === 2)
               ? (fixer) =>
                   fixer.replaceText(
