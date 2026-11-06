@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { ruleRegistry } from '../../src/rules';
+import * as publicApi from '../../src/index';
 
 const testDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(testDir, '../..');
@@ -29,29 +30,39 @@ const expectedJavaScriptStylisticRuleIds = getRuleIdsForConfig(
 const expectedTypeScriptStrictRuleIds = getRuleIdsForConfig('strict', true);
 
 describe('package integration examples', () => {
-  it('exposes the expanded rule API from both built entrypoints', async () => {
+  it('exposes the complete public API from both built entrypoints', async () => {
     const esmModule = (await import(
       pathToFileURL(path.join(rootDir, 'dist/index.mjs')).href
     )) as Record<string, unknown> & {
-      default: { rules: Record<string, unknown> };
+      default: typeof publicApi.default;
     };
     const require = createRequire(import.meta.url);
     const cjsModule = require(path.join(rootDir, 'dist/index.cjs')) as Record<
       string,
       unknown
     > & {
-      default: { rules: Record<string, unknown> };
+      default: typeof publicApi.default;
     };
-    const expectedExports = [
-      ['noEmptyUnion', 'no-empty-union'],
-      ['noSingleMemberUnion', 'no-single-member-union'],
-      ['preferFlattenPipe', 'prefer-flatten-pipe'],
-      ['noConflictingPipeActions', 'no-conflicting-pipe-actions'],
-    ] as const;
+    for (const builtModule of [esmModule, cjsModule]) {
+      expect(Object.keys(builtModule).sort()).toEqual(
+        Object.keys(publicApi).sort(),
+      );
+      expect(builtModule.default.meta).toEqual(publicApi.default.meta);
+      expect(Object.keys(builtModule.default.rules).sort()).toEqual(
+        ruleRegistry.map(({ name }) => name).sort(),
+      );
 
-    for (const [exportName, ruleName] of expectedExports) {
-      expect(esmModule[exportName]).toBe(esmModule.default.rules[ruleName]);
-      expect(cjsModule[exportName]).toBe(cjsModule.default.rules[ruleName]);
+      for (const [exportName, exportedValue] of Object.entries(publicApi)) {
+        const entry = ruleRegistry.find(({ rule }) => rule === exportedValue);
+        if (entry) {
+          expect(builtModule[exportName], exportName).toBe(
+            builtModule.default.rules[entry.name],
+          );
+        }
+      }
+      expect(builtModule.rules).toBe(builtModule.default.rules);
+      expect(builtModule.configs).toBe(builtModule.default.configs);
+      expect(builtModule.flatConfigs).toBe(builtModule.default.flatConfigs);
     }
   });
 

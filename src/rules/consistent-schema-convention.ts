@@ -5,6 +5,7 @@ import {
   collectValibotImports,
   createEmptyValibotImports,
   hasValibotImports,
+  isValibotBinding,
   type ValibotImports,
 } from '../utils/collect-valibot-imports';
 import { getSchemaBindingName } from '../utils/schema-identifiers';
@@ -126,7 +127,7 @@ export const consistentSchemaConvention = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
         exportedTypeBindings.clear();
         exportedValueBindings.clear();
         inferTypeAliases.length = 0;
@@ -383,6 +384,8 @@ function getInferTypeKind(
   imports: ValibotImports,
 ): InferKind | null {
   if (node.typeName.type === 'Identifier') {
+    if (!isValibotBinding(node.typeName, imports, node.typeName.name, true))
+      return null;
     return (
       INFER_TYPE_NAMES[imports.importedNames.get(node.typeName.name) ?? ''] ??
       null
@@ -394,7 +397,8 @@ function getInferTypeKind(
   }
 
   return node.typeName.left.type === 'Identifier' &&
-    imports.namespaces.has(node.typeName.left.name)
+    imports.namespaces.has(node.typeName.left.name) &&
+    isValibotBinding(node.typeName.left, imports, node.typeName.left.name, true)
     ? (INFER_TYPE_NAMES[node.typeName.right.name] ?? null)
     : null;
 }

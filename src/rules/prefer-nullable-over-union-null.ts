@@ -50,7 +50,7 @@ export const preferNullableOverUnionNull = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       CallExpression(node) {
         if (!hasValibotImports(imports)) {
@@ -78,13 +78,15 @@ export const preferNullableOverUnionNull = createRule<Options, MessageIds>({
         context.report({
           node,
           messageId: 'preferNullable',
-          fix: preferredCalleeText
-            ? (fixer) =>
-                fixer.replaceText(
-                  node,
-                  `${preferredCalleeText}(${sourceCode.getText(matchedSchema)})`,
-                )
-            : null,
+          fix:
+            preferredCalleeText &&
+            sourceCode.getCommentsInside(node).length === 0
+              ? (fixer) =>
+                  fixer.replaceText(
+                    node,
+                    `${preferredCalleeText}(${sourceCode.getText(matchedSchema)})`,
+                  )
+              : null,
         });
       },
     };

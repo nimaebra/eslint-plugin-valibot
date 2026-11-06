@@ -67,6 +67,24 @@ const contexts = [
 ] as const;
 
 describe('safeParse guards against actual execution', () => {
+  it('accepts a closure created only after a stable result succeeds', () => {
+    const code = `
+      const v = require('valibot');
+      function make(input) {
+        const result = v.safeParse(v.string(), input);
+        if (!result.success) return;
+        return () => consume(result.output);
+      }
+      for (const input of ['valid', 42]) make(input)?.();
+    `;
+    const observations: unknown[] = [];
+    runInNewContext(code, {
+      require: () => v,
+      consume: (output: unknown) => observations.push(output),
+    });
+    expect(observations).toEqual(['valid']);
+    expect(linter.verify(code, config)).toEqual([]);
+  });
   describe.each(contexts)('%s', (_name, body) => {
     it.each(guards)('%s', (guard) => {
       const code = `

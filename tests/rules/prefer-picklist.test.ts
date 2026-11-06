@@ -28,6 +28,16 @@ ruleTester.run('prefer-picklist', preferPicklist as never, {
     },
   ],
   invalid: [
+    ...[
+      "v.union([/* public status */ v.literal('A'), v.literal('B')])",
+      "v.union([v.literal(/* public status */ 'A'), v.literal('B')])",
+      "v.union([v.literal('A'), v.literal('B')], /* translated */ 'Invalid')",
+      "v.unionAsync([v.literal('A'), // keep this status\nv.literal('B')])",
+    ].map((expression) => ({
+      code: `import * as v from 'valibot';\nconst Schema = ${expression};`,
+      output: null,
+      errors: [{ messageId: 'preferPicklist' }],
+    })),
     {
       code: "import * as v from 'valibot';\nconst Schema = v.unionAsync([v.literal('a'), v.literal('b')]);",
       output:

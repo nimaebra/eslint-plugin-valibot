@@ -1,9 +1,33 @@
 import { describe, expect, it } from 'vitest';
+import { readdirSync } from 'node:fs';
 
 import plugin from '../../src/plugin';
+import * as ruleExports from '../../src/rules';
 import { getRuleNamesForConfig, ruleRegistry } from '../../src/rules';
 
 describe('plugin config exports', () => {
+  it('registers every implemented rule exactly once', () => {
+    const implementedNames = readdirSync(
+      new URL('../../src/rules', import.meta.url),
+    )
+      .filter(
+        (name) =>
+          name.endsWith('.ts') && name !== 'index.ts' && name !== 'registry.ts',
+      )
+      .map((name) => name.slice(0, -3))
+      .sort();
+    const registeredNames = ruleRegistry.map(({ name }) => name).sort();
+
+    expect(registeredNames).toEqual(implementedNames);
+    expect(new Set(registeredNames).size).toBe(registeredNames.length);
+  });
+
+  it('exports every registered rule from the rule barrel', () => {
+    for (const { name, rule } of ruleRegistry) {
+      expect(Object.values(ruleExports), name).toContain(rule);
+    }
+  });
+
   it.each(['all', 'recommended', 'strict', 'stylistic'] as const)(
     'lists the enabled %s rules through the public registry helper',
     (preset) => {

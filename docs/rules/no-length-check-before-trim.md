@@ -53,3 +53,7 @@ No, but the rule offers an editor suggestion that moves the trim action in front
 
 - [Valibot pipe() API](https://valibot.dev/api/pipe/)
 - [Valibot trim() API](https://valibot.dev/api/trim/)
+
+## Analysis boundaries
+
+Checks and trims are compared only across known built-in validations and trim actions. Transformations, unknown actions, and spreads end the analysis, so an editor suggestion cannot move a trim across a change to the value.

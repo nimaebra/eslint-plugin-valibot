@@ -17,6 +17,52 @@ const error = (name = 'safeParse') => ({
 
 ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
   valid: [
+    {
+      code: `${NS}function test() { const result = v.safeParse(Schema, input); if (!result.success) return; return () => result.output; }`,
+    },
+
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) { const { output } = result; save(output); }`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); result.extra = true; result[0] = true; if (result.success) save(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) save(result.output); result.success = true;`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (!result.success) result.output = fallback; else save(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const { success, output } = result; result.output = fallback; if (success) save(output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const { output, ...rest } = result; result.success = true; if (rest.success) save(output);`,
+    },
+    {
+      code: `${NS}for (const item of items) { const result = v.safeParse(Schema, item); if (result.success) save(result.output); result.success = true; }`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result['success']) save(result['output']);`,
+    },
+    {
+      code: `${NS}let result = v.safeParse(Schema, input); if (!result['success']) throw Error(); save(result.output);`,
+    },
+    {
+      code: `${NS}const { success: ok, output: value } = v.safeParse(Schema, input); if (ok) save(value);`,
+    },
+    {
+      code: `${NS}const { output, ...rest } = v.safeParse(Schema, input); rest.success && save(output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; if (alias.success) save(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; if (result.success) save(alias['output']);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const callback = () => { if (result.success) return result.output; };`,
+    },
     // Unawaited promises belong to no-unawaited-parse-async.
     {
       code: `${NS}const promise = v.safeParseAsync(Schema, input); save(promise.output);`,
@@ -88,6 +134,54 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
     },
   ],
   invalid: [
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); save(result['output']);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}save(v.safeParse(Schema, input)['output']);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const { success, output } = v.safeParse(Schema, input); save(output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const { success: ok, output: value } = v.safeParse(Schema, input); if (!ok) save(value);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; save(alias.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) { function test(result) { save(result.output); } save(result.output); } function other() { save(result.output); }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); function test(result) { if (result.success) save(outer.output); } const outer = result;`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); result.success = true; if (result.success) save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; if (result.success) { alias.output = fallback; save(result.output); }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); result.success = true; const { success, output } = result; if (success) save(output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); for (const item of items) { if (result.success) save(result.output); result['success'] = true; }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); function read() { if (result.success) save(result.output); result.success = true; } read(); read();`,
+      errors: [error()],
+    },
     {
       code: `${NS}const { ['output']: value } = v.safeParse(Schema, input);`,
       errors: [error()],

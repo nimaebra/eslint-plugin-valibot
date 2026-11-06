@@ -54,3 +54,5 @@ Yes, when the existing import style already provides a `nullable` callee and the
 - [Valibot nullable() API](https://valibot.dev/api/nullable/)
 - [Valibot union() API](https://valibot.dev/api/union/)
 - [Valibot null() API](https://valibot.dev/api/null/)
+
+Unions or wrappers containing comments are reported without an autofix to preserve those comments.

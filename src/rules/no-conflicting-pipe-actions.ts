@@ -6,14 +6,16 @@ import {
   createEmptyValibotImports,
   hasValibotImports,
 } from '../utils/collect-valibot-imports';
-import { getPipeActionDescriptors } from '../utils/pipe-analysis';
+import {
+  getPipeActionDescriptors,
+  VALUE_PRESERVING_ACTION_NAMES,
+} from '../utils/pipe-analysis';
 import { isValibotCallOrAsync } from '../utils/is-valibot-call';
 
 type Options = [];
 type MessageIds = 'conflictingPipeActions';
 
 interface LengthAction {
-  actionIndex: number;
   limit: number;
   name: 'minLength' | 'maxLength';
   node: TSESTree.CallExpression;
@@ -40,7 +42,7 @@ export const noConflictingPipeActions = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       CallExpression(node) {
         if (
@@ -51,28 +53,46 @@ export const noConflictingPipeActions = createRule<Options, MessageIds>({
         }
 
         const actions = getPipeActionDescriptors(node, imports, sourceCode);
-        const lengthActions = actions.flatMap((action) => {
-          if (action.name !== 'minLength' && action.name !== 'maxLength') {
-            return [];
+        const byIndex = new Map(
+          actions.map((action) => [action.actionIndex, action]),
+        );
+        let min: LengthAction | undefined;
+        let max: LengthAction | undefined;
+        let reported = false;
+        for (let index = 1; index < node.arguments.length; index++) {
+          const action = byIndex.get(index);
+          if (!action || !VALUE_PRESERVING_ACTION_NAMES.has(action.name)) {
+            min = max = undefined;
+            reported = false;
+            continue;
           }
-
+          if (action.name !== 'minLength' && action.name !== 'maxLength')
+            continue;
           const limit = getNumericLiteralArgument(action.node);
-
-          if (limit === null) {
-            return [];
+          if (limit === null) continue;
+          const bound: LengthAction = {
+            name: action.name,
+            limit,
+            node: action.node,
+          };
+          if (action.name === 'minLength' && (!min || limit > min.limit))
+            min = bound;
+          if (action.name === 'maxLength' && (!max || limit < max.limit))
+            max = bound;
+          if (!reported && min && max && min.limit > max.limit) {
+            context.report({
+              node: max.node,
+              messageId: 'conflictingPipeActions',
+              data: {
+                firstAction: min.name,
+                firstValue: String(min.limit),
+                secondAction: max.name,
+                secondValue: String(max.limit),
+              },
+            });
+            reported = true;
           }
-
-          return [
-            {
-              actionIndex: action.actionIndex,
-              limit,
-              name: action.name,
-              node: action.node,
-            } satisfies LengthAction,
-          ];
-        });
-
-        reportLengthConflicts(context.report.bind(context), lengthActions);
+        }
       },
     };
   },
@@ -92,45 +112,4 @@ function getNumericLiteralArgument(
   }
 
   return null;
-}
-
-function reportLengthConflicts(
-  report: (descriptor: {
-    data: {
-      firstAction: string;
-      firstValue: string;
-      secondAction: string;
-      secondValue: string;
-    };
-    messageId: 'conflictingPipeActions';
-    node: TSESTree.CallExpression;
-  }) => void,
-  lengthActions: LengthAction[],
-): void {
-  const minLengthActions = lengthActions.filter(
-    (action) => action.name === 'minLength',
-  );
-  const maxLengthActions = lengthActions.filter(
-    (action) => action.name === 'maxLength',
-  );
-
-  for (const minAction of minLengthActions) {
-    for (const maxAction of maxLengthActions) {
-      if (
-        Math.abs(minAction.actionIndex - maxAction.actionIndex) === 1 &&
-        minAction.limit > maxAction.limit
-      ) {
-        report({
-          node: maxAction.node,
-          messageId: 'conflictingPipeActions',
-          data: {
-            firstAction: minAction.name,
-            firstValue: String(minAction.limit),
-            secondAction: maxAction.name,
-            secondValue: String(maxAction.limit),
-          },
-        });
-      }
-    }
-  }
 }

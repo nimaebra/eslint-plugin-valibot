@@ -64,3 +64,5 @@ Yes, when both wrappers are identical and neither wrapper uses a default argumen
 - [Valibot nonOptional() API](https://valibot.dev/api/nonOptional/)
 - [Valibot nonNullable() API](https://valibot.dev/api/nonNullable/)
 - [Valibot nonNullish() API](https://valibot.dev/api/nonNullish/)
+
+Unions or wrappers containing comments are reported without an autofix to preserve those comments.

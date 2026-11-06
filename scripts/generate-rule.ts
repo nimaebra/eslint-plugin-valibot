@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -6,8 +6,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 
 const ruleName = process.argv[2];
+const reservedBindingNames = new Set(
+  (
+    'arguments await break case catch class const continue debugger default delete do else ' +
+    'enum eval export extends false finally for function if implements import in instanceof ' +
+    'interface let new null package private protected public return static super switch ' +
+    'this throw true try typeof var void while with yield'
+  ).split(' '),
+);
 
-if (!ruleName || !/^[a-z0-9-]+$/.test(ruleName)) {
+if (
+  !ruleName ||
+  !/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(ruleName) ||
+  reservedBindingNames.has(toCamelCase(ruleName))
+) {
   throw new Error(
     'Provide a kebab-case rule name, for example: pnpm create:rule prefer-schema-name',
   );
@@ -17,6 +29,23 @@ const variableName = toCamelCase(ruleName);
 const sourcePath = path.join(rootDir, 'src', 'rules', `${ruleName}.ts`);
 const testPath = path.join(rootDir, 'tests', 'rules', `${ruleName}.test.ts`);
 const docPath = path.join(rootDir, 'docs', 'rules', `${ruleName}.md`);
+
+// Check every target before writing so a collision in tests or docs cannot
+// leave a newly created source file beside an existing rule.
+for (const targetPath of [sourcePath, testPath, docPath]) {
+  try {
+    await access(targetPath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      continue;
+    }
+    throw error;
+  }
+
+  throw new Error(
+    `Refusing to overwrite existing file: ${path.relative(rootDir, targetPath)}`,
+  );
+}
 
 await mkdir(path.dirname(sourcePath), { recursive: true });
 await mkdir(path.dirname(testPath), { recursive: true });
@@ -49,7 +78,7 @@ await writeFile(
     '});',
     '',
   ].join('\n'),
-  'utf8',
+  { encoding: 'utf8', flag: 'wx' },
 );
 
 await writeFile(
@@ -72,7 +101,7 @@ await writeFile(
     '});',
     '',
   ].join('\n'),
-  'utf8',
+  { encoding: 'utf8', flag: 'wx' },
 );
 
 await writeFile(
@@ -107,7 +136,7 @@ await writeFile(
     'No.',
     '',
   ].join('\n'),
-  'utf8',
+  { encoding: 'utf8', flag: 'wx' },
 );
 
 process.stdout.write(
@@ -116,7 +145,7 @@ process.stdout.write(
     `- ${path.relative(rootDir, sourcePath)}`,
     `- ${path.relative(rootDir, testPath)}`,
     `- ${path.relative(rootDir, docPath)}`,
-    'Next: export the rule from src/rules/index.ts, wire it into the configs, then run pnpm docs:build.',
+    'Next: export the rule from src/rules/index.ts, register it in src/rules/registry.ts, and decide whether to export it from src/index.ts. Complete the tests and docs, then build and run pnpm docs:build.',
   ].join('\n'),
 );
 

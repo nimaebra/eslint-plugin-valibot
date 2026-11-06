@@ -3,6 +3,34 @@ import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 import type { ValibotImports } from './collect-valibot-imports';
 import { getValibotCallName, isValibotCallOrAsync } from './is-valibot-call';
 
+// Built-in validations that preserve the value without invoking user callbacks.
+// Unknown actions and all transformations are analysis barriers.
+export const VALUE_PRESERVING_ACTION_NAMES = new Set([
+  'bytes',
+  'codePoints',
+  'email',
+  'endsWith',
+  'excludes',
+  'graphemes',
+  'includes',
+  'length',
+  'maxBytes',
+  'maxCodePoints',
+  'maxGraphemes',
+  'maxLength',
+  'maxWords',
+  'minBytes',
+  'minCodePoints',
+  'minGraphemes',
+  'minLength',
+  'minWords',
+  'nonEmpty',
+  'regex',
+  'startsWith',
+  'url',
+  'words',
+]);
+
 export interface PipeActionDescriptor {
   actionIndex: number;
   fingerprint: string;

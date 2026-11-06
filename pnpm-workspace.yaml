@@ -1,2 +1,8 @@
 allowBuilds:
   esbuild: true
+
+overrides:
+  # GHSA-g3hv-75wg-m249: upstream tooling still requests minimatch 10.
+  # Its consumers here use match/Minimatch/escape, retained in 11. Remove
+  # this repository-only override when their supported ranges include 11.
+  minimatch@10: 11.0.3

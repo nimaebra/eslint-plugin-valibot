@@ -42,7 +42,7 @@ export const noRedundantSchemaWrappers = createRule<Options, MessageIds>({
 
     return {
       Program(node) {
-        imports = collectValibotImports(node);
+        imports = collectValibotImports(node, context.sourceCode);
       },
       CallExpression(node) {
         if (!hasValibotImports(imports)) {
@@ -75,9 +75,11 @@ export const noRedundantSchemaWrappers = createRule<Options, MessageIds>({
         context.report({
           node,
           messageId: 'redundantWrapper',
-          fix(fixer) {
-            return fixer.replaceText(node, sourceCode.getText(innerCall));
-          },
+          fix:
+            sourceCode.getCommentsInside(node).length === 0
+              ? (fixer) =>
+                  fixer.replaceText(node, sourceCode.getText(innerCall))
+              : null,
         });
       },
     };

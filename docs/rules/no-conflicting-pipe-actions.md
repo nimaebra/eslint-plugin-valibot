@@ -51,3 +51,7 @@ const Schema = v.pipeAsync(v.string(), v.minLength(10), v.maxLength(5));
 ## Further Reading
 
 - [Valibot pipe() API](https://valibot.dev/api/pipe/)
+
+## Analysis boundaries
+
+Length bounds are compared across known built-in validations that preserve the value, such as `email()` and `regex()`. Transformations, unknown calls, action identifiers, and spreads end the comparison. Each uninterrupted group reports a contradiction once.
