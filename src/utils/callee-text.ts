@@ -18,7 +18,7 @@ export function getValibotCalleeText(
 ): string | null {
   if (call.callee.type === 'MemberExpression') {
     return call.callee.object.type === 'Identifier' &&
-      isValibotBinding(call, imports, call.callee.object.name)
+      isValibotBinding(call.callee.object, imports, call.callee.object.name)
       ? `${call.callee.object.name}.${apiName}`
       : null;
   }

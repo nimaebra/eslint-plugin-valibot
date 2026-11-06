@@ -86,5 +86,27 @@ tester.run('no-shared-mutable-default', noSharedMutableDefault as never, {
         },
       ],
     },
+    ...[
+      `${ns}v.optional(v.unknown(), [await load()]);`,
+      `${ns}function* schema() { return v.optional(v.any(), { value: yield item }); }`,
+      `${ns}v.optional(v.date(), new Date(await load()));`,
+    ].map((code) => ({
+      code,
+      errors: [{ messageId: 'sharedDefault', suggestions: [] }],
+    })),
+    {
+      code: `${ns}v.optional(v.unknown(), [async () => await load()]);`,
+      errors: [
+        {
+          messageId: 'sharedDefault',
+          suggestions: [
+            {
+              messageId: 'useFactory',
+              output: `${ns}v.optional(v.unknown(), () => ([async () => await load()]));`,
+            },
+          ],
+        },
+      ],
+    },
   ],
 });

@@ -1,4 +1,4 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 
 import { createRule } from '../utils/create-rule';
 import {
@@ -74,102 +74,63 @@ export const noLengthCheckBeforeTrim = createRule<Options, MessageIds>({
           return;
         }
 
-        for (const actions of getPipeActionGroups(node)) {
-          const lastTrimIndex = actions.findLastIndex((action) =>
-            TRIM_ACTION_NAMES.has(action.name),
-          );
+        const checks: PipeAction[] = [];
+        let canSuggest: boolean | undefined;
+        for (let index = 1; index < node.arguments.length; index++) {
+          const argument = node.arguments[index];
+          const name =
+            argument.type === 'CallExpression'
+              ? getValibotCallName(argument, imports)
+              : null;
+          const isTrim = name !== null && TRIM_ACTION_NAMES.has(name);
 
-          if (lastTrimIndex === -1) {
+          if (
+            argument.type !== 'CallExpression' ||
+            !name ||
+            (!isTrim && !VALUE_PRESERVING_ACTION_NAMES.has(name))
+          ) {
+            checks.length = 0;
             continue;
           }
-
-          const offendingChecks = actions
-            .slice(0, lastTrimIndex)
-            .filter((action) => LOWER_BOUND_CHECK_NAMES.has(action.name));
-
-          if (offendingChecks.length === 0) {
+          if (LOWER_BOUND_CHECK_NAMES.has(name)) {
+            checks.push({ name, node: argument });
             continue;
           }
+          if (!isTrim || checks.length === 0) continue;
 
-          const canSuggest =
-            !node.arguments.some(
-              (argument) => argument.type === 'SpreadElement',
-            ) && sourceCode.getCommentsInside(node).length === 0;
+          canSuggest ??=
+            !node.arguments.some((item) => item.type === 'SpreadElement') &&
+            sourceCode.getCommentsInside(node).length === 0;
+          const firstCheck = checks[0];
+          const previousArgument = node.arguments[index - 1];
+          const trimText = canSuggest ? sourceCode.getText(argument) : '';
+          const suggest: TSESLint.ReportSuggestionArray<MessageIds> = canSuggest
+            ? [
+                {
+                  messageId: 'moveTrimBeforeCheck',
+                  data: { check: firstCheck.name, trim: name },
+                  fix: (fixer) => [
+                    fixer.insertTextBefore(firstCheck.node, `${trimText}, `),
+                    fixer.removeRange([
+                      previousArgument.range[1],
+                      argument.range[1],
+                    ]),
+                  ],
+                },
+              ]
+            : [];
 
-          for (const check of offendingChecks) {
-            const trimIndex = actions.findIndex(
-              (action, index) =>
-                index > actions.indexOf(check) &&
-                TRIM_ACTION_NAMES.has(action.name),
-            );
-            const trim = actions[trimIndex];
-            const previousTrimIndex = actions
-              .slice(0, trimIndex)
-              .findLastIndex((action) => TRIM_ACTION_NAMES.has(action.name));
-            const firstCheck = offendingChecks.find(
-              (candidate) => actions.indexOf(candidate) > previousTrimIndex,
-            )!;
-            const data = {
-              check: check.name,
-              trim: trim.name,
-            };
-
+          for (const check of checks) {
             context.report({
               node: check.node,
               messageId: 'lengthCheckBeforeTrim',
-              data,
-              suggest: canSuggest
-                ? [
-                    {
-                      messageId: 'moveTrimBeforeCheck',
-                      data: { check: firstCheck.name, trim: trim.name },
-                      fix(fixer) {
-                        const trimIndex = node.arguments.indexOf(trim.node);
-                        const previousArgument = node.arguments[trimIndex - 1];
-
-                        return [
-                          fixer.insertTextBefore(
-                            firstCheck.node,
-                            `${sourceCode.getText(trim.node)}, `,
-                          ),
-                          fixer.removeRange([
-                            previousArgument.range[1],
-                            trim.node.range[1],
-                          ]),
-                        ];
-                      },
-                    },
-                  ]
-                : [],
+              data: { check: check.name, trim: name },
+              suggest,
             });
           }
+          checks.length = 0;
         }
       },
     };
-
-    function getPipeActionGroups(
-      pipeCall: TSESTree.CallExpression,
-    ): PipeAction[][] {
-      const groups: PipeAction[][] = [];
-      let group: PipeAction[] = [];
-      for (const argument of pipeCall.arguments.slice(1)) {
-        const name =
-          argument.type === 'CallExpression'
-            ? getValibotCallName(argument, imports)
-            : null;
-        if (
-          argument.type !== 'CallExpression' ||
-          !name ||
-          (!TRIM_ACTION_NAMES.has(name) &&
-            !VALUE_PRESERVING_ACTION_NAMES.has(name))
-        ) {
-          group = [];
-          continue;
-        }
-        if (!group.length) groups.push(group);
-        group.push({ name, node: argument });
-      }
-      return groups;
-    }
   },
 });

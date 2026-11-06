@@ -129,7 +129,7 @@ function isAllowedInferReference(
   return (
     typeName.left.type === 'Identifier' &&
     imports.namespaces.has(typeName.left.name) &&
-    isValibotBinding(typeName, imports, typeName.left.name, true) &&
+    isValibotBinding(typeName.left, imports, typeName.left.name, true) &&
     ALLOWED_INFER_TYPE_NAMES.has(typeName.right.name)
   );
 }

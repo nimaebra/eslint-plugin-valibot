@@ -10,7 +10,7 @@ const cases = {
     (_, index) => `const value${index} = ${index};`,
   ).join('\n'),
   'large-object': `import * as v from 'valibot'; const Schema = v.object({${Array.from({ length: 1000 }, (_, index) => `field${index}: v.string()`).join(',')}});`,
-  'long-pipe': `import * as v from 'valibot'; const Schema = v.pipe(v.string(), ${Array.from({ length: 300 }, () => 'v.minLength(1)').join(',')});`,
+  'long-pipe': `import * as v from 'valibot'; const Schema = v.pipe(v.string(), ${Array.from({ length: 300 }, () => 'v.minLength(1)').join(',')}, v.trim());`,
   'nested-scopes': `import * as v from 'valibot'; ${Array.from({ length: 100 }, (_, index) => `function fn${index}(v) { function nested() { return v.any(); } return nested(); }`).join('\n')}`,
 };
 const config: Linter.Config[] = [

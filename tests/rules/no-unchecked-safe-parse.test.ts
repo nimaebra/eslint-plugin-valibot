@@ -25,6 +25,24 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
       code: `${NS}const result = v.safeParse(Schema, input); if (result.success) { const { output } = result; save(output); }`,
     },
     {
+      code: `${NS}const result = v.safeParse(Schema, input); result.extra = true; result[0] = true; if (result.success) save(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) save(result.output); result.success = true;`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (!result.success) result.output = fallback; else save(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const { success, output } = result; result.output = fallback; if (success) save(output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const { output, ...rest } = result; result.success = true; if (rest.success) save(output);`,
+    },
+    {
+      code: `${NS}for (const item of items) { const result = v.safeParse(Schema, item); if (result.success) save(result.output); result.success = true; }`,
+    },
+    {
       code: `${NS}const result = v.safeParse(Schema, input); if (result['success']) save(result['output']);`,
     },
     {
@@ -146,6 +164,22 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
     },
     {
       code: `${NS}const result = v.safeParse(Schema, input); result.success = true; if (result.success) save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); const alias = result; if (result.success) { alias.output = fallback; save(result.output); }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); result.success = true; const { success, output } = result; if (success) save(output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); for (const item of items) { if (result.success) save(result.output); result['success'] = true; }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); function read() { if (result.success) save(result.output); result.success = true; } read(); read();`,
       errors: [error()],
     },
     {

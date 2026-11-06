@@ -1,4 +1,8 @@
-import { ASTUtils } from '@typescript-eslint/utils';
+import {
+  ASTUtils,
+  type TSESLint,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 import { createRule } from '../utils/create-rule';
 import {
   collectValibotImports,
@@ -64,18 +68,41 @@ export const noSharedMutableDefault = createRule<
           node: value,
           messageId: 'sharedDefault',
           data: { name: `${wrapper.name}${wrapper.isAsync ? 'Async' : ''}` },
-          suggest: [
-            {
-              messageId: 'useFactory',
-              fix: (fixer) =>
-                fixer.replaceText(
-                  value,
-                  `() => (${context.sourceCode.getText(value)})`,
-                ),
-            },
-          ],
+          suggest: containsAwaitOrYield(value, context.sourceCode.visitorKeys)
+            ? []
+            : [
+                {
+                  messageId: 'useFactory',
+                  fix: (fixer) =>
+                    fixer.replaceText(
+                      value,
+                      `() => (${context.sourceCode.getText(value)})`,
+                    ),
+                },
+              ],
         });
       },
     };
   },
 });
+
+function containsAwaitOrYield(
+  node: TSESTree.Node | null | undefined,
+  visitorKeys: TSESLint.SourceCode.VisitorKeys,
+): boolean {
+  // A nested function keeps its own await or yield context inside the factory.
+  if (!node || ASTUtils.isFunction(node)) return false;
+  if (node.type === 'AwaitExpression' || node.type === 'YieldExpression')
+    return true;
+
+  const children = node as unknown as Record<
+    string,
+    TSESTree.Node | (TSESTree.Node | null)[] | null | undefined
+  >;
+  return visitorKeys[node.type].some((key) => {
+    const child = children[key];
+    return Array.isArray(child)
+      ? child.some((item) => containsAwaitOrYield(item, visitorKeys))
+      : containsAwaitOrYield(child, visitorKeys);
+  });
+}

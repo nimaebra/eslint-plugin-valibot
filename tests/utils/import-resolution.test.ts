@@ -44,6 +44,16 @@ describe('Valibot binding resolution', () => {
     },
   );
 
+  it.each([
+    "import { any as make } from 'valibot'; function test() { type make = string; return make(); }",
+    "import * as v from 'valibot'; function test() { type v = string; return v.any(); }",
+    "import { any as make } from 'valibot'; function test(schema = make()) { const make = other; return schema; }",
+  ])('recognizes the resolved runtime reference: %s', (code) => {
+    expect(
+      new Linter().verify(code, config).map(({ ruleId }) => ruleId),
+    ).toEqual(['valibot/no-any-schema']);
+  });
+
   it('does not use a shadowed named import in an autofix', () => {
     const code =
       "import { union, literal, picklist } from 'valibot'; function test(picklist) { return union([literal('a'), literal('b')]); }";

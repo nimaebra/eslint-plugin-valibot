@@ -36,7 +36,7 @@ Checks direct array/object literals and built-in `new Date()` defaults in `optio
 
 ## Suggestions
 
-The editor can wrap the default in a factory. This changes when allocation and any expressions inside the default run. Review that timing, especially for dates and object properties with side effects. The rule provides a suggestion rather than an automatic fix.
+The editor can wrap the default in a factory. This changes when allocation and any expressions inside the default run. Review that timing, especially for dates and object properties with side effects. Defaults that evaluate `await` or `yield` in the surrounding context are reported without a suggestion.
 
 ## Further Reading
 

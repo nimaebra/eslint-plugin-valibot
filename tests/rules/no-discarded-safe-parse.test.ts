@@ -12,7 +12,10 @@ tester.run('no-discarded-safe-parse', noDiscardedSafeParse as never, {
     `${ns}function test() { return v.safeParse(Schema, input); }`,
     `${ns}handle(v.safeParse(Schema, input));`,
     `${ns}if (v.safeParse(Schema, input).success) use(input);`,
+    `${ns}v.safeParse?.(Schema, input).success;`,
+    `${ns}void v.safeParse?.(Schema, input);`,
     `${ns}v.safeParseAsync(Schema, input);`,
+    `${ns}v.safeParseAsync?.(Schema, input);`,
     `${ns}v.safeParseAsync(Schema, input).then(handle);`,
     `${ns}function test(v) { v.safeParse(Schema, input); }`,
     "import { safeParse } from 'other-library'; safeParse(Schema, input);",
@@ -24,6 +27,16 @@ tester.run('no-discarded-safe-parse', noDiscardedSafeParse as never, {
     },
     {
       code: `${ns}await v.safeParseAsync(Schema, input);`,
+      errors: [
+        { messageId: 'discardedResult', data: { name: 'safeParseAsync' } },
+      ],
+    },
+    {
+      code: `${ns}v.safeParse?.(Schema, input);`,
+      errors: [{ messageId: 'discardedResult', data: { name: 'safeParse' } }],
+    },
+    {
+      code: `${ns}await v?.safeParseAsync(Schema, input);`,
       errors: [
         { messageId: 'discardedResult', data: { name: 'safeParseAsync' } },
       ],

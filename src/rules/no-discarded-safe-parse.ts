@@ -31,10 +31,12 @@ export const noDiscardedSafeParse = createRule<[], 'discardedResult'>({
         if (!hasValibotImports(imports)) return;
         const name = getValibotCallName(node, imports);
         if (name !== 'safeParse' && name !== 'safeParseAsync') return;
+        const call =
+          node.parent.type === 'ChainExpression' ? node.parent : node;
         const result =
-          node.parent.type === 'AwaitExpression' ? node.parent : node;
+          call.parent.type === 'AwaitExpression' ? call.parent : call;
         // Floating async calls belong to no-unawaited-parse-async.
-        if (name === 'safeParseAsync' && result === node) return;
+        if (name === 'safeParseAsync' && result === call) return;
         if (result.parent.type === 'ExpressionStatement') {
           context.report({
             node: result,

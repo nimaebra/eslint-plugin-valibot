@@ -34,7 +34,7 @@ handle(await v.safeParseAsync(UserSchema, input));
 
 ## Scope
 
-The rule checks bare expression statements. Returning, assigning, inspecting, or passing a result to a handler is accepted. It does not determine whether a handler eventually checks the result. Unawaited async calls belong to `no-unawaited-parse-async`, so enabling both rules does not duplicate that diagnostic. An explicit `void` expression is treated as an intentional discard.
+The rule checks bare expression statements, including optional calls. Returning, assigning, inspecting, or passing a result to a handler is accepted. It does not determine whether a handler eventually checks the result. Unawaited async calls belong to `no-unawaited-parse-async`, so enabling both rules does not duplicate that diagnostic. An explicit `void` expression is treated as an intentional discard.
 
 ## Autofix
 

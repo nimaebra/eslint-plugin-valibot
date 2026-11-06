@@ -2,11 +2,11 @@
 'eslint-plugin-valibot': minor
 ---
 
-Add opt-in `no-discarded-safe-parse` and `no-shared-mutable-default` rules. Both are included in `all`; existing recommended, strict, and stylistic preset membership is unchanged.
+Add opt-in `no-discarded-safe-parse` and `no-shared-mutable-default` rules. Discarded optional calls are reported, and factory suggestions account for `await` and `yield`. Both rules are included in `all`.
 
-Resolve Valibot calls and replacement imports by binding identity, ignoring shadowed names, type-only runtime imports, locally defined `require`, and reassigned CommonJS imports. Track schema type queries by binding as well.
+Resolve Valibot calls through parser references, including in TypeScript type-only shadowing and default parameter scopes. Resolve replacement imports and schema type queries by binding identity. Runtime analysis uses value imports and stable CommonJS bindings from the global `require`.
 
-Extend `no-unchecked-safe-parse` to computed properties, stable aliases and mutable bindings, and guarded destructured output. Merely destructuring `success` no longer permits unchecked output reads. Guards use binding identity, including captured stable results, and mutations invalidate guard assumptions.
+Extend `no-unchecked-safe-parse` to computed properties, stable aliases and mutable bindings, and guarded destructured output. Reads of destructured output require a check of the corresponding `success` binding. Guards use binding identity, including captured stable results. Direct mutations invalidate the affected property only where they can reach a check or read.
 
 Detect conflicting length bounds across known value-preserving validations. Stop constraint and trim-order analysis at transformations, unknown actions, and spreads. Complete root named rule exports with `noEmptyPipe`, `noInstanceofBuiltins`, and `requireIssueMessages`.
 
