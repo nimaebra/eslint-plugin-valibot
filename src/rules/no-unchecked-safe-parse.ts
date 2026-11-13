@@ -241,7 +241,7 @@ export const noUncheckedSafeParse = createRule<Options, MessageIds>({
 
       for (const read of reads) {
         if (
-          !isGuardedBySuccessCheck(read.node, isSuccess) ||
+          !isGuardedBySuccessCheck(read.node, isSuccess, sourceCode) ||
           hasWriteBefore(read, 'output')
         ) {
           report(read.node);
@@ -361,6 +361,7 @@ function isOutputAccess(
 function isGuardedBySuccessCheck(
   node: TSESTree.Node,
   isSuccess: SuccessCheck,
+  sourceCode: Readonly<TSESLint.SourceCode>,
 ): boolean {
   const ifTruthy = (test: TSESTree.Node) =>
     truthyImpliesSuccess(test, isSuccess);
@@ -393,13 +394,22 @@ function isGuardedBySuccessCheck(
       case 'BlockStatement':
       case 'Program':
       case 'StaticBlock':
-        if (hasPrecedingExitOnFailure(current.body, child, isSuccess)) {
+        if (
+          hasPrecedingExitOnFailure(current.body, child, isSuccess, sourceCode)
+        ) {
           return true;
         }
         break;
 
       case 'SwitchCase':
-        if (hasPrecedingExitOnFailure(current.consequent, child, isSuccess)) {
+        if (
+          hasPrecedingExitOnFailure(
+            current.consequent,
+            child,
+            isSuccess,
+            sourceCode,
+          )
+        ) {
           return true;
         }
         break;
@@ -417,6 +427,7 @@ function hasPrecedingExitOnFailure(
   statements: TSESTree.Node[],
   child: TSESTree.Node,
   isSuccess: SuccessCheck,
+  sourceCode: Readonly<TSESLint.SourceCode>,
 ): boolean {
   const index = statements.indexOf(child);
 
@@ -425,29 +436,65 @@ function hasPrecedingExitOnFailure(
     .some(
       (statement) =>
         statement.type === 'IfStatement' &&
-        ((alwaysExits(statement.consequent) &&
+        ((alwaysExits(statement.consequent, sourceCode) &&
           falsyImpliesSuccess(statement.test, isSuccess)) ||
           (statement.alternate !== null &&
-            alwaysExits(statement.alternate) &&
+            alwaysExits(statement.alternate, sourceCode) &&
             truthyImpliesSuccess(statement.test, isSuccess))),
     );
 }
 
-function alwaysExits(statement: TSESTree.Statement): boolean {
+function alwaysExits(
+  statement: TSESTree.Statement,
+  sourceCode: Readonly<TSESLint.SourceCode>,
+): boolean {
   switch (statement.type) {
     case 'BreakStatement':
     case 'ContinueStatement':
     case 'ReturnStatement':
     case 'ThrowStatement':
       return true;
+    case 'ExpressionStatement':
+      return isNodeProcessExit(statement.expression, sourceCode);
     case 'BlockStatement': {
       const last = statement.body.at(-1);
 
-      return last !== undefined && alwaysExits(last);
+      return last !== undefined && alwaysExits(last, sourceCode);
     }
     default:
       return false;
   }
+}
+
+function isNodeProcessExit(
+  expression: TSESTree.Expression,
+  sourceCode: Readonly<TSESLint.SourceCode>,
+): boolean {
+  if (expression.type !== 'CallExpression' || expression.optional) return false;
+  const { callee } = expression;
+  if (
+    callee.type !== 'MemberExpression' ||
+    callee.optional ||
+    callee.object.type !== 'Identifier' ||
+    ASTUtils.getPropertyName(callee) !== 'exit'
+  ) {
+    return false;
+  }
+
+  const variable = getReferencedVariable(sourceCode, callee.object);
+  if (variable && !isStable(variable)) return false;
+  const definition = variable?.defs[0];
+  if (!definition) return callee.object.name === 'process';
+
+  return (
+    definition.type === 'ImportBinding' &&
+    (definition.node.type === 'ImportDefaultSpecifier' ||
+      definition.node.type === 'ImportNamespaceSpecifier') &&
+    definition.parent.type === 'ImportDeclaration' &&
+    definition.parent.importKind !== 'type' &&
+    (definition.parent.source.value === 'node:process' ||
+      definition.parent.source.value === 'process')
+  );
 }
 
 // Whether `test` being truthy guarantees `result.success`.

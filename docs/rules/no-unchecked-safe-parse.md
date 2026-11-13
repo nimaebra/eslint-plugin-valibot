@@ -16,6 +16,7 @@ The rule recognizes these guards:
 
 - `if (result.success) { … }`, and the `else` branch of `if (!result.success)`
 - early exits such as `if (!result.success) return;` or `throw`, `continue` and `break`
+- direct calls to `process.exit()` in the failure branch, using the Node.js global or a default or namespace import from `node:process` or `process`
 - `result.success ? result.output : fallback`
 - `result.success && result.output`
 - comparisons such as `result.success === true` or `result.success === false`
