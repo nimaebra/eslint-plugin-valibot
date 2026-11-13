@@ -116,6 +116,8 @@ try {
   );
 
   assertLintFailure(strictResult, 'valibot/no-schema-as-type');
+
+  runCommand('node', ['pipeline-rules.mjs'], fixtureDir);
 } finally {
   await rm(tempDir, { force: true, recursive: true });
 }
@@ -185,6 +187,10 @@ function writeFixtureFiles(fixtureDir: string) {
         '  noUnguardedParse,',
         '  noDiscardedSafeParse,',
         '  noSharedMutableDefault,',
+        '  noAsyncCallbackInSyncValidation,',
+        '  noObjectReshapeAfterPipe,',
+        '  noTruthyStringCoercion,',
+        '  preferExactPipeConstraint,',
         '  noEmptyPipe,',
         '  noInstanceofBuiltins,',
         '  requireIssueMessages,',
@@ -198,8 +204,32 @@ function writeFixtureFiles(fixtureDir: string) {
         "export const preset: ConfigName = 'all';",
         'export const config: FlatConfigArray = flatConfigs[preset];',
         'export const rule: RuleModule = noUnguardedParse;',
-        'export const additionalRules: RuleModule[] = [noDiscardedSafeParse, noSharedMutableDefault, noEmptyPipe, noInstanceofBuiltins, requireIssueMessages];',
+        'export const additionalRules: RuleModule[] = [noDiscardedSafeParse, noSharedMutableDefault, noAsyncCallbackInSyncValidation, noObjectReshapeAfterPipe, noTruthyStringCoercion, preferExactPipeConstraint, noEmptyPipe, noInstanceofBuiltins, requireIssueMessages];',
         "export const rules = getRulesForConfig('recommended');",
+      ].join('\n'),
+      'utf8',
+    ),
+    writeFile(
+      path.join(fixtureDir, 'pipeline-rules.mjs'),
+      [
+        "import assert from 'node:assert/strict';",
+        "import { Linter } from 'eslint';",
+        "import valibot from 'eslint-plugin-valibot';",
+        'const cases = [',
+        "  ['no-async-callback-in-sync-validation', 'v.pipe(v.string(), v.check(async () => false));'],",
+        "  ['no-object-reshape-after-pipe', `v.pick(v.pipe(v.object({ name: v.string() })), ['name']);`],",
+        "  ['no-truthy-string-coercion', 'v.pipe(v.string(), v.transform(Boolean));'],",
+        "  ['prefer-exact-pipe-constraint', 'v.pipe(v.string(), v.minLength(2), v.maxLength(2));'],",
+        '];',
+        'const linter = new Linter();',
+        'for (const [name, source] of cases) {',
+        '  const ruleId = `valibot/${name}`;',
+        "  const reports = linter.verify(`import * as v from 'valibot';\\n${source}`, [{",
+        '    plugins: { valibot },',
+        "    rules: { [ruleId]: 'error' },",
+        '  }]);',
+        '  assert.deepEqual(reports.map((report) => report.ruleId), [ruleId]);',
+        '}',
       ].join('\n'),
       'utf8',
     ),
