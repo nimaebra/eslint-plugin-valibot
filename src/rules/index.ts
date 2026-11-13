@@ -1,6 +1,10 @@
 import { consistentImport } from './consistent-import';
 import { noDiscardedSafeParse } from './no-discarded-safe-parse';
 import { noSharedMutableDefault } from './no-shared-mutable-default';
+import { noAsyncCallbackInSyncValidation } from './no-async-callback-in-sync-validation';
+import { noObjectReshapeAfterPipe } from './no-object-reshape-after-pipe';
+import { noTruthyStringCoercion } from './no-truthy-string-coercion';
+import { preferExactPipeConstraint } from './prefer-exact-pipe-constraint';
 import { consistentSchemaConvention } from './consistent-schema-convention';
 import { noDuplicatePipeActions } from './no-duplicate-pipe-actions';
 import { noRecreatedSchemas } from './no-recreated-schemas';
@@ -38,6 +42,10 @@ import {
 } from './registry';
 
 export {
+  noAsyncCallbackInSyncValidation,
+  noObjectReshapeAfterPipe,
+  noTruthyStringCoercion,
+  preferExactPipeConstraint,
   noDiscardedSafeParse,
   noSharedMutableDefault,
   consistentImport,

@@ -1,5 +1,9 @@
 export { configs, flatConfigs } from './plugin';
 export {
+  noAsyncCallbackInSyncValidation,
+  noObjectReshapeAfterPipe,
+  noTruthyStringCoercion,
+  preferExactPipeConstraint,
   noDiscardedSafeParse,
   noSharedMutableDefault,
   noEmptyPipe,

@@ -74,6 +74,19 @@ describe('plugin config exports', () => {
     );
   });
 
+  it.each([
+    'no-async-callback-in-sync-validation',
+    'no-object-reshape-after-pipe',
+    'no-truthy-string-coercion',
+    'prefer-exact-pipe-constraint',
+  ])('keeps %s opt-in outside the all config', (name) => {
+    const key = `valibot/${name}`;
+    expect(plugin.configs.all.rules?.[key]).toBe('error');
+    for (const preset of ['recommended', 'strict', 'stylistic'] as const) {
+      expect(plugin.configs[preset].rules?.[key]).toBeUndefined();
+    }
+  });
+
   it('exposes all implemented rules', () => {
     expect(Object.keys(plugin.rules).sort()).toEqual(
       ruleRegistry.map(({ name }) => name).sort(),

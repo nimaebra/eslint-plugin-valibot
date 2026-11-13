@@ -37,8 +37,32 @@ import { noAsyncSchemaInSyncParent } from './no-async-schema-in-sync-parent';
 import { noUnawaitedParseAsync } from './no-unawaited-parse-async';
 import { noDiscardedSafeParse } from './no-discarded-safe-parse';
 import { noSharedMutableDefault } from './no-shared-mutable-default';
+import { noAsyncCallbackInSyncValidation } from './no-async-callback-in-sync-validation';
+import { noObjectReshapeAfterPipe } from './no-object-reshape-after-pipe';
+import { noTruthyStringCoercion } from './no-truthy-string-coercion';
+import { preferExactPipeConstraint } from './prefer-exact-pipe-constraint';
 
 export const ruleRegistry: RuleRegistryEntry[] = [
+  {
+    name: 'no-async-callback-in-sync-validation',
+    rule: noAsyncCallbackInSyncValidation,
+    configs: {},
+  },
+  {
+    name: 'no-object-reshape-after-pipe',
+    rule: noObjectReshapeAfterPipe,
+    configs: {},
+  },
+  {
+    name: 'no-truthy-string-coercion',
+    rule: noTruthyStringCoercion,
+    configs: {},
+  },
+  {
+    name: 'prefer-exact-pipe-constraint',
+    rule: preferExactPipeConstraint,
+    configs: {},
+  },
   { name: 'no-discarded-safe-parse', rule: noDiscardedSafeParse, configs: {} },
   {
     name: 'no-shared-mutable-default',
