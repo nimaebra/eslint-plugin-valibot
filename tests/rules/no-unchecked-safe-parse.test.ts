@@ -18,6 +18,23 @@ const error = (name = 'safeParse') => ({
 ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
   valid: [
     {
+      code: `${NS}const result = v.safeParse(v.string(), process.argv[2]);
+if (!result.success) {
+  process.exit(1);
+}
+console.log(result.output);`,
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (result.success) {} else process['exit'](1); save(result.output);`,
+      languageOptions: { globals: { process: 'readonly' } },
+    },
+    {
+      code: `${NS}import proc from 'node:process'; const result = v.safeParse(Schema, input); if (!result.success) proc.exit(1); save(result.output);`,
+    },
+    {
+      code: `${NS}import * as proc from 'process'; const result = v.safeParse(Schema, input); if (!result.success) proc.exit(1); save(result.output);`,
+    },
+    {
       code: `${NS}function test() { const result = v.safeParse(Schema, input); if (!result.success) return; return () => result.output; }`,
     },
 
@@ -134,6 +151,31 @@ ruleTester.run('no-unchecked-safe-parse', noUncheckedSafeParse as never, {
     },
   ],
   invalid: [
+    {
+      code: `${NS}function handle(process) { const result = v.safeParse(Schema, input); if (!result.success) process.exit(1); save(result.output); }`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}import process from './process.js'; const result = v.safeParse(Schema, input); if (!result.success) process.exit(1); save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}process = mockProcess; const result = v.safeParse(Schema, input); if (!result.success) process.exit(1); save(result.output);`,
+      languageOptions: { globals: { process: 'writable' } },
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (!result.success) process.exitCode = 1; save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (!result.success) process.exit?.(1); save(result.output);`,
+      errors: [error()],
+    },
+    {
+      code: `${NS}const result = v.safeParse(Schema, input); if (!result.success && enabled) process.exit(1); save(result.output);`,
+      errors: [error()],
+    },
     {
       code: `${NS}const result = v.safeParse(Schema, input); save(result['output']);`,
       errors: [error()],
