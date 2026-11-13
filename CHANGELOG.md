@@ -1,5 +1,12 @@
 # eslint-plugin-valibot
 
+## 1.5.1
+
+### Patch Changes
+
+- 3d6ddb6: Recognize Node.js `process.exit()` as an early exit in `no-unchecked-safe-parse` failure guards.
+- 2391b84: Update the TypeScript ESLint utilities and development dependencies while retaining the supported Node.js, ESLint, and Valibot ranges.
+
 ## 1.5.0
 
 ### Minor Changes
