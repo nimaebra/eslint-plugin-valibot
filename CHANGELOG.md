@@ -1,5 +1,19 @@
 # eslint-plugin-valibot
 
+## 1.6.0
+
+### Minor Changes
+
+- 3148955: Add the opt-in `no-async-callback-in-sync-validation`, `no-object-reshape-after-pipe`, `no-truthy-string-coercion`, and `prefer-exact-pipe-constraint` rules. Each is also enabled in `all`.
+
+  Detect object reshapes after pipes rooted in previously reshaped objects, and detect truthiness coercion after string-only literal picklists and value-preserving checks.
+
+  Extend `no-conflicting-pipe-actions` to detect contradictions involving exact lengths, collection sizes, and numeric value bounds.
+
+### Patch Changes
+
+- 9ceec8f: Update the runtime TypeScript ESLint utilities to a release that uses the patched minimatch major (CVE-2026-118764).
+
 ## 1.5.1
 
 ### Patch Changes
