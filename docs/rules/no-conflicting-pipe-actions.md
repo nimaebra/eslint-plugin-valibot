@@ -36,7 +36,11 @@ const LengthSchema = v.pipe(v.string(), v.minLength(2), v.maxLength(10));
 
 ## Supported checks
 
-The initial version reports adjacent `minLength()` and `maxLength()` actions when the minimum is greater than the maximum and both limits are numeric literals. It does not report across intervening actions because a transformation could change the value's length.
+- Length constraints use `minLength()`, `maxLength()`, and `length()`.
+- Size constraints use `minSize()`, `maxSize()`, and `size()`.
+- Numeric value constraints use `minValue()` and `maxValue()`.
+
+Each comparison uses finite numeric literals in the same group. An exact constraint supplies both a lower and an upper bound.
 
 ## Async APIs
 
@@ -54,4 +58,4 @@ const Schema = v.pipeAsync(v.string(), v.minLength(10), v.maxLength(5));
 
 ## Analysis boundaries
 
-Length bounds are compared across known built-in validations that preserve the value, such as `email()` and `regex()`. Transformations, unknown calls, action identifiers, and spreads end the comparison. Each uninterrupted group reports a contradiction once.
+Bounds are compared across known built-in validations that preserve the value, such as `email()` and `regex()`. Transformations, callback-based checks, unknown calls, action identifiers, and spreads end the comparison. Each uninterrupted group reports one contradiction per constraint type.

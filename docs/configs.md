@@ -77,6 +77,7 @@ Includes:
 - `valibot/consistent-schema-convention`: `error`
 - `valibot/no-any-schema`: `error`
 - `valibot/no-async-action-in-sync-pipe`: `error`
+- `valibot/no-async-callback-in-sync-validation`: `error`
 - `valibot/no-async-schema-in-sync-parent`: `error`
 - `valibot/no-conflicting-pipe-actions`: `error`
 - `valibot/no-discarded-safe-parse`: `error`
@@ -86,6 +87,7 @@ Includes:
 - `valibot/no-instanceof-builtins`: `error`
 - `valibot/no-length-check-before-trim`: `error`
 - `valibot/no-loose-object`: `error`
+- `valibot/no-object-reshape-after-pipe`: `error`
 - `valibot/no-recreated-schemas`: `error`
 - `valibot/no-redundant-schema-wrappers`: `error`
 - `valibot/no-redundant-transformation`: `error`
@@ -94,10 +96,12 @@ Includes:
 - `valibot/no-single-member-union`: `error`
 - `valibot/no-throw-in-check`: `error`
 - `valibot/no-transform-in-record-key`: `error`
+- `valibot/no-truthy-string-coercion`: `error`
 - `valibot/no-unawaited-parse-async`: `error`
 - `valibot/no-unchecked-safe-parse`: `error`
 - `valibot/no-unguarded-parse`: `error`
 - `valibot/no-unknown-schema`: `error`
+- `valibot/prefer-exact-pipe-constraint`: `error`
 - `valibot/prefer-flatten-pipe`: `error`
 - `valibot/prefer-nullable-over-union-null`: `error`
 - `valibot/prefer-nullish`: `error`
