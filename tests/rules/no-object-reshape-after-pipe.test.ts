@@ -35,6 +35,10 @@ ruleTester.run(
         errors: [error('pick')],
       },
       {
+        code: `${ns}const Base = v.pick(v.object({ name: v.string(), admin: v.boolean() }), ['name', 'admin']); v.pick(v.pipe(Base, v.description('User')), ['name']);`,
+        errors: [error('pick')],
+      },
+      {
         code: `${ns}v.omit(v.pipe(v.looseObject({}), v.description('about')), []);`,
         errors: [error('omit')],
       },
@@ -48,6 +52,10 @@ ruleTester.run(
       },
       {
         code: `${ns}v.requiredAsync(v.pipeAsync(v.strictObjectAsync({})));`,
+        errors: [error('requiredAsync', 'pipeAsync')],
+      },
+      {
+        code: `${ns}v.requiredAsync(v.pipeAsync(v.partialAsync(v.strictObjectAsync({ x: v.string() }))));`,
         errors: [error('requiredAsync', 'pipeAsync')],
       },
       {

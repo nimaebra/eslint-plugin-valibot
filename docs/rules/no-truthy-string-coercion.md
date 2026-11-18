@@ -6,6 +6,8 @@
 
 JavaScript boolean coercion turns every non-empty string into `true`, including `'false'`, `'0'`, and `'no'`. This rule reports `toBoolean()` and `transform(Boolean)` in pipelines where the input to that action is known to be a string. It follows local `const` aliases and stops when an action might change the input type.
 
+The rule recognizes `string()` schemas and `picklist()` schemas with a non-empty inline array of string literals. It tracks the string type through checks such as `check()` and `checkAsync()`.
+
 ## Incorrect
 
 ```js

@@ -13,6 +13,9 @@ new RuleTester().run(
     valid: [
       `${ns}v.pipe(v.string(), v.parseBoolean());`,
       `${ns}v.pipe(v.picklist(['true', 'false']), v.transform(value => value === 'true'));`,
+      `${ns}v.pipe(v.picklist(['false', 0]), v.toBoolean());`,
+      `${ns}v.pipe(v.picklist(['false', ...values]), v.toBoolean());`,
+      `${ns}v.pipe(v.picklist([]), v.toBoolean());`,
       `${ns}v.pipe(v.number(), v.toBoolean()); v.pipe(v.string(), v.toNumber(), v.toBoolean());`,
       `${ns}v.pipe(v.string(), ...actions, v.toBoolean()); v.pipe(v.string(), unknownAction, v.toBoolean());`,
       `${ns}function f(Boolean) { return v.pipe(v.string(), v.transform(Boolean)); }`,
@@ -31,6 +34,18 @@ new RuleTester().run(
     ],
     invalid: [
       { code: `${ns}v.pipe(v.string(), v.toBoolean());`, errors },
+      {
+        code: `${ns}v.pipe(v.picklist(['true', 'false']), v.toBoolean());`,
+        errors,
+      },
+      {
+        code: `${ns}v.pipe(v.string(), v.check(value => value === 'false'), v.toBoolean());`,
+        errors,
+      },
+      {
+        code: `${ns}const schema = v.pipeAsync(v.picklist(['true', 'false']), v.checkAsync(async value => value === 'false')); v.pipeAsync(schema, v.transform(Boolean));`,
+        errors,
+      },
       {
         code: `${ns}const trimmed = v.pipe(v.string(), v.trim()); v.pipe(trimmed, v.toBoolean());`,
         errors,

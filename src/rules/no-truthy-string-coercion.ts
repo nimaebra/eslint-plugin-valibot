@@ -16,6 +16,8 @@ import { getReferencedVariable } from '../utils/referenced-variable';
 
 const stringPreservingActions = new Set([
   ...VALUE_PRESERVING_ACTION_NAMES,
+  'check',
+  'checkAsync',
   'description',
   'maxSize',
   'maxValue',
@@ -97,6 +99,18 @@ export const noTruthyStringCoercion = createRule<[], 'truthyString'>({
       ) {
         const name = getValibotCallName(schema, imports);
         if (name === 'string') return true;
+        if (name === 'picklist') {
+          const [options] = schema.arguments;
+          return (
+            options?.type === 'ArrayExpression' &&
+            options.elements.length > 0 &&
+            options.elements.every(
+              (element) =>
+                element?.type === 'Literal' &&
+                typeof element.value === 'string',
+            )
+          );
+        }
         if (name !== 'pipe' && name !== 'pipeAsync') return false;
         visited.add(schema);
 

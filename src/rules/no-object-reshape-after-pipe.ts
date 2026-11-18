@@ -6,10 +6,7 @@ import {
   createEmptyValibotImports,
   hasValibotImports,
 } from '../utils/collect-valibot-imports';
-import {
-  getValibotCallName,
-  getValibotCallVariant,
-} from '../utils/is-valibot-call';
+import { getValibotCallName } from '../utils/is-valibot-call';
 import { resolveLocalInitializer } from '../utils/local-initializer';
 
 const reshapeMethods = new Set([
@@ -22,9 +19,13 @@ const reshapeMethods = new Set([
 ]);
 const objectConstructors = new Set([
   'object',
+  'objectAsync',
   'looseObject',
+  'looseObjectAsync',
   'strictObject',
+  'strictObjectAsync',
   'objectWithRest',
+  'objectWithRestAsync',
 ]);
 
 export const noObjectReshapeAfterPipe = createRule<[], 'reshapeBeforePipe'>({
@@ -65,12 +66,17 @@ export const noObjectReshapeAfterPipe = createRule<[], 'reshapeBeforePipe'>({
         const visited = new Set<TSESTree.CallExpression>();
         while (current?.type === 'CallExpression' && !visited.has(current)) {
           visited.add(current);
-          const call = getValibotCallVariant(current, imports);
-          if (call?.name === 'pipe') {
+          const name = getValibotCallName(current, imports);
+          if (!name) return;
+          if (
+            name === 'pipe' ||
+            name === 'pipeAsync' ||
+            reshapeMethods.has(name)
+          ) {
             current = resolveLocalInitializer(current.arguments[0], sourceCode);
             continue;
           }
-          if (call && objectConstructors.has(call.name)) {
+          if (objectConstructors.has(name)) {
             context.report({
               node: schema,
               messageId: 'reshapeBeforePipe',

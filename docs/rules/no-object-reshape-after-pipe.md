@@ -31,6 +31,6 @@ const Name = v.pipe(
 );
 ```
 
-The rule follows local `const` aliases and nested `pipe()` or `pipeAsync()` calls rooted in a Valibot object constructor. One-argument and metadata-only pipes count. It also covers `partialAsync()` and `requiredAsync()`.
+The rule follows local `const` aliases, nested `pipe()` and `pipeAsync()` calls, and earlier reshapes back to a Valibot object constructor. One-argument and metadata-only pipes count. It also covers `partialAsync()` and `requiredAsync()`.
 
 <!-- end auto-generated rule options -->
