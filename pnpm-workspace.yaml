@@ -5,3 +5,9 @@ overrides:
   # GHSA-g3hv-75wg-m249: editorconfig 3 still requests minimatch 10.
   # Remove this override when eslint-doc-generator updates to editorconfig 4.
   'editorconfig>minimatch@10': 11.0.9
+
+audit:
+  ignore:
+    # GitHub withdrew the picomatch advisory, but npm still reports it.
+    # Remove this exception when a patched release is available.
+    - GHSA-fc5q-39xc-vjpf
