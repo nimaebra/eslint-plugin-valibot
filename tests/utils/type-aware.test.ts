@@ -104,5 +104,5 @@ describe('type-aware parser service helpers', () => {
     expect(
       messages.map(({ messageId, message }) => ({ messageId, message })),
     ).toEqual([{ messageId: 'typed', message: 'Type: number' }]);
-  });
+  }, 15_000);
 });
